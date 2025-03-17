@@ -28,8 +28,8 @@ class ViewController: UIViewController {
         scrollView.delegate = self
         scrollView.minimumZoomScale = 1.0
         scrollView.maximumZoomScale = 4.0
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.showsVerticalScrollIndicator = true
+        scrollView.showsHorizontalScrollIndicator = true
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         
         imagePH = UIView()
@@ -47,7 +47,7 @@ class ViewController: UIViewController {
         view.addSubview(bgSolid)
         view.addSubview(scrollView)
         scrollView.addSubview(imagePH)
-        scrollView.addSubview(centerScroll)
+        imagePH.addSubview(centerScroll)
         view.addSubview(centerCommon)
         
         NSLayoutConstraint.activate([
@@ -63,8 +63,8 @@ class ViewController: UIViewController {
             
             imagePH.widthAnchor.constraint(equalToConstant: 1000),
             imagePH.heightAnchor.constraint(equalToConstant: 600),
-            imagePH.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
-            imagePH.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor),
+            imagePH.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            imagePH.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             
             centerCommon.widthAnchor.constraint(equalToConstant: 25),
             centerCommon.heightAnchor.constraint(equalToConstant: 25),
@@ -80,6 +80,11 @@ class ViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        view.layoutIfNeeded()
+        scrollView.contentSize = CGSize(width: imagePH.bounds.width, height: imagePH.bounds.height)
+        let centerX = (scrollView.contentSize.width - scrollView.bounds.width) / 2
+        let centerY = (scrollView.contentSize.height - scrollView.bounds.height) / 2
+        scrollView.setContentOffset(CGPoint(x: centerX, y: centerY), animated: false)
         
         clickable1 = UIView()
         clickable1.backgroundColor = UIColor(red: 0.13, green: 0.18, blue: 0.24, alpha: 1.00)
