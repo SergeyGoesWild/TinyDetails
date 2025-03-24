@@ -8,6 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
+    let areaList = [ClickableArea(id: 0), ClickableArea(id: 1), ClickableArea(id: 2), ClickableArea(id: 3), ClickableArea(id: 4)]
     let clickAreaDiam = 100
     
     var bgSolid: UIView!
@@ -38,6 +39,7 @@ class ViewController: UIViewController {
         image = UIImage(named: "SmallImage")
         imagePH = UIImageView(image: image)
         imagePH.translatesAutoresizingMaskIntoConstraints = false
+        imagePH.isUserInteractionEnabled = true
         
         centerCommon = UIView()
         centerCommon.backgroundColor = .black
@@ -54,17 +56,10 @@ class ViewController: UIViewController {
         clickable1.addGestureRecognizer(gesture1)
         clickable1.isUserInteractionEnabled = true
         
-        clickable2 = UIView()
-        clickable2.backgroundColor = UIColor(red: 0.13, green: 0.18, blue: 0.24, alpha: 1.00)
-        clickable2.translatesAutoresizingMaskIntoConstraints = false
-        clickable2.addGestureRecognizer(gesture1)
-        clickable2.isUserInteractionEnabled = true
-        
         view.addSubview(bgSolid)
         view.addSubview(scrollView)
         scrollView.addSubview(imagePH)
         imagePH.addSubview(clickable1)
-        imagePH.addSubview(clickable2)
         imagePH.addSubview(centerScroll)
         view.addSubview(centerCommon)
         
@@ -112,13 +107,8 @@ class ViewController: UIViewController {
             
             clickable1.widthAnchor.constraint(equalToConstant: CGFloat(clickAreaDiam)),
             clickable1.heightAnchor.constraint(equalToConstant: CGFloat(clickAreaDiam)),
-            clickable1.leadingAnchor.constraint(equalTo: imagePH.leadingAnchor, constant: imageViewSize.width * 0.5 - CGFloat(clickAreaDiam / 2)),
-            clickable1.topAnchor.constraint(equalTo: imagePH.topAnchor, constant: imageViewSize.height * 0.5 - CGFloat(clickAreaDiam / 2)),
-            
-            clickable2.widthAnchor.constraint(equalToConstant: CGFloat(clickAreaDiam)),
-            clickable2.heightAnchor.constraint(equalToConstant: CGFloat(clickAreaDiam)),
-            clickable2.leadingAnchor.constraint(equalTo: imagePH.leadingAnchor, constant: imageViewSize.width * 0.4 - CGFloat(clickAreaDiam / 2)),
-            clickable2.topAnchor.constraint(equalTo: imagePH.topAnchor, constant: imageViewSize.height * 0.7 - CGFloat(clickAreaDiam / 2)),
+            clickable1.leadingAnchor.constraint(equalTo: imagePH.leadingAnchor, constant: imageViewSize.width * 0.3 - CGFloat(clickAreaDiam / 2)),
+            clickable1.topAnchor.constraint(equalTo: imagePH.topAnchor, constant: imageViewSize.height * 0.3 - CGFloat(clickAreaDiam / 2)),
         ])
     }
     
