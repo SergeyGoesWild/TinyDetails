@@ -7,9 +7,22 @@
 
 import UIKit
 
+struct ClickableArea {
+    let id: Int
+    let size: CGFloat
+    let xPercent: CGFloat
+    let yPercent: CGFloat
+}
+
+protocol ClickableAreaDelegate {
+    func didReceiveClick(area: ClickableAreaView)
+}
+
 class ViewController: UIViewController {
-    let areaList = [ClickableArea(id: 0), ClickableArea(id: 1), ClickableArea(id: 2), ClickableArea(id: 3), ClickableArea(id: 4)]
-    let clickAreaDiam = 100
+    let areaList = [ClickableArea(id: 1, size: 80, xPercent: 0.2, yPercent: 0.4),
+                    ClickableArea(id: 2, size: 80, xPercent: 0.7, yPercent: 0.1),
+                    ClickableArea(id: 3, size: 80, xPercent: 0.6, yPercent: 0.8),
+                    ClickableArea(id: 4, size: 80, xPercent: 0.3, yPercent: 0.6)]
     
     var bgSolid: UIView!
     var imagePH: UIImageView!
@@ -49,17 +62,9 @@ class ViewController: UIViewController {
         centerScroll.backgroundColor = .white
         centerScroll.translatesAutoresizingMaskIntoConstraints = false
         
-        clickable1 = UIView()
-        clickable1.backgroundColor = UIColor(red: 0.13, green: 0.18, blue: 0.24, alpha: 1.00)
-        clickable1.translatesAutoresizingMaskIntoConstraints = false
-        let gesture1 = UITapGestureRecognizer(target: self, action: #selector(onClick))
-        clickable1.addGestureRecognizer(gesture1)
-        clickable1.isUserInteractionEnabled = true
-        
         view.addSubview(bgSolid)
         view.addSubview(scrollView)
         scrollView.addSubview(imagePH)
-        imagePH.addSubview(clickable1)
         imagePH.addSubview(centerScroll)
         view.addSubview(centerCommon)
         
@@ -94,7 +99,6 @@ class ViewController: UIViewController {
         scrollView.setContentOffset(CGPoint(x: centerX, y: centerY), animated: false)
         
         NSLayoutConstraint.activate([
-            
             imagePH.widthAnchor.constraint(equalToConstant: imageViewSize.width),
             imagePH.heightAnchor.constraint(equalToConstant: imageViewSize.height),
             imagePH.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
@@ -104,16 +108,20 @@ class ViewController: UIViewController {
             centerScroll.heightAnchor.constraint(equalToConstant: 40),
             centerScroll.centerXAnchor.constraint(equalTo: imagePH.centerXAnchor),
             centerScroll.centerYAnchor.constraint(equalTo: imagePH.centerYAnchor),
-            
-            clickable1.widthAnchor.constraint(equalToConstant: CGFloat(clickAreaDiam)),
-            clickable1.heightAnchor.constraint(equalToConstant: CGFloat(clickAreaDiam)),
-            clickable1.leadingAnchor.constraint(equalTo: imagePH.leadingAnchor, constant: imageViewSize.width * 0.3 - CGFloat(clickAreaDiam / 2)),
-            clickable1.topAnchor.constraint(equalTo: imagePH.topAnchor, constant: imageViewSize.height * 0.3 - CGFloat(clickAreaDiam / 2)),
         ])
-    }
-    
-    @objc func onClick() {
-        print("CLICKED!")
+        
+        for areaData in areaList {
+            let area = ClickableAreaView(id: areaData.id)
+            area.delegate = self
+            area.translatesAutoresizingMaskIntoConstraints = false
+            imagePH.addSubview(area)
+            NSLayoutConstraint.activate([
+                area.widthAnchor.constraint(equalToConstant: areaData.size),
+                area.heightAnchor.constraint(equalToConstant: areaData.size),
+                area.leadingAnchor.constraint(equalTo: imagePH.leadingAnchor, constant: imageViewSize.width * areaData.xPercent - CGFloat(areaData.size / 2)),
+                area.topAnchor.constraint(equalTo: imagePH.topAnchor, constant: imageViewSize.height * areaData.yPercent - CGFloat(areaData.size / 2))
+            ])
+        }
     }
     
     func getImageSize(image: UIImage, scrollView: UIScrollView) -> CGSize {
@@ -123,6 +131,12 @@ class ViewController: UIViewController {
         let height = scrollView.frame.height
         let width = image.size.width / multiplier
         return CGSize(width: width, height: height)
+    }
+}
+
+extension ViewController: ClickableAreaDelegate {
+    func didReceiveClick(area: ClickableAreaView) {
+        print("Did click on zone: ", area.areaID ?? "111")
     }
 }
 
