@@ -26,13 +26,15 @@ protocol ClickableAreaDelegate {
 
 class ViewController: UIViewController {
     let paintingList =
-    [PaintingObject(idPainting: 1, paintingTitle: "Ducks", areas:
-                        [ClickableArea(idArea: 1, size: 80, xPercent: 0.2, yPercent: 0.4),
-                         ClickableArea(idArea: 2, size: 80, xPercent: 0.7, yPercent: 0.1)]),
+    [PaintingObject(idPainting: 1, paintingTitle: "TheCoronationOfNapoleon", areas:
+                        [ClickableArea(idArea: 1, size: 30, xPercent: 0.2, yPercent: 0.4),
+                         ClickableArea(idArea: 2, size: 30, xPercent: 0.7, yPercent: 0.1)]),
      PaintingObject(idPainting: 2, paintingTitle: "Geese", areas:
-                        [ClickableArea(idArea: 3, size: 80, xPercent: 0.6, yPercent: 0.8),
-                         ClickableArea(idArea: 4, size: 80, xPercent: 0.3, yPercent: 0.6)]),
+                        [ClickableArea(idArea: 3, size: 30, xPercent: 0.6, yPercent: 0.8),
+                         ClickableArea(idArea: 4, size: 30, xPercent: 0.3, yPercent: 0.6)]),
     ]
+    let sideMargin: CGFloat = 16
+    let collectionInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     
     var currentLevel: Int = 0
     var widthConstraintImagePH: NSLayoutConstraint!
@@ -107,11 +109,8 @@ class ViewController: UIViewController {
         
         let collectionLayout = UICollectionViewFlowLayout()
         collectionLayout.scrollDirection = .horizontal
-        collectionLayout.minimumLineSpacing = 10
-        collectionLayout.minimumInteritemSpacing = 10
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionLayout)
-        collectionView.backgroundColor = .gray
         collectionView.showsHorizontalScrollIndicator = true
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
@@ -128,6 +127,7 @@ class ViewController: UIViewController {
         view.addSubview(centerCommon)
         view.addSubview(button)
         view.addSubview(bottomView)
+        bottomView.addSubview(collectionView)
         scrollView.addSubview(imagePH)
         imagePH.addSubview(centerScroll)
         
@@ -141,6 +141,11 @@ class ViewController: UIViewController {
             bottomView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             bottomView.widthAnchor.constraint(equalTo: view.widthAnchor),
             bottomView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, constant: -600),
+            
+            collectionView.heightAnchor.constraint(equalTo: bottomView.heightAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: bottomView.topAnchor),
             
             scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
             scrollView.heightAnchor.constraint(equalToConstant: 600),
@@ -223,23 +228,47 @@ extension ViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return 6
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        <#code#>
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
+        cell.backgroundColor = .systemBlue
+        cell.layer.cornerRadius = 8
+        return cell
     }
 }
 
 extension ViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("Tapped cell at section \(indexPath.section), item \(indexPath.item)")
+    }
+}
+
+extension ViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 100, height: 100)
+        let sideSize = collectionView.bounds.height - collectionInsets.top - collectionInsets.bottom
+        return CGSize(width: sideSize, height: sideSize)
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("Tapped cell at section \(indexPath.section), item \(indexPath.item)")
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
+        return collectionInsets
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 12
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 8
     }
 }
 
