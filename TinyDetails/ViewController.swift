@@ -12,7 +12,9 @@ protocol ClickableAreaDelegate {
 }
 
 class ViewController: UIViewController {
-    let paintingList = DataProvider.shared.paintingList
+    static let paintingList = DataProvider.shared.paintingList
+    
+    var imageViewSize: CGSize!
     
     let sideMargin: CGFloat = 16
     let collectionInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
@@ -94,7 +96,7 @@ class ViewController: UIViewController {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionLayout)
         collectionView.showsHorizontalScrollIndicator = true
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
+        collectionView.register(ClickableAreaCell.self, forCellWithReuseIdentifier: "ClickableAreaCell")
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -153,15 +155,28 @@ class ViewController: UIViewController {
         ])
     }
     
+    private func setupClickableArea(areaData: ClickableArea) {
+        let area = ClickableAreaView(id: areaData.idArea)
+        area.delegate = self
+        area.translatesAutoresizingMaskIntoConstraints = false
+        imagePH.addSubview(area)
+        NSLayoutConstraint.activate([
+            area.widthAnchor.constraint(equalToConstant: areaData.size),
+            area.heightAnchor.constraint(equalToConstant: areaData.size),
+            area.leadingAnchor.constraint(equalTo: imagePH.leadingAnchor, constant: imageViewSize.width * areaData.xPercent - CGFloat(areaData.size / 2)),
+            area.topAnchor.constraint(equalTo: imagePH.topAnchor, constant: imageViewSize.height * areaData.yPercent - CGFloat(areaData.size / 2))
+        ])
+    }
+    
     private func setupPictureLayout(currentLevel: Int) {
         for area in imagePH.subviews.compactMap({ $0 as? ClickableAreaView }) {
             area.removeFromSuperview()
         }
         
-        image = UIImage(named: paintingList[currentLevel].paintingTitle)
+        image = UIImage(named: ViewController.paintingList[currentLevel].paintingFile)
         imagePH.image = image
         
-        let imageViewSize = getImageSize(image: image, scrollView: scrollView)
+        imageViewSize = getImageSize(image: image, scrollView: scrollView)
         
         if scrollView.contentSize != CGSize(width: imageViewSize.width, height: imageViewSize.height) {
             scrollView.contentSize = CGSize(width: imageViewSize.width, height: imageViewSize.height)
@@ -173,19 +188,6 @@ class ViewController: UIViewController {
         
         widthConstraintImagePH.constant = imageViewSize.width
         heightConstraintImagePH.constant = imageViewSize.height
-        
-        for areaData in paintingList[currentLevel].areas {
-            let area = ClickableAreaView(id: areaData.idArea)
-            area.delegate = self
-            area.translatesAutoresizingMaskIntoConstraints = false
-            imagePH.addSubview(area)
-            NSLayoutConstraint.activate([
-                area.widthAnchor.constraint(equalToConstant: areaData.size),
-                area.heightAnchor.constraint(equalToConstant: areaData.size),
-                area.leadingAnchor.constraint(equalTo: imagePH.leadingAnchor, constant: imageViewSize.width * areaData.xPercent - CGFloat(areaData.size / 2)),
-                area.topAnchor.constraint(equalTo: imagePH.topAnchor, constant: imageViewSize.height * areaData.yPercent - CGFloat(areaData.size / 2))
-            ])
-        }
         
         view.layoutIfNeeded()
     }
@@ -209,20 +211,23 @@ extension ViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 6
+        return ViewController.paintingList[currentLevel].areas.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
-        cell.backgroundColor = .systemBlue
-        cell.layer.cornerRadius = 8
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ClickableAreaCell", for: indexPath) as! ClickableAreaCell
+        let dataItem = ViewController.paintingList[currentLevel].areas[indexPath.item]
+        cell.configureCell(cellID: dataItem.idArea, hintText: dataItem.hintText)
+        
+        setupClickableArea(areaData: dataItem)
+        
         return cell
     }
 }
 
 extension ViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("Tapped cell at section \(indexPath.section), item \(indexPath.item)")
+        print(ViewController.paintingList[currentLevel].areas[indexPath.item].hintText)
     }
 }
 
