@@ -26,10 +26,10 @@ protocol ClickableAreaDelegate {
 
 class ViewController: UIViewController {
     let paintingList =
-    [PaintingObject(idPainting: 1, paintingTitle: "TheCoronationOfNapoleon", areas:
+    [PaintingObject(idPainting: 1, paintingTitle: "Wave", areas:
                         [ClickableArea(idArea: 1, size: 30, xPercent: 0.2, yPercent: 0.4),
                          ClickableArea(idArea: 2, size: 30, xPercent: 0.7, yPercent: 0.1)]),
-     PaintingObject(idPainting: 2, paintingTitle: "Geese", areas:
+     PaintingObject(idPainting: 2, paintingTitle: "Klimt", areas:
                         [ClickableArea(idArea: 3, size: 30, xPercent: 0.6, yPercent: 0.8),
                          ClickableArea(idArea: 4, size: 30, xPercent: 0.3, yPercent: 0.6)]),
     ]
@@ -42,94 +42,50 @@ class ViewController: UIViewController {
     
     var bgSolid: UIView!
     var imagePH: UIImageView!
-    var centerCommon: UIView!
-    var centerScroll: UIView!
-    var scrollView: UIScrollView!
     var image: UIImage!
-    var button: UIButton!
-    var bottomView: UIView!
-    var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupNormalLayout()
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        setupPictureLayout(currentLevel: currentLevel)
-    }
-    
-    private func getImageSize(image: UIImage, scrollView: UIScrollView) -> CGSize {
-        guard scrollView.frame.height > 0 else { return image.size }
-        
-        let multiplier = image.size.height / scrollView.frame.height
-        let height = scrollView.frame.height
-        let width = image.size.width / multiplier
+    private func getImageSize(image: UIImage) -> CGSize {
+        let multiplier = image.size.width / view.frame.width
+        let height = image.size.height / multiplier
+        let width = view.frame.width
         return CGSize(width: width, height: height)
     }
     
-    @objc private func changeLevel() {
-        currentLevel += 1
-        setupPictureLayout(currentLevel: currentLevel)
+    @objc func handleTap(_ gesture: UITapGestureRecognizer) {
+        let pointInView = gesture.location(in: self.view)
+        let divider = view.frame.height / imagePH.frame.height
+        var percentX = pointInView.x * 100 / view.frame.width
+        percentX = (percentX * 100).rounded() / 100
+        var percentY = (pointInView.y - imagePH.frame.minY) * 100 / imagePH.frame.height
+        percentY = (percentY * 100).rounded() / 100
+        print("\(percentX) - \(percentY)")
     }
     
     private func setupNormalLayout() {
-        bottomView = UIView()
-        bottomView.backgroundColor = .white
-        bottomView.translatesAutoresizingMaskIntoConstraints = false
         
         bgSolid = UIView()
-        bgSolid.backgroundColor = UIColor(red: 0.18, green: 0.53, blue: 0.87, alpha: 1.00)
+        bgSolid.backgroundColor = .orange
         bgSolid.translatesAutoresizingMaskIntoConstraints = false
         
-        scrollView = UIScrollView()
-        scrollView.delegate = self
-        scrollView.minimumZoomScale = 1.0
-        scrollView.maximumZoomScale = 4.0
-        scrollView.showsVerticalScrollIndicator = true
-        scrollView.showsHorizontalScrollIndicator = true
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        
-        centerCommon = UIView()
-        centerCommon.backgroundColor = .black
-        centerCommon.translatesAutoresizingMaskIntoConstraints = false
-        
-        centerScroll = UIView()
-        centerScroll.backgroundColor = .white
-        centerScroll.translatesAutoresizingMaskIntoConstraints = false
+        image = UIImage(named: paintingList[0].paintingTitle)
         
         imagePH = UIImageView()
         imagePH.translatesAutoresizingMaskIntoConstraints = false
         imagePH.isUserInteractionEnabled = true
-        widthConstraintImagePH = imagePH.widthAnchor.constraint(equalToConstant: 0)
-        heightConstraintImagePH = imagePH.heightAnchor.constraint(equalToConstant: 0)
+        imagePH.image = image
         
-        let collectionLayout = UICollectionViewFlowLayout()
-        collectionLayout.scrollDirection = .horizontal
+        let imageSize = getImageSize(image: image)
         
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionLayout)
-        collectionView.showsHorizontalScrollIndicator = true
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
-        collectionView.dataSource = self
-        collectionView.delegate = self
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         
-        button = UIButton(type: .system)
-        button.setTitle("CLICK", for: .normal)
-        button.addTarget(self, action: #selector(changeLevel), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
+        view.addGestureRecognizer(tapGesture)
         view.addSubview(bgSolid)
-        view.addSubview(scrollView)
-        view.addSubview(centerCommon)
-        view.addSubview(button)
-        view.addSubview(bottomView)
-        bottomView.addSubview(collectionView)
-        scrollView.addSubview(imagePH)
-        imagePH.addSubview(centerScroll)
+        view.addSubview(imagePH)
         
         NSLayoutConstraint.activate([
             bgSolid.widthAnchor.constraint(equalTo: view.widthAnchor),
@@ -137,138 +93,11 @@ class ViewController: UIViewController {
             bgSolid.topAnchor.constraint(equalTo: view.topAnchor),
             bgSolid.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
-            bottomView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            bottomView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            bottomView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            bottomView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, constant: -600),
-            
-            collectionView.heightAnchor.constraint(equalTo: bottomView.heightAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: bottomView.topAnchor),
-            
-            scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            scrollView.heightAnchor.constraint(equalToConstant: 600),
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            
-            widthConstraintImagePH,
-            heightConstraintImagePH,
-            imagePH.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            imagePH.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            
-            centerScroll.widthAnchor.constraint(equalToConstant: 40),
-            centerScroll.heightAnchor.constraint(equalToConstant: 40),
-            centerScroll.centerXAnchor.constraint(equalTo: imagePH.centerXAnchor),
-            centerScroll.centerYAnchor.constraint(equalTo: imagePH.centerYAnchor),
-            
-            centerCommon.widthAnchor.constraint(equalToConstant: 25),
-            centerCommon.heightAnchor.constraint(equalToConstant: 25),
-            centerCommon.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
-            centerCommon.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor),
-            
-            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            imagePH.widthAnchor.constraint(equalToConstant: imageSize.width),
+            imagePH.heightAnchor.constraint(equalToConstant: imageSize.height),
+            imagePH.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imagePH.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
-    }
-    
-    private func setupPictureLayout(currentLevel: Int) {
-        for area in imagePH.subviews.compactMap({ $0 as? ClickableAreaView }) {
-            area.removeFromSuperview()
-        }
-        
-        image = UIImage(named: paintingList[currentLevel].paintingTitle)
-        imagePH.image = image
-        
-        let imageViewSize = getImageSize(image: image, scrollView: scrollView)
-        
-        if scrollView.contentSize != CGSize(width: imageViewSize.width, height: imageViewSize.height) {
-            scrollView.contentSize = CGSize(width: imageViewSize.width, height: imageViewSize.height)
-        }
-        
-        let centerX = (scrollView.contentSize.width - scrollView.bounds.width) / 2
-        let centerY = (scrollView.contentSize.height - scrollView.bounds.height) / 2
-        scrollView.setContentOffset(CGPoint(x: centerX, y: centerY), animated: false)
-        
-        widthConstraintImagePH.constant = imageViewSize.width
-        heightConstraintImagePH.constant = imageViewSize.height
-        
-        for areaData in paintingList[currentLevel].areas {
-            let area = ClickableAreaView(id: areaData.idArea)
-            area.delegate = self
-            area.translatesAutoresizingMaskIntoConstraints = false
-            imagePH.addSubview(area)
-            NSLayoutConstraint.activate([
-                area.widthAnchor.constraint(equalToConstant: areaData.size),
-                area.heightAnchor.constraint(equalToConstant: areaData.size),
-                area.leadingAnchor.constraint(equalTo: imagePH.leadingAnchor, constant: imageViewSize.width * areaData.xPercent - CGFloat(areaData.size / 2)),
-                area.topAnchor.constraint(equalTo: imagePH.topAnchor, constant: imageViewSize.height * areaData.yPercent - CGFloat(areaData.size / 2))
-            ])
-        }
-        
-        view.layoutIfNeeded()
-    }
-}
-
-extension ViewController: ClickableAreaDelegate {
-    func didReceiveClick(area: ClickableAreaView) {
-        print("Did click on zone: ", area.areaID ?? "111")
-    }
-}
-
-extension ViewController: UIScrollViewDelegate {
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return imagePH
-    }
-}
-
-extension ViewController: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 6
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
-        cell.backgroundColor = .systemBlue
-        cell.layer.cornerRadius = 8
-        return cell
-    }
-}
-
-extension ViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("Tapped cell at section \(indexPath.section), item \(indexPath.item)")
-    }
-}
-
-extension ViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let sideSize = collectionView.bounds.height - collectionInsets.top - collectionInsets.bottom
-        return CGSize(width: sideSize, height: sideSize)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        insetForSectionAt section: Int) -> UIEdgeInsets {
-        return collectionInsets
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 12
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 8
     }
 }
 
