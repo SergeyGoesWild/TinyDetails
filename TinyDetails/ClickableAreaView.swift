@@ -10,10 +10,10 @@ import UIKit
 
 final class ClickableAreaView: UIView {
     
-    let areaID: Int!
+    let areaID: UUID!
     var delegate: ClickableAreaDelegate?
     
-    init(id: Int) {
+    init(id: UUID) {
         self.areaID = id
         super.init(frame: .zero)
         setupView()

@@ -7,32 +7,13 @@
 
 import UIKit
 
-struct PaintingObject {
-    let idPainting: Int
-    let paintingTitle: String
-    let areas: [ClickableArea]
-}
-
-struct ClickableArea {
-    let idArea: Int
-    let size: CGFloat
-    let xPercent: CGFloat
-    let yPercent: CGFloat
-}
-
 protocol ClickableAreaDelegate {
     func didReceiveClick(area: ClickableAreaView)
 }
 
 class ViewController: UIViewController {
-    let paintingList =
-    [PaintingObject(idPainting: 1, paintingTitle: "TheCoronationOfNapoleon", areas:
-                        [ClickableArea(idArea: 1, size: 30, xPercent: 0.2, yPercent: 0.4),
-                         ClickableArea(idArea: 2, size: 30, xPercent: 0.7, yPercent: 0.1)]),
-     PaintingObject(idPainting: 2, paintingTitle: "Geese", areas:
-                        [ClickableArea(idArea: 3, size: 30, xPercent: 0.6, yPercent: 0.8),
-                         ClickableArea(idArea: 4, size: 30, xPercent: 0.3, yPercent: 0.6)]),
-    ]
+    let paintingList = DataProvider.shared.paintingList
+    
     let sideMargin: CGFloat = 16
     let collectionInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     

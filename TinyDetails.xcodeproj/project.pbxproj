@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A1CCFEF2DA3DA9D008B4D21 /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A1CCFEE2DA3DA9D008B4D21 /* DataProvider.swift */; };
 		2A5434572D8A23C500AC9FAD /* ClickableAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A5434562D8A23C500AC9FAD /* ClickableAreaView.swift */; };
 		2AC06B112D872950005F3189 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC06B102D872950005F3189 /* AppDelegate.swift */; };
 		2AC06B132D872950005F3189 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC06B122D872950005F3189 /* SceneDelegate.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2A1CCFEE2DA3DA9D008B4D21 /* DataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProvider.swift; sourceTree = "<group>"; };
 		2A5434562D8A23C500AC9FAD /* ClickableAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickableAreaView.swift; sourceTree = "<group>"; };
 		2AC06B0D2D872950005F3189 /* TinyDetails.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TinyDetails.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2AC06B102D872950005F3189 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 				2AC06B102D872950005F3189 /* AppDelegate.swift */,
 				2AC06B122D872950005F3189 /* SceneDelegate.swift */,
 				2AC06B142D872950005F3189 /* ViewController.swift */,
+				2A1CCFEE2DA3DA9D008B4D21 /* DataProvider.swift */,
 				2A5434562D8A23C500AC9FAD /* ClickableAreaView.swift */,
 				2AC06B162D872950005F3189 /* Main.storyboard */,
 				2AC06B192D872952005F3189 /* Assets.xcassets */,
@@ -143,6 +146,7 @@
 			files = (
 				2AC06B152D872950005F3189 /* ViewController.swift in Sources */,
 				2A5434572D8A23C500AC9FAD /* ClickableAreaView.swift in Sources */,
+				2A1CCFEF2DA3DA9D008B4D21 /* DataProvider.swift in Sources */,
 				2AC06B112D872950005F3189 /* AppDelegate.swift in Sources */,
 				2AC06B132D872950005F3189 /* SceneDelegate.swift in Sources */,
 			);
