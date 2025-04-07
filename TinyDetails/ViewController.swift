@@ -156,6 +156,7 @@ class ViewController: UIViewController {
     }
     
     private func setupClickableArea(areaData: ClickableArea) {
+        print("XXX")
         let area = ClickableAreaView(id: areaData.idArea)
         area.delegate = self
         area.translatesAutoresizingMaskIntoConstraints = false
@@ -163,15 +164,16 @@ class ViewController: UIViewController {
         NSLayoutConstraint.activate([
             area.widthAnchor.constraint(equalToConstant: areaData.size),
             area.heightAnchor.constraint(equalToConstant: areaData.size),
-            area.leadingAnchor.constraint(equalTo: imagePH.leadingAnchor, constant: imageViewSize.width * areaData.xPercent - CGFloat(areaData.size / 2)),
-            area.topAnchor.constraint(equalTo: imagePH.topAnchor, constant: imageViewSize.height * areaData.yPercent - CGFloat(areaData.size / 2))
+            area.leadingAnchor.constraint(equalTo: imagePH.leadingAnchor, constant: imageViewSize.width * (areaData.xPercent / 100) - CGFloat(areaData.size / 2)),
+            area.topAnchor.constraint(equalTo: imagePH.topAnchor, constant: imageViewSize.height * (areaData.yPercent / 100) - CGFloat(areaData.size / 2)),
         ])
+        imagePH.bringSubviewToFront(area)
     }
     
     private func setupPictureLayout(currentLevel: Int) {
-        for area in imagePH.subviews.compactMap({ $0 as? ClickableAreaView }) {
-            area.removeFromSuperview()
-        }
+//        for area in imagePH.subviews.compactMap({ $0 as? ClickableAreaView }) {
+//            area.removeFromSuperview()
+//        }
         
         image = UIImage(named: ViewController.paintingList[currentLevel].paintingFile)
         imagePH.image = image
