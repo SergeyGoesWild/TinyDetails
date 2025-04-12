@@ -17,7 +17,7 @@ final class ClickableAreaCell: UICollectionViewCell {
     let iconImageGuessed = UIImage(named: "CheckIcon")
     let iconImageNotGuessed = UIImage(named: "QuestionIcon")
     
-    let didGuessRight: Bool = false
+    var wasClicked: Bool!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,8 +28,15 @@ final class ClickableAreaCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        backgroundColor = .lightGray
+        iconImageView.image = iconImageNotGuessed
+        isUserInteractionEnabled = true
+    }
+    
     private func setupView() {
-        self.backgroundColor = .blue
+        self.backgroundColor = .lightGray
         self.layer.cornerRadius = 8
         self.isUserInteractionEnabled = true
         iconImageView = UIImageView(image: iconImageNotGuessed)
@@ -44,14 +51,22 @@ final class ClickableAreaCell: UICollectionViewCell {
         ])
     }
     
-    func configureCell(cellID: UUID, hintText: String) {
+    func configureCell(cellID: UUID, hintText: String, wasClicked: Bool) {
         self.cellID = cellID
         self.hintText = hintText
+        self.wasClicked = wasClicked
+        changeCellState(wasClicked: wasClicked)
     }
     
-    func changeCellState() {
-        self.backgroundColor = .green
-        iconImageView.image = iconImageGuessed
-        self.isUserInteractionEnabled = false
+    func changeCellState(wasClicked: Bool) {
+        if wasClicked {
+            self.backgroundColor = .green
+            iconImageView.image = iconImageGuessed
+            self.isUserInteractionEnabled = false
+        } else {
+            self.backgroundColor = .lightGray
+            iconImageView.image = iconImageNotGuessed
+            self.isUserInteractionEnabled = true
+        }
     }
 }

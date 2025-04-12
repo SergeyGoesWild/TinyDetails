@@ -13,13 +13,15 @@ protocol ClickableAreaDelegate {
 
 class ViewController: UIViewController {
     static let paintingList = DataProvider.shared.paintingList
+    var resultModel: [ResultObject] = []
     
     var imageViewSize: CGSize!
+    var redrawing: Bool = true
     
     let sideMargin: CGFloat = 16
     let collectionInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     
-    var currentLevel: Int = 0
+    var currentLevel: Int = 3
     var widthConstraintImagePH: NSLayoutConstraint!
     var heightConstraintImagePH: NSLayoutConstraint!
     
@@ -32,17 +34,23 @@ class ViewController: UIViewController {
     var button: UIButton!
     var bottomView: UIView!
     var collectionView: UICollectionView!
+    var hintView: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setupResultModel()
         setupNormalLayout()
+        print(resultModel)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
-        setupPictureLayout(currentLevel: currentLevel)
+        print("REDRAWING")
+        if redrawing {
+            setupPictureLayout(currentLevel: currentLevel)
+            setupClickableAreas()
+        }
+        redrawing = false
     }
     
     private func getImageSize(image: UIImage, scrollView: UIScrollView) -> CGSize {
@@ -59,21 +67,38 @@ class ViewController: UIViewController {
         setupPictureLayout(currentLevel: currentLevel)
     }
     
+    private func setupResultModel() {
+        for area in ViewController.paintingList[currentLevel].areas {
+            let newObject = ResultObject(id: area.idArea, title: area.hintText, wasClicked: false)
+            resultModel.append(newObject)
+        }
+    }
+    
     private func setupNormalLayout() {
         bottomView = UIView()
-        bottomView.backgroundColor = .white
+        bottomView.backgroundColor = UIColor(red: 0.18, green: 0.53, blue: 0.87, alpha: 1.00)
         bottomView.translatesAutoresizingMaskIntoConstraints = false
         
         bgSolid = UIView()
         bgSolid.backgroundColor = UIColor(red: 0.18, green: 0.53, blue: 0.87, alpha: 1.00)
         bgSolid.translatesAutoresizingMaskIntoConstraints = false
         
+        hintView = UILabel()
+        hintView.text = ""
+        hintView.isHidden = false
+        hintView.translatesAutoresizingMaskIntoConstraints = false
+        hintView.textAlignment = .center
+        hintView.textColor = .black
+        hintView.font = UIFont.systemFont(ofSize: 30, weight: .medium)
+        hintView.numberOfLines = 0
+        hintView.lineBreakMode = .byWordWrapping
+        
         scrollView = UIScrollView()
         scrollView.delegate = self
         scrollView.minimumZoomScale = 1.0
         scrollView.maximumZoomScale = 4.0
-        scrollView.showsVerticalScrollIndicator = true
-        scrollView.showsHorizontalScrollIndicator = true
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         
         centerCommon = UIView()
@@ -96,6 +121,7 @@ class ViewController: UIViewController {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionLayout)
         collectionView.showsHorizontalScrollIndicator = true
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = UIColor(red: 0.18, green: 0.53, blue: 0.87, alpha: 1.00)
         collectionView.register(ClickableAreaCell.self, forCellWithReuseIdentifier: "ClickableAreaCell")
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -107,12 +133,13 @@ class ViewController: UIViewController {
         
         view.addSubview(bgSolid)
         view.addSubview(scrollView)
-        view.addSubview(centerCommon)
+//        view.addSubview(centerCommon)
         view.addSubview(button)
         view.addSubview(bottomView)
+        view.addSubview(hintView)
         bottomView.addSubview(collectionView)
         scrollView.addSubview(imagePH)
-        imagePH.addSubview(centerScroll)
+//        imagePH.addSubview(centerScroll)
         
         NSLayoutConstraint.activate([
             bgSolid.widthAnchor.constraint(equalTo: view.widthAnchor),
@@ -124,6 +151,10 @@ class ViewController: UIViewController {
             bottomView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             bottomView.widthAnchor.constraint(equalTo: view.widthAnchor),
             bottomView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, constant: -600),
+            
+            hintView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            hintView.bottomAnchor.constraint(equalTo: bottomView.topAnchor, constant: -20),
+            hintView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -32),
             
             collectionView.heightAnchor.constraint(equalTo: bottomView.heightAnchor),
             collectionView.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor),
@@ -140,15 +171,15 @@ class ViewController: UIViewController {
             imagePH.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
             imagePH.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             
-            centerScroll.widthAnchor.constraint(equalToConstant: 40),
-            centerScroll.heightAnchor.constraint(equalToConstant: 40),
-            centerScroll.centerXAnchor.constraint(equalTo: imagePH.centerXAnchor),
-            centerScroll.centerYAnchor.constraint(equalTo: imagePH.centerYAnchor),
+//            centerScroll.widthAnchor.constraint(equalToConstant: 40),
+//            centerScroll.heightAnchor.constraint(equalToConstant: 40),
+//            centerScroll.centerXAnchor.constraint(equalTo: imagePH.centerXAnchor),
+//            centerScroll.centerYAnchor.constraint(equalTo: imagePH.centerYAnchor),
             
-            centerCommon.widthAnchor.constraint(equalToConstant: 25),
-            centerCommon.heightAnchor.constraint(equalToConstant: 25),
-            centerCommon.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
-            centerCommon.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor),
+//            centerCommon.widthAnchor.constraint(equalToConstant: 25),
+//            centerCommon.heightAnchor.constraint(equalToConstant: 25),
+//            centerCommon.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+//            centerCommon.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor),
             
             button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
@@ -156,7 +187,6 @@ class ViewController: UIViewController {
     }
     
     private func setupClickableArea(areaData: ClickableArea) {
-        print("XXX")
         let area = ClickableAreaView(id: areaData.idArea)
         area.delegate = self
         area.translatesAutoresizingMaskIntoConstraints = false
@@ -171,9 +201,9 @@ class ViewController: UIViewController {
     }
     
     private func setupPictureLayout(currentLevel: Int) {
-//        for area in imagePH.subviews.compactMap({ $0 as? ClickableAreaView }) {
-//            area.removeFromSuperview()
-//        }
+        for area in imagePH.subviews.compactMap({ $0 as? ClickableAreaView }) {
+            area.removeFromSuperview()
+        }
         
         image = UIImage(named: ViewController.paintingList[currentLevel].paintingFile)
         imagePH.image = image
@@ -191,13 +221,32 @@ class ViewController: UIViewController {
         widthConstraintImagePH.constant = imageViewSize.width
         heightConstraintImagePH.constant = imageViewSize.height
         
-        view.layoutIfNeeded()
+//        view.layoutIfNeeded()
+    }
+    
+    func findCellWithID(_ id: UUID) {
+        guard let index = ViewController.paintingList[currentLevel].areas.firstIndex(where: { $0.idArea == id }) else {
+            return
+        }
+        let indexPath = IndexPath(item: index, section: 0)
+        if let resultIndex = resultModel.firstIndex(where: {$0.id == id}) {
+            resultModel[resultIndex].wasClicked = true
+            collectionView.reloadItems(at: [indexPath])
+            print(resultModel)
+        }
+    }
+    
+    func setupClickableAreas() {
+        for areaItem in ViewController.paintingList[currentLevel].areas {
+            setupClickableArea(areaData: areaItem)
+        }
     }
 }
 
 extension ViewController: ClickableAreaDelegate {
     func didReceiveClick(area: ClickableAreaView) {
         print("Did click on zone: ", area.areaID ?? "111")
+        findCellWithID(area.areaID)
     }
 }
 
@@ -219,17 +268,17 @@ extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ClickableAreaCell", for: indexPath) as! ClickableAreaCell
         let dataItem = ViewController.paintingList[currentLevel].areas[indexPath.item]
-        cell.configureCell(cellID: dataItem.idArea, hintText: dataItem.hintText)
-        
-        setupClickableArea(areaData: dataItem)
-        
+        guard let resultItem = resultModel.first(where: {$0.id == dataItem.idArea}) else {
+            return cell
+        }
+        cell.configureCell(cellID: dataItem.idArea, hintText: dataItem.hintText, wasClicked: resultItem.wasClicked)
         return cell
     }
 }
 
 extension ViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(ViewController.paintingList[currentLevel].areas[indexPath.item].hintText)
+        hintView.text = ViewController.paintingList[currentLevel].areas[indexPath.item].hintText
     }
 }
 

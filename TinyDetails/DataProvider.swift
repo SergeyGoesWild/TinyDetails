@@ -25,6 +25,12 @@ struct ClickableArea {
     let hintText: String
 }
 
+struct ResultObject {
+    let id: UUID
+    let title: String
+    var wasClicked: Bool
+}
+
 final class DataProvider {
     
     static let shared = DataProvider()
