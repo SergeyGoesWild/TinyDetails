@@ -21,7 +21,7 @@ class ViewController: UIViewController {
     let sideMargin: CGFloat = 16
     let collectionInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     
-    var currentLevel: Int = 3
+    var currentLevel: Int = 0
     var widthConstraintImagePH: NSLayoutConstraint!
     var heightConstraintImagePH: NSLayoutConstraint!
     
@@ -31,7 +31,6 @@ class ViewController: UIViewController {
     var centerScroll: UIView!
     var scrollView: UIScrollView!
     var image: UIImage!
-    var button: UIButton!
     var bottomView: UIView!
     var collectionView: UICollectionView!
     var hintView: UILabel!
@@ -40,7 +39,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         setupResultModel()
         setupNormalLayout()
-        print(resultModel)
     }
     
     override func viewDidLayoutSubviews() {
@@ -62,9 +60,25 @@ class ViewController: UIViewController {
         return CGSize(width: width, height: height)
     }
     
+    private func checkLevelComplete() {
+        for item in resultModel {
+            if !item.wasClicked {
+                return
+            }
+        }
+        changeLevel()
+    }
+    
     @objc private func changeLevel() {
         currentLevel += 1
-        setupPictureLayout(currentLevel: currentLevel)
+        resultModel = []
+        setupResultModel()
+        // NOTE: TRASH, CHANGE THAT, THE ANIMATION PREVENTS CONTROL
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.setupPictureLayout(currentLevel: self.currentLevel)
+            self.setupClickableAreas()
+            self.collectionView.reloadData()
+        }
     }
     
     private func setupResultModel() {
@@ -126,15 +140,9 @@ class ViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         
-        button = UIButton(type: .system)
-        button.setTitle("CLICK", for: .normal)
-        button.addTarget(self, action: #selector(changeLevel), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
         view.addSubview(bgSolid)
         view.addSubview(scrollView)
 //        view.addSubview(centerCommon)
-        view.addSubview(button)
         view.addSubview(bottomView)
         view.addSubview(hintView)
         bottomView.addSubview(collectionView)
@@ -180,9 +188,6 @@ class ViewController: UIViewController {
 //            centerCommon.heightAnchor.constraint(equalToConstant: 25),
 //            centerCommon.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
 //            centerCommon.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor),
-            
-            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
     
@@ -232,7 +237,7 @@ class ViewController: UIViewController {
         if let resultIndex = resultModel.firstIndex(where: {$0.id == id}) {
             resultModel[resultIndex].wasClicked = true
             collectionView.reloadItems(at: [indexPath])
-            print(resultModel)
+            checkLevelComplete()
         }
     }
     
@@ -245,7 +250,7 @@ class ViewController: UIViewController {
 
 extension ViewController: ClickableAreaDelegate {
     func didReceiveClick(area: ClickableAreaView) {
-        print("Did click on zone: ", area.areaID ?? "111")
+//        print("Did click on zone: ", area.areaID ?? "111")
         findCellWithID(area.areaID)
     }
 }
@@ -271,6 +276,7 @@ extension ViewController: UICollectionViewDataSource {
         guard let resultItem = resultModel.first(where: {$0.id == dataItem.idArea}) else {
             return cell
         }
+        print(resultItem.wasClicked)
         cell.configureCell(cellID: dataItem.idArea, hintText: dataItem.hintText, wasClicked: resultItem.wasClicked)
         return cell
     }
