@@ -15,6 +15,8 @@ class ViewController: UIViewController {
     static let paintingList = DataProvider.shared.paintingList
     var resultModel: [ResultObject] = []
     
+    var hintTimer: Timer?
+    
     var imageViewSize: CGSize!
     var redrawing: Bool = true
     
@@ -33,7 +35,8 @@ class ViewController: UIViewController {
     var image: UIImage!
     var bottomView: UIView!
     var collectionView: UICollectionView!
-    var hintView: UILabel!
+    var hintView: UIView!
+    var hintLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -97,15 +100,24 @@ class ViewController: UIViewController {
         bgSolid.backgroundColor = UIColor(red: 0.18, green: 0.53, blue: 0.87, alpha: 1.00)
         bgSolid.translatesAutoresizingMaskIntoConstraints = false
         
-        hintView = UILabel()
-        hintView.text = ""
-        hintView.isHidden = false
+        hintView = UIView()
         hintView.translatesAutoresizingMaskIntoConstraints = false
-        hintView.textAlignment = .center
-        hintView.textColor = .black
-        hintView.font = UIFont.systemFont(ofSize: 30, weight: .medium)
-        hintView.numberOfLines = 0
-        hintView.lineBreakMode = .byWordWrapping
+//        hintView.isHidden = true
+        hintView.alpha = 0
+        hintView.backgroundColor = .white
+        hintView.layer.cornerRadius = 5
+        hintView.clipsToBounds = true
+        hintView.layer.masksToBounds = true
+        hintView.frame = hintView.frame.integral
+        
+        hintLabel = UILabel()
+        hintLabel.text = ""
+        hintLabel.translatesAutoresizingMaskIntoConstraints = false
+        hintLabel.textAlignment = .center
+        hintLabel.textColor = .black
+        hintLabel.font = UIFont.systemFont(ofSize: 30, weight: .medium)
+        hintLabel.numberOfLines = 0
+        hintLabel.lineBreakMode = .byWordWrapping
         
         scrollView = UIScrollView()
         scrollView.delegate = self
@@ -145,6 +157,7 @@ class ViewController: UIViewController {
 //        view.addSubview(centerCommon)
         view.addSubview(bottomView)
         view.addSubview(hintView)
+        hintView.addSubview(hintLabel)
         bottomView.addSubview(collectionView)
         scrollView.addSubview(imagePH)
 //        imagePH.addSubview(centerScroll)
@@ -163,6 +176,11 @@ class ViewController: UIViewController {
             hintView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             hintView.bottomAnchor.constraint(equalTo: bottomView.topAnchor, constant: -20),
             hintView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -32),
+            
+            hintLabel.topAnchor.constraint(equalTo: hintView.topAnchor, constant: 8),
+            hintLabel.bottomAnchor.constraint(equalTo: hintView.bottomAnchor, constant: -8),
+            hintLabel.leadingAnchor.constraint(equalTo: hintView.leadingAnchor, constant: 8),
+            hintLabel.trailingAnchor.constraint(equalTo: hintView.trailingAnchor, constant: -8),
             
             collectionView.heightAnchor.constraint(equalTo: bottomView.heightAnchor),
             collectionView.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor),
@@ -284,7 +302,17 @@ extension ViewController: UICollectionViewDataSource {
 
 extension ViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        hintView.text = ViewController.paintingList[currentLevel].areas[indexPath.item].hintText
+        hintTimer?.invalidate()
+        hintView.isHidden = false
+        hintView.alpha = 1
+        hintLabel.text = ViewController.paintingList[currentLevel].areas[indexPath.item].hintText
+        hintTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
+            UIView.animate(withDuration: 0.3, animations:  {
+                self?.hintView.alpha = 0
+            }) { _ in
+                self?.hintView.isHidden = true
+            }
+        }
     }
 }
 
