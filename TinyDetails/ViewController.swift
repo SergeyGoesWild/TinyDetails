@@ -19,6 +19,7 @@ class ViewController: UIViewController {
     
     var imageViewSize: CGSize!
     var redrawing: Bool = true
+    var inTransition: Bool = false
     
     let sideMargin: CGFloat = 16
     let collectionInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
@@ -240,6 +241,7 @@ class ViewController: UIViewController {
     }
     
     private func closeHint() {
+        inTransition = true
         hintTimer?.invalidate()
             UIView.animate(withDuration: 0.3, animations:  {
                 self.hintView.alpha = 0
@@ -251,6 +253,7 @@ class ViewController: UIViewController {
                 self.hintLabel.isHidden = true
                 self.closeImage.isHidden = true
                 self.hintTouchField.isUserInteractionEnabled = false
+                self.inTransition = false
             }
     }
     
@@ -347,6 +350,7 @@ extension ViewController: UICollectionViewDataSource {
 
 extension ViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if inTransition { return }
         hintTimer?.invalidate()
         hintView.isHidden = false
         hintLabel.isHidden = false
