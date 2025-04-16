@@ -37,9 +37,12 @@ class ViewController: UIViewController {
     var collectionView: UICollectionView!
     var hintView: UIView!
     var hintLabel: UILabel!
+    var closeImage: UIImageView!
+    var hintTouchField: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("eeeeeeee")
         setupResultModel()
         setupNormalLayout()
     }
@@ -102,22 +105,35 @@ class ViewController: UIViewController {
         
         hintView = UIView()
         hintView.translatesAutoresizingMaskIntoConstraints = false
-//        hintView.isHidden = true
+        hintView.isHidden = true
         hintView.alpha = 0
-        hintView.backgroundColor = .white
-        hintView.layer.cornerRadius = 5
-        hintView.clipsToBounds = true
-        hintView.layer.masksToBounds = true
-        hintView.frame = hintView.frame.integral
+        hintView.backgroundColor = .black
         
         hintLabel = UILabel()
         hintLabel.text = ""
         hintLabel.translatesAutoresizingMaskIntoConstraints = false
         hintLabel.textAlignment = .center
-        hintLabel.textColor = .black
+        hintLabel.textColor = .white
         hintLabel.font = UIFont.systemFont(ofSize: 30, weight: .medium)
         hintLabel.numberOfLines = 0
         hintLabel.lineBreakMode = .byWordWrapping
+        hintLabel.isHidden = true
+        hintLabel.alpha = 0
+        
+        hintTouchField = UIView()
+        hintTouchField.isUserInteractionEnabled = false
+        hintTouchField.backgroundColor = .clear
+        hintTouchField.translatesAutoresizingMaskIntoConstraints = false
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapOnHint))
+        hintTouchField.addGestureRecognizer(tapGesture)
+        
+        let closeIcon = UIImage(systemName: "multiply.circle")
+        closeImage = UIImageView(image: closeIcon)
+        closeImage.translatesAutoresizingMaskIntoConstraints = false
+        closeImage.tintColor = .white
+        closeImage.preferredSymbolConfiguration = UIImage.SymbolConfiguration(pointSize: 72, weight: .thin)
+        closeImage.isHidden = true
+        closeImage.alpha = 0
         
         scrollView = UIScrollView()
         scrollView.delegate = self
@@ -157,7 +173,9 @@ class ViewController: UIViewController {
 //        view.addSubview(centerCommon)
         view.addSubview(bottomView)
         view.addSubview(hintView)
-        hintView.addSubview(hintLabel)
+        view.addSubview(hintLabel)
+        view.addSubview(closeImage)
+        view.addSubview(hintTouchField)
         bottomView.addSubview(collectionView)
         scrollView.addSubview(imagePH)
 //        imagePH.addSubview(centerScroll)
@@ -173,24 +191,31 @@ class ViewController: UIViewController {
             bottomView.widthAnchor.constraint(equalTo: view.widthAnchor),
             bottomView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, constant: -600),
             
-            hintView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            hintView.bottomAnchor.constraint(equalTo: bottomView.topAnchor, constant: -20),
-            hintView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -32),
+            scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            scrollView.heightAnchor.constraint(equalToConstant: 600),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
-            hintLabel.topAnchor.constraint(equalTo: hintView.topAnchor, constant: 8),
-            hintLabel.bottomAnchor.constraint(equalTo: hintView.bottomAnchor, constant: -8),
-            hintLabel.leadingAnchor.constraint(equalTo: hintView.leadingAnchor, constant: 8),
-            hintLabel.trailingAnchor.constraint(equalTo: hintView.trailingAnchor, constant: -8),
+            hintView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            hintView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            hintView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            hintView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            
+            hintLabel.centerXAnchor.constraint(equalTo: hintView.centerXAnchor),
+            hintLabel.centerYAnchor.constraint(equalTo: hintView.centerYAnchor),
+            
+            closeImage.centerXAnchor.constraint(equalTo: hintView.centerXAnchor),
+            closeImage.bottomAnchor.constraint(equalTo: hintView.bottomAnchor, constant: -20),
+            
+            hintTouchField.topAnchor.constraint(equalTo: hintView.topAnchor),
+            hintTouchField.bottomAnchor.constraint(equalTo: hintView.bottomAnchor),
+            hintTouchField.leadingAnchor.constraint(equalTo: hintView.leadingAnchor),
+            hintTouchField.trailingAnchor.constraint(equalTo: hintView.trailingAnchor),
             
             collectionView.heightAnchor.constraint(equalTo: bottomView.heightAnchor),
             collectionView.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: bottomView.topAnchor),
-            
-            scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            scrollView.heightAnchor.constraint(equalToConstant: 600),
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             widthConstraintImagePH,
             heightConstraintImagePH,
@@ -207,6 +232,26 @@ class ViewController: UIViewController {
 //            centerCommon.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
 //            centerCommon.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor),
         ])
+    }
+    
+    @objc private func handleTapOnHint() {
+        print("XXXXXXXXXXXXXXX")
+        closeHint()
+    }
+    
+    private func closeHint() {
+        hintTimer?.invalidate()
+            UIView.animate(withDuration: 0.3, animations:  {
+                self.hintView.alpha = 0
+                self.hintLabel.alpha = 0
+                self.closeImage.alpha = 0
+                
+            }) { _ in
+                self.hintView.isHidden = true
+                self.hintLabel.isHidden = true
+                self.closeImage.isHidden = true
+                self.hintTouchField.isUserInteractionEnabled = false
+            }
     }
     
     private func setupClickableArea(areaData: ClickableArea) {
@@ -304,14 +349,16 @@ extension ViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         hintTimer?.invalidate()
         hintView.isHidden = false
-        hintView.alpha = 1
+        hintLabel.isHidden = false
+        closeImage.isHidden = false
+        hintView.alpha = 0.8
+        hintLabel.alpha = 1
+        closeImage.alpha = 1
         hintLabel.text = ViewController.paintingList[currentLevel].areas[indexPath.item].hintText
-        hintTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
-            UIView.animate(withDuration: 0.3, animations:  {
-                self?.hintView.alpha = 0
-            }) { _ in
-                self?.hintView.isHidden = true
-            }
+        hintTouchField.isUserInteractionEnabled = true
+        
+        hintTimer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { [weak self] _ in
+            self?.closeHint()
         }
     }
 }
