@@ -24,7 +24,7 @@ class ViewController: UIViewController {
     let sideMargin: CGFloat = 16
     let collectionInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     
-    var currentLevel: Int = 0
+    var currentLevel: Int = 2
     var widthConstraintImagePH: NSLayoutConstraint!
     var heightConstraintImagePH: NSLayoutConstraint!
     
@@ -204,6 +204,7 @@ class ViewController: UIViewController {
             
             hintLabel.centerXAnchor.constraint(equalTo: hintView.centerXAnchor),
             hintLabel.centerYAnchor.constraint(equalTo: hintView.centerYAnchor),
+            hintLabel.widthAnchor.constraint(equalTo: hintView.widthAnchor),
             
             closeImage.centerXAnchor.constraint(equalTo: hintView.centerXAnchor),
             closeImage.bottomAnchor.constraint(equalTo: hintView.bottomAnchor, constant: -20),
