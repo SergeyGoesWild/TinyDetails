@@ -11,7 +11,7 @@ import UIKit
 final class ClickableAreaView: UIView {
     
     let areaID: UUID!
-    var delegate: ClickableAreaDelegate?
+    weak var delegate: ClickableAreaDelegate?
     
     init(id: UUID) {
         self.areaID = id

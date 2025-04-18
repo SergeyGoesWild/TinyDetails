@@ -7,8 +7,12 @@
 
 import UIKit
 
-protocol ClickableAreaDelegate {
+protocol ClickableAreaDelegate: AnyObject {
     func didReceiveClick(area: ClickableAreaView)
+}
+
+protocol EndLevelDelegate: AnyObject {
+    func didPassNextLevel(completion: @escaping () -> Void)
 }
 
 class ViewController: UIViewController {
@@ -24,7 +28,7 @@ class ViewController: UIViewController {
     let sideMargin: CGFloat = 16
     let collectionInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     
-    var currentLevel: Int = 2
+    var currentLevel: Int = 4
     var widthConstraintImagePH: NSLayoutConstraint!
     var heightConstraintImagePH: NSLayoutConstraint!
     
@@ -73,7 +77,9 @@ class ViewController: UIViewController {
                 return
             }
         }
-        changeLevel()
+        let endLevelScreen = EndLevelScreen(paintingObject: ViewController.paintingList[currentLevel], delegate: self)
+        endLevelScreen.modalPresentationStyle = .automatic
+        present(endLevelScreen, animated: true, completion: nil)
     }
     
     @objc private func changeLevel() {
@@ -319,6 +325,12 @@ extension ViewController: ClickableAreaDelegate {
     func didReceiveClick(area: ClickableAreaView) {
 //        print("Did click on zone: ", area.areaID ?? "111")
         findCellWithID(area.areaID)
+    }
+}
+
+extension ViewController: EndLevelDelegate {
+    func didPassNextLevel(completion: @escaping () -> Void) {
+        changeLevel()
     }
 }
 
