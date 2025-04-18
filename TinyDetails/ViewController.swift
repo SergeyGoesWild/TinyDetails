@@ -28,7 +28,7 @@ class ViewController: UIViewController {
     let sideMargin: CGFloat = 16
     let collectionInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     
-    var currentLevel: Int = 4
+    var currentLevel: Int = 0
     var widthConstraintImagePH: NSLayoutConstraint!
     var heightConstraintImagePH: NSLayoutConstraint!
     
@@ -79,14 +79,17 @@ class ViewController: UIViewController {
         }
         let endLevelScreen = EndLevelScreen(paintingObject: ViewController.paintingList[currentLevel], delegate: self)
         endLevelScreen.modalPresentationStyle = .automatic
-        present(endLevelScreen, animated: true, completion: nil)
+        // TODO: Find a more elegant solution
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.present(endLevelScreen, animated: true, completion: nil)
+        }
     }
     
     @objc private func changeLevel() {
         currentLevel += 1
         resultModel = []
         setupResultModel()
-        // NOTE: TRASH, CHANGE THAT, THE ANIMATION PREVENTS CONTROL
+        // TODO: TRASH, CHANGE THAT, THE ANIMATION PREVENTS CONTROL
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.setupPictureLayout(currentLevel: self.currentLevel)
             self.setupClickableAreas()
@@ -356,7 +359,7 @@ extension ViewController: UICollectionViewDataSource {
             return cell
         }
         print(resultItem.wasClicked)
-        cell.configureCell(cellID: dataItem.idArea, hintText: dataItem.hintText, wasClicked: resultItem.wasClicked)
+        cell.configureCell(dataItem: dataItem, wasClicked: resultItem.wasClicked, image: image)
         return cell
     }
 }
