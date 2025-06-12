@@ -139,9 +139,11 @@ final class EndLevelScreen: UIViewController {
     }
     
     @objc private func nextLevelButtonPushed() {
-        print("CLICKED")
-        delegate?.didPassNextLevel() { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
+        delegate?.didPassNextLevel {
+            // TODO: THIS IS TRASH SOLUTION CHANGE IT ASAP
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                    self?.dismiss(animated: true, completion: nil)
+                }
         }
     }
     
@@ -159,5 +161,9 @@ final class EndLevelScreen: UIViewController {
             let width = usableWidth
             return CGSize(width: width, height: height)
         }
+    }
+    
+    deinit {
+        print("DEALOCATED!")
     }
 }

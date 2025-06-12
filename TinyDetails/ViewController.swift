@@ -37,13 +37,9 @@ class ViewController: UIViewController {
     var centerCommon: UIView!
     var centerScroll: UIView!
     var scrollView: UIScrollView!
+    var questionTextLabel: UILabel!
+    var itemTextLabel: UILabel!
     var image: UIImage!
-    var bottomView: UIView!
-    var collectionView: UICollectionView!
-    var hintView: UIView!
-    var hintLabel: UILabel!
-    var closeImage: UIImageView!
-    var hintTouchField: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,7 +89,7 @@ class ViewController: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.setupPictureLayout(currentLevel: self.currentLevel)
             self.setupClickableAreas()
-            self.collectionView.reloadData()
+            self.scrollView.zoomScale = 1
         }
     }
     
@@ -105,50 +101,19 @@ class ViewController: UIViewController {
     }
     
     private func setupNormalLayout() {
-        bottomView = UIView()
-        bottomView.backgroundColor = UIColor(red: 0.18, green: 0.53, blue: 0.87, alpha: 1.00)
-        bottomView.translatesAutoresizingMaskIntoConstraints = false
         
         bgSolid = UIView()
         bgSolid.backgroundColor = UIColor(red: 0.18, green: 0.53, blue: 0.87, alpha: 1.00)
         bgSolid.translatesAutoresizingMaskIntoConstraints = false
         
-        hintView = UIView()
-        hintView.translatesAutoresizingMaskIntoConstraints = false
-        hintView.isHidden = true
-        hintView.alpha = 0
-        hintView.backgroundColor = .black
-        
-        hintLabel = UILabel()
-        hintLabel.text = ""
-        hintLabel.translatesAutoresizingMaskIntoConstraints = false
-        hintLabel.textAlignment = .center
-        hintLabel.textColor = .white
-        hintLabel.font = UIFont.systemFont(ofSize: 30, weight: .medium)
-        hintLabel.numberOfLines = 0
-        hintLabel.lineBreakMode = .byWordWrapping
-        hintLabel.isHidden = true
-        hintLabel.alpha = 0
-        
-        hintTouchField = UIView()
-        hintTouchField.isUserInteractionEnabled = false
-        hintTouchField.backgroundColor = .clear
-        hintTouchField.translatesAutoresizingMaskIntoConstraints = false
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapOnHint))
-        hintTouchField.addGestureRecognizer(tapGesture)
-        
-        let closeIcon = UIImage(systemName: "multiply.circle")
-        closeImage = UIImageView(image: closeIcon)
-        closeImage.translatesAutoresizingMaskIntoConstraints = false
-        closeImage.tintColor = .white
-        closeImage.preferredSymbolConfiguration = UIImage.SymbolConfiguration(pointSize: 72, weight: .thin)
-        closeImage.isHidden = true
-        closeImage.alpha = 0
+//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapOnHint))
+//        hintTouchField.addGestureRecognizer(tapGesture)
         
         scrollView = UIScrollView()
         scrollView.delegate = self
         scrollView.minimumZoomScale = 1.0
         scrollView.maximumZoomScale = 4.0
+        scrollView.bouncesZoom = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -167,28 +132,27 @@ class ViewController: UIViewController {
         widthConstraintImagePH = imagePH.widthAnchor.constraint(equalToConstant: 0)
         heightConstraintImagePH = imagePH.heightAnchor.constraint(equalToConstant: 0)
         
-        let collectionLayout = UICollectionViewFlowLayout()
-        collectionLayout.scrollDirection = .horizontal
+        itemTextLabel = UILabel()
+        itemTextLabel.text = "Adam?"
+        itemTextLabel.textColor = .white
+        itemTextLabel.font = UIFont.systemFont(ofSize: 55, weight: .bold)
+        itemTextLabel.textAlignment = .left
+        itemTextLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionLayout)
-        collectionView.showsHorizontalScrollIndicator = true
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = UIColor(red: 0.18, green: 0.53, blue: 0.87, alpha: 1.00)
-        collectionView.register(ClickableAreaCell.self, forCellWithReuseIdentifier: "ClickableAreaCell")
-        collectionView.dataSource = self
-        collectionView.delegate = self
+        questionTextLabel = UILabel()
+        questionTextLabel.text = "Can you find"
+        questionTextLabel.textColor = .white
+        questionTextLabel.font = UIFont.systemFont(ofSize: 40, weight: .medium)
+        questionTextLabel.textAlignment = .left
+        questionTextLabel.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(bgSolid)
         view.addSubview(scrollView)
-//        view.addSubview(centerCommon)
-        view.addSubview(bottomView)
-        view.addSubview(hintView)
-        view.addSubview(hintLabel)
-        view.addSubview(closeImage)
-        view.addSubview(hintTouchField)
-        bottomView.addSubview(collectionView)
+        //        view.addSubview(centerCommon)
         scrollView.addSubview(imagePH)
-//        imagePH.addSubview(centerScroll)
+        view.addSubview(questionTextLabel)
+        view.addSubview(itemTextLabel)
+        //        imagePH.addSubview(centerScroll)
         
         NSLayoutConstraint.activate([
             bgSolid.widthAnchor.constraint(equalTo: view.widthAnchor),
@@ -196,75 +160,23 @@ class ViewController: UIViewController {
             bgSolid.topAnchor.constraint(equalTo: view.topAnchor),
             bgSolid.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
-            bottomView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            bottomView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            bottomView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            bottomView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, constant: -600),
-            
             scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            scrollView.heightAnchor.constraint(equalToConstant: 600),
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor),
+            scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            scrollView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
-            hintView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            hintView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            hintView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            hintView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            itemTextLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
+            itemTextLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             
-            hintLabel.centerXAnchor.constraint(equalTo: hintView.centerXAnchor),
-            hintLabel.centerYAnchor.constraint(equalTo: hintView.centerYAnchor),
-            hintLabel.widthAnchor.constraint(equalTo: hintView.widthAnchor),
-            
-            closeImage.centerXAnchor.constraint(equalTo: hintView.centerXAnchor),
-            closeImage.bottomAnchor.constraint(equalTo: hintView.bottomAnchor, constant: -20),
-            
-            hintTouchField.topAnchor.constraint(equalTo: hintView.topAnchor),
-            hintTouchField.bottomAnchor.constraint(equalTo: hintView.bottomAnchor),
-            hintTouchField.leadingAnchor.constraint(equalTo: hintView.leadingAnchor),
-            hintTouchField.trailingAnchor.constraint(equalTo: hintView.trailingAnchor),
-            
-            collectionView.heightAnchor.constraint(equalTo: bottomView.heightAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: bottomView.topAnchor),
+            questionTextLabel.bottomAnchor.constraint(equalTo: itemTextLabel.topAnchor, constant: 5),
+            questionTextLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             
             widthConstraintImagePH,
             heightConstraintImagePH,
             imagePH.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
             imagePH.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             
-//            centerScroll.widthAnchor.constraint(equalToConstant: 40),
-//            centerScroll.heightAnchor.constraint(equalToConstant: 40),
-//            centerScroll.centerXAnchor.constraint(equalTo: imagePH.centerXAnchor),
-//            centerScroll.centerYAnchor.constraint(equalTo: imagePH.centerYAnchor),
-            
-//            centerCommon.widthAnchor.constraint(equalToConstant: 25),
-//            centerCommon.heightAnchor.constraint(equalToConstant: 25),
-//            centerCommon.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
-//            centerCommon.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor),
         ])
-    }
-    
-    @objc private func handleTapOnHint() {
-        print("XXXXXXXXXXXXXXX")
-        closeHint()
-    }
-    
-    private func closeHint() {
-        inTransition = true
-        hintTimer?.invalidate()
-            UIView.animate(withDuration: 0.3, animations:  {
-                self.hintView.alpha = 0
-                self.hintLabel.alpha = 0
-                self.closeImage.alpha = 0
-                
-            }) { _ in
-                self.hintView.isHidden = true
-                self.hintLabel.isHidden = true
-                self.closeImage.isHidden = true
-                self.hintTouchField.isUserInteractionEnabled = false
-                self.inTransition = false
-            }
     }
     
     private func setupClickableArea(areaData: ClickableArea) {
@@ -291,6 +203,11 @@ class ViewController: UIViewController {
         
         imageViewSize = getImageSize(image: image, scrollView: scrollView)
         
+        widthConstraintImagePH.constant = imageViewSize.width
+        heightConstraintImagePH.constant = imageViewSize.height
+        
+        scrollView.layoutIfNeeded()
+        
         if scrollView.contentSize != CGSize(width: imageViewSize.width, height: imageViewSize.height) {
             scrollView.contentSize = CGSize(width: imageViewSize.width, height: imageViewSize.height)
         }
@@ -298,11 +215,6 @@ class ViewController: UIViewController {
         let centerX = (scrollView.contentSize.width - scrollView.bounds.width) / 2
         let centerY = (scrollView.contentSize.height - scrollView.bounds.height) / 2
         scrollView.setContentOffset(CGPoint(x: centerX, y: centerY), animated: false)
-        
-        widthConstraintImagePH.constant = imageViewSize.width
-        heightConstraintImagePH.constant = imageViewSize.height
-        
-//        view.layoutIfNeeded()
     }
     
     func findCellWithID(_ id: UUID) {
@@ -312,7 +224,7 @@ class ViewController: UIViewController {
         let indexPath = IndexPath(item: index, section: 0)
         if let resultIndex = resultModel.firstIndex(where: {$0.id == id}) {
             resultModel[resultIndex].wasClicked = true
-            collectionView.reloadItems(at: [indexPath])
+//            collectionView.reloadItems(at: [indexPath])
             checkLevelComplete()
         }
     }
@@ -326,7 +238,6 @@ class ViewController: UIViewController {
 
 extension ViewController: ClickableAreaDelegate {
     func didReceiveClick(area: ClickableAreaView) {
-//        print("Did click on zone: ", area.areaID ?? "111")
         findCellWithID(area.areaID)
     }
 }
@@ -334,6 +245,7 @@ extension ViewController: ClickableAreaDelegate {
 extension ViewController: EndLevelDelegate {
     func didPassNextLevel(completion: @escaping () -> Void) {
         changeLevel()
+        completion()
     }
 }
 
@@ -341,72 +253,11 @@ extension ViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imagePH
     }
-}
-
-extension ViewController: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return ViewController.paintingList[currentLevel].areas.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ClickableAreaCell", for: indexPath) as! ClickableAreaCell
-        let dataItem = ViewController.paintingList[currentLevel].areas[indexPath.item]
-        guard let resultItem = resultModel.first(where: {$0.id == dataItem.idArea}) else {
-            return cell
-        }
-        print(resultItem.wasClicked)
-        cell.configureCell(dataItem: dataItem, wasClicked: resultItem.wasClicked, image: image)
-        return cell
-    }
-}
-
-extension ViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if inTransition { return }
-        hintTimer?.invalidate()
-        hintView.isHidden = false
-        hintLabel.isHidden = false
-        closeImage.isHidden = false
-        hintView.alpha = 0.8
-        hintLabel.alpha = 1
-        closeImage.alpha = 1
-        hintLabel.text = ViewController.paintingList[currentLevel].areas[indexPath.item].hintText
-        hintTouchField.isUserInteractionEnabled = true
-        
-        hintTimer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { [weak self] _ in
-            self?.closeHint()
-        }
-    }
-}
-
-extension ViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let sideSize = collectionView.bounds.height - collectionInsets.top - collectionInsets.bottom
-        return CGSize(width: sideSize, height: sideSize)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        insetForSectionAt section: Int) -> UIEdgeInsets {
-        return collectionInsets
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 12
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 8
-    }
+    //    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+    //        if scrollView.zoomScale < 1.0 {
+    //            scrollView.setZoomScale(1.0, animated: false)
+    //        }
+    //    }
 }
 
