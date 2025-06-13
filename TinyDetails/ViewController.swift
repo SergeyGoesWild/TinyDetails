@@ -19,18 +19,18 @@ class ViewController: UIViewController {
     static let paintingList = DataProvider.shared.paintingList
 
     var currentLevelIndex: Int = 0
-    var currentItemIndex: Int = -1
+    var currentItemIndex: Int = 0
     
     lazy var currentLevel: PaintingObject = {
-        return ViewController.paintingList[currentItemIndex]
+        return ViewController.paintingList[currentLevelIndex]
     }()
     
     lazy var currentItem: ClickableArea = {
-        return ViewController.paintingList[currentItemIndex].areas[currentItemIndex]
+        return ViewController.paintingList[currentLevelIndex].areas[currentItemIndex]
     }()
     
     lazy var levelIsOver: Bool = {
-        return currentItemIndex <= currentLevel.areas.count
+        return currentItemIndex >= currentLevel.areas.count
     }()
     
     var imageViewSize: CGSize!
@@ -61,7 +61,7 @@ class ViewController: UIViewController {
         super.viewDidLayoutSubviews()
         print("in ViewDidLayoutSubviews")
         if isFirstLaunch {
-            setupPictureLayout(currentLevel: ViewController.paintingList[0])
+            setupPictureLayout(currentLevel: currentLevel)
             setNextItem()
         }
         isFirstLaunch = false
@@ -71,8 +71,9 @@ class ViewController: UIViewController {
     
     private func setNextItem() {
         print("in setting NEXT ITEM")
-        currentItemIndex += 1
-        itemTextLabel.text = currentItem.hintText
+        print("currentItem index: ", currentItemIndex)
+        print("currentItem : ", currentItem)
+        itemTextLabel.text = currentItem.hintText + "?"
         setupClickableArea(areaData: currentItem)
         view.layoutIfNeeded()
     }
@@ -82,6 +83,7 @@ class ViewController: UIViewController {
         if levelIsOver {
             changeLevel()
         } else {
+            currentItemIndex += 1
             setNextItem()
         }
     }
@@ -229,6 +231,7 @@ class ViewController: UIViewController {
 
 extension ViewController: ClickableAreaDelegate {
     func didReceiveClick(area: ClickableAreaView) {
+        print("------------>  did receive click")
         launchRightGuessAnimation()
         checkLevelComplete()
     }
