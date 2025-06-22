@@ -21,17 +21,17 @@ class ViewController: UIViewController {
     var currentLevelIndex: Int = 0
     var currentItemIndex: Int = 0
     
-    lazy var currentLevel: PaintingObject = {
+    var currentLevel: PaintingObject {
         return ViewController.paintingList[currentLevelIndex]
-    }()
+    }
     
-    lazy var currentItem: ClickableArea = {
+    var currentItem: ClickableArea {
         return ViewController.paintingList[currentLevelIndex].areas[currentItemIndex]
-    }()
+    }
     
-    lazy var levelIsOver: Bool = {
-        return currentItemIndex >= currentLevel.areas.count
-    }()
+    var levelIsOver: Bool {
+        return currentItemIndex >= currentLevel.areas.count - 1
+    }
     
     var imageViewSize: CGSize!
     var isFirstLaunch: Bool = true
@@ -51,50 +51,55 @@ class ViewController: UIViewController {
     var questionTextLabel: UILabel!
     var itemTextLabel: UILabel!
     var image: UIImage!
+    var clickableArea: ClickableAreaView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNormalLayout()
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        print("in ViewDidLayoutSubviews")
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         if isFirstLaunch {
+            isFirstLaunch = false
+            print("in FIRST LAUNCH")
+            print("1: ", isFirstLaunch)
             setupPictureLayout(currentLevel: currentLevel)
-            setNextItem()
+            setNextItem(clickableAreaData: currentItem)
+            print("2: ", isFirstLaunch)
         }
-        isFirstLaunch = false
     }
     
     // MARK: - Flow
     
-    private func setNextItem() {
-        print("in setting NEXT ITEM")
-        print("currentItem index: ", currentItemIndex)
-        print("currentItem : ", currentItem)
+    private func setNextItem(clickableAreaData: ClickableArea) {
         itemTextLabel.text = currentItem.hintText + "?"
-        setupClickableArea(areaData: currentItem)
-        view.layoutIfNeeded()
+//        removeClickableAreas()
+//        setupClickableArea(areaData: currentItem)
+        clickableArea.updateClickableArea(with: clickableAreaData)
+//        view.layoutIfNeeded()
     }
     
     private func checkLevelComplete() {
-        print("in CHECK")
+        print("level is over??? ", levelIsOver)
         if levelIsOver {
+            print("about CHANGE LEVEL")
             changeLevel()
         } else {
+            print("about SET ITEM")
             currentItemIndex += 1
-            setNextItem()
+            setNextItem(clickableAreaData: currentItem)
         }
     }
     
     @objc private func changeLevel() {
+        removeClickableAreas()
         currentLevelIndex += 1
-        currentItemIndex = -1
+        currentItemIndex = 0
         // TODO: TRASH, CHANGE THAT, THE ANIMATION PREVENTS CONTROL
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.setupPictureLayout(currentLevel: self.currentLevel)
-            self.setNextItem()
+            self.setNextItem(clickableAreaData: self.currentItem)
             self.scrollView.zoomScale = 1
         }
     }
@@ -176,9 +181,6 @@ class ViewController: UIViewController {
     }
     
     private func setupPictureLayout(currentLevel: PaintingObject) {
-//        for area in imagePH.subviews.compactMap({ $0 as? ClickableAreaView }) {
-//            area.removeFromSuperview()
-//        }
         
         image = UIImage(named: currentLevel.paintingFile)
         imagePH.image = image
@@ -197,6 +199,8 @@ class ViewController: UIViewController {
         let centerX = (scrollView.contentSize.width - scrollView.bounds.width) / 2
         let centerY = (scrollView.contentSize.height - scrollView.bounds.height) / 2
         scrollView.setContentOffset(CGPoint(x: centerX, y: centerY), animated: false)
+        
+        setupClickableArea()
     }
     
     // MARK: - Service
@@ -210,18 +214,28 @@ class ViewController: UIViewController {
         return CGSize(width: width, height: height)
     }
     
-    private func setupClickableArea(areaData: ClickableArea) {
-        let area = ClickableAreaView(id: areaData.idArea)
-        area.delegate = self
-        area.translatesAutoresizingMaskIntoConstraints = false
-        imagePH.addSubview(area)
+    private func setupClickableArea() {
+        clickableArea = ClickableAreaView()
+        clickableArea.delegate = self
+        clickableArea.translatesAutoresizingMaskIntoConstraints = false
+        imagePH.addSubview(clickableArea)
         NSLayoutConstraint.activate([
-            area.widthAnchor.constraint(equalToConstant: areaData.size),
-            area.heightAnchor.constraint(equalToConstant: areaData.size),
-            area.leadingAnchor.constraint(equalTo: imagePH.leadingAnchor, constant: imageViewSize.width * (areaData.xPercent / 100) - CGFloat(areaData.size / 2)),
-            area.topAnchor.constraint(equalTo: imagePH.topAnchor, constant: imageViewSize.height * (areaData.yPercent / 100) - CGFloat(areaData.size / 2)),
+            clickableArea.widthAnchor.constraint(equalTo: imagePH.widthAnchor),
+            clickableArea.heightAnchor.constraint(equalTo: imagePH.heightAnchor),
+            clickableArea.leadingAnchor.constraint(equalTo: imagePH.leadingAnchor),
+            clickableArea.topAnchor.constraint(equalTo: imagePH.topAnchor),
         ])
-        imagePH.bringSubviewToFront(area)
+        imagePH.bringSubviewToFront(clickableArea)
+    }
+    
+//    private func fillClickableArea(clickableAreaData: ClickableArea) {
+//        clickableArea.updateClickableArea(with: clickableAreaData)
+//    }
+    
+    private func removeClickableAreas() {
+        for area in imagePH.subviews.compactMap({ $0 as? ClickableAreaView }) {
+            area.removeFromSuperview()
+        }
     }
     
     private func launchRightGuessAnimation() {

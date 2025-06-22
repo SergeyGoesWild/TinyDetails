@@ -10,11 +10,11 @@ import UIKit
 
 final class ClickableAreaView: UIView {
     
-    let areaID: UUID!
+//    let areaID: UUID!
+    var imageView: TouchableImageView!
     weak var delegate: ClickableAreaDelegate?
     
-    init(id: UUID) {
-        self.areaID = id
+    init() {
         super.init(frame: .zero)
         setupView()
     }
@@ -24,13 +24,33 @@ final class ClickableAreaView: UIView {
     }
     
     private func setupView() {
-        self.backgroundColor = .blue
-        self.isUserInteractionEnabled = true
+//        self.backgroundColor = .blue
+        
+        imageView = TouchableImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.shadowColor = UIColor.black.cgColor
+        imageView.layer.shadowOpacity = 0.5
+        imageView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        imageView.layer.shadowRadius = 4
+        imageView.isUserInteractionEnabled = true
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
-        self.addGestureRecognizer(tapGesture)
+        imageView.addGestureRecognizer(tapGesture)
+        self.addSubview(imageView)
+        
+        NSLayoutConstraint.activate([
+            imageView.topAnchor.constraint(equalTo: self.topAnchor),
+            imageView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            imageView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+        ])
     }
     
     @objc func handleTap() {
         delegate?.didReceiveClick(area: self)
+    }
+    
+    func updateClickableArea(with clickableAreaData: ClickableArea) {
+        let currentImage = UIImage(named: clickableAreaData.pictureName)
+        imageView.image = currentImage
     }
 }
