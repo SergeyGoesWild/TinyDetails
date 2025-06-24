@@ -182,10 +182,18 @@ class ViewController: UIViewController {
     
     private func setupPictureLayout(currentLevel: PaintingObject) {
         
-        image = UIImage(named: currentLevel.paintingFile)
-        imagePH.image = image
+        guard let path = Bundle.main.path(forResource: currentLevel.paintingFile, ofType: "jpg") else {
+            print("Level Image path not found: ", currentLevel.paintingTitle)
+            return
+        }
         
-        imageViewSize = getImageSize(image: image, scrollView: scrollView)
+        guard let currentLevelImage = UIImage(contentsOfFile: path) else {
+            print("Level Image file not found (UIImage): ", currentLevel.paintingTitle)
+            return
+        }
+        imagePH.image = currentLevelImage
+        
+        imageViewSize = getImageSize(image: currentLevelImage, scrollView: scrollView)
         
         widthConstraintImagePH.constant = imageViewSize.width
         heightConstraintImagePH.constant = imageViewSize.height

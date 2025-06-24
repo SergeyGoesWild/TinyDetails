@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -37,6 +37,10 @@
 		2AC06B1C2D872952005F3189 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2AC06B1E2D872952005F3189 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		2A9EE2EE2E0B54620019F7CD /* ImageAssets */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ImageAssets; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		2AC06B0A2D872950005F3189 /* Frameworks */ = {
@@ -74,6 +78,7 @@
 				2AB38A942DB2620A008F3BD1 /* Helpers.swift */,
 				2AB38A922DB0FB5D008F3BD1 /* EndLevelScreen.swift */,
 				2A1CCFEE2DA3DA9D008B4D21 /* DataProvider.swift */,
+				2A9EE2EE2E0B54620019F7CD /* ImageAssets */,
 				2A5434562D8A23C500AC9FAD /* ClickableAreaView.swift */,
 				2A9EE2EC2E086BB50019F7CD /* TouchableImageView.swift */,
 				2A021BBA2DA4147F0072D851 /* ClickableAreaCell.swift */,
@@ -99,6 +104,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				2A9EE2EE2E0B54620019F7CD /* ImageAssets */,
 			);
 			name = TinyDetails;
 			productName = TinyDetails;

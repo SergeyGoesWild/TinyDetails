@@ -86,25 +86,25 @@ final class ClickableAreaCell: UICollectionViewCell {
         ])
     }
     
-    func configureCell(dataItem: ClickableArea, wasClicked: Bool, image: UIImage) {
-        self.cellID = dataItem.idArea
-        self.hintText = dataItem.hintText
-        self.wasClicked = wasClicked
-
-        let scale = image.scale
-        let pixelWidth = image.size.width * scale
-        let pixelHeight = image.size.height * scale
-
-        let cropSize: CGFloat = 100 * scale
-
-        let xCoordinate = pixelWidth * dataItem.xPercent / 100
-        let yCoordinate = pixelHeight * dataItem.yPercent / 100
-
-        let cropRect = CGRect(x: xCoordinate - cropSize/2, y: yCoordinate - cropSize/2, width: cropSize, height: cropSize)
-
-        self.iconImageGuessed = image.cropped(to: cropRect)
-        changeCellState(wasClicked: wasClicked)
-    }
+//    func configureCell(dataItem: ClickableArea, wasClicked: Bool, image: UIImage) {
+//        self.cellID = dataItem.idArea
+//        self.hintText = dataItem.hintText
+//        self.wasClicked = wasClicked
+//
+//        let scale = image.scale
+//        let pixelWidth = image.size.width * scale
+//        let pixelHeight = image.size.height * scale
+//
+//        let cropSize: CGFloat = 100 * scale
+//
+//        let xCoordinate = pixelWidth * dataItem.xPercent / 100
+//        let yCoordinate = pixelHeight * dataItem.yPercent / 100
+//
+//        let cropRect = CGRect(x: xCoordinate - cropSize/2, y: yCoordinate - cropSize/2, width: cropSize, height: cropSize)
+//
+//        self.iconImageGuessed = image.cropped(to: cropRect)
+//        changeCellState(wasClicked: wasClicked)
+//    }
     
     func changeCellState(wasClicked: Bool) {
         if wasClicked {

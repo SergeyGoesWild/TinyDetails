@@ -50,7 +50,12 @@ final class ClickableAreaView: UIView {
     }
     
     func updateClickableArea(with clickableAreaData: ClickableArea) {
-        let currentImage = UIImage(named: clickableAreaData.pictureName)
+        guard let path = Bundle.main.path(forResource: clickableAreaData.pictureName, ofType: "png") else {
+            print("Item Image not found: ", clickableAreaData.pictureName)
+            return
+        }
+        
+        let currentImage = UIImage(contentsOfFile: path)
         imageView.image = currentImage
     }
 }
