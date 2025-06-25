@@ -9,6 +9,7 @@ import UIKit
 
 protocol ClickableAreaDelegate: AnyObject {
     func didReceiveClick(area: ClickableAreaView)
+    func showOverlay()
 }
 
 protocol EndLevelDelegate: AnyObject {
@@ -52,6 +53,7 @@ class ViewController: UIViewController {
     var itemTextLabel: UILabel!
     var image: UIImage!
     var clickableArea: ClickableAreaView!
+    var confirmationOverlayView: ConfirmationOverlay!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -153,6 +155,12 @@ class ViewController: UIViewController {
         gradientView.translatesAutoresizingMaskIntoConstraints = false
         gradientView.isUserInteractionEnabled = false
         
+        confirmationOverlayView = ConfirmationOverlay()
+        confirmationOverlayView.translatesAutoresizingMaskIntoConstraints = false
+        confirmationOverlayView.isUserInteractionEnabled = false
+        confirmationOverlayView.isHidden = true
+        confirmationOverlayView.alpha = 0.0
+        
         view.addSubview(bgSolid)
         view.addSubview(scrollView)
         //        view.addSubview(centerCommon)
@@ -160,6 +168,7 @@ class ViewController: UIViewController {
         view.addSubview(gradientView)
         view.addSubview(questionTextLabel)
         view.addSubview(itemTextLabel)
+        view.addSubview(confirmationOverlayView)
         //        imagePH.addSubview(centerScroll)
         
         NSLayoutConstraint.activate([
@@ -172,6 +181,11 @@ class ViewController: UIViewController {
             scrollView.heightAnchor.constraint(equalTo: view.heightAnchor),
             scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             scrollView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
+            confirmationOverlayView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            confirmationOverlayView.heightAnchor.constraint(equalTo: view.heightAnchor),
+            confirmationOverlayView.topAnchor.constraint(equalTo: view.topAnchor),
+            confirmationOverlayView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             gradientView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             gradientView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -257,17 +271,28 @@ class ViewController: UIViewController {
             area.removeFromSuperview()
         }
     }
-    
-    private func launchRightGuessAnimation() {
-        
-    }
 }
 
 extension ViewController: ClickableAreaDelegate {
+    func showOverlay() {
+        confirmationOverlayView.isHidden = false
+        UIView.animate(withDuration: 0.3, animations: {
+            self.confirmationOverlayView.alpha = 1
+        }, completion: { _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.confirmationOverlayView.alpha = 0
+                }, completion: { _ in
+                    self.confirmationOverlayView.isHidden = true
+                })
+            }
+        })
+    }
+    
     func didReceiveClick(area: ClickableAreaView) {
-        print("------------>  did receive click")
-        launchRightGuessAnimation()
-        checkLevelComplete()
+        clickableArea.launchRightGuessAnimation {
+            self.checkLevelComplete()
+        }
     }
 }
 
