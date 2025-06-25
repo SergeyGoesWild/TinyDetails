@@ -140,17 +140,24 @@ class ViewController: UIViewController {
         questionTextLabel.font = UIFont.systemFont(ofSize: 40, weight: .medium)
         questionTextLabel.textAlignment = .left
         questionTextLabel.translatesAutoresizingMaskIntoConstraints = false
+        questionTextLabel.isUserInteractionEnabled = false
         
         itemTextLabel = UILabel()
         itemTextLabel.textColor = .white
         itemTextLabel.font = UIFont.systemFont(ofSize: 55, weight: .bold)
         itemTextLabel.textAlignment = .left
         itemTextLabel.translatesAutoresizingMaskIntoConstraints = false
+        itemTextLabel.isUserInteractionEnabled = false
+        
+        let gradientView = GradientView()
+        gradientView.translatesAutoresizingMaskIntoConstraints = false
+        gradientView.isUserInteractionEnabled = false
         
         view.addSubview(bgSolid)
         view.addSubview(scrollView)
         //        view.addSubview(centerCommon)
         scrollView.addSubview(imagePH)
+        view.addSubview(gradientView)
         view.addSubview(questionTextLabel)
         view.addSubview(itemTextLabel)
         //        imagePH.addSubview(centerScroll)
@@ -166,7 +173,12 @@ class ViewController: UIViewController {
             scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             scrollView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
-            itemTextLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
+            gradientView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            gradientView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            gradientView.topAnchor.constraint(equalTo: questionTextLabel.topAnchor, constant: -30),
+            gradientView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            itemTextLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             itemTextLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             
             questionTextLabel.bottomAnchor.constraint(equalTo: itemTextLabel.topAnchor, constant: 5),
