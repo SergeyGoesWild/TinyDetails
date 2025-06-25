@@ -9,6 +9,7 @@ import Foundation
 
 struct PaintingObject {
     let idPainting: UUID
+    let paintingOffset: CGFloat
     let paintingFile: String
     let paintingTitle: String
     let painter: String
@@ -37,6 +38,7 @@ final class DataProvider {
     
     let paintingList =
     [PaintingObject(idPainting: UUID(),
+                    paintingOffset: 0,
                     paintingFile: "BlackSquare_origin",
                     paintingTitle: "Black Square",
                     painter: "Kazimir Malevich",
@@ -48,6 +50,7 @@ final class DataProvider {
                                           pictureName: "BlackSquare_square"),
                     ]),
      PaintingObject(idPainting: UUID(),
+                    paintingOffset: 0,
                     paintingFile: "LadyWithAnErmine_origin",
                     paintingTitle: "Lady with an Ermine",
                     painter: "Leonardo da Vinci",
@@ -62,6 +65,7 @@ final class DataProvider {
                                           pictureName: "LadyWithAnErmine_ermine"),
                     ]),
      PaintingObject(idPainting: UUID(),
+                    paintingOffset: 40,
                     paintingFile: "GaliziaStillLife_origin",
                     paintingTitle: "A Glass Compote with Peaches, Jasmine Flowers, Quinces and a Grasshopper",
                     painter: "Fede Galizia",
@@ -79,6 +83,7 @@ final class DataProvider {
                                           pictureName: "GaliziaStillLife_hoper"),
                     ]),
      PaintingObject(idPainting: UUID(),
+                    paintingOffset: -230,
                     paintingFile: "CreationOfAdam_origin",
                     paintingTitle: "The Creation of Adam",
                     painter: "Michelangelo",
@@ -96,6 +101,7 @@ final class DataProvider {
                                           pictureName: "CreationOfAdam_touch"),
                     ]),
      PaintingObject(idPainting: UUID(),
+                    paintingOffset: -220,
                     paintingFile: "StarryNight_origin",
                     paintingTitle: "Звездная ночь",
                     painter: "Vincent van Gogh",
@@ -116,6 +122,7 @@ final class DataProvider {
                                           pictureName: "StarryNight_village"),
                     ]),
      PaintingObject(idPainting: UUID(),
+                    paintingOffset: 170,
                     paintingFile: "EchoAndNarcissus_origin",
                     paintingTitle: "Echo and Narcissus",
                     painter: "John William Waterhouse",
@@ -139,6 +146,7 @@ final class DataProvider {
                                           pictureName: "EchoAndNarcissus_arrows"),
                     ]),
      PaintingObject(idPainting: UUID(),
+                    paintingOffset: -230,
                     paintingFile: "Harvesters_origin",
                     paintingTitle: "The Harvesters",
                     painter: "Pieter Bruegel the Elder",
@@ -165,6 +173,7 @@ final class DataProvider {
                                           pictureName: "Harvesters_church"),
                     ]),
      PaintingObject(idPainting: UUID(),
+                    paintingOffset: -40,
                     paintingFile: "MyWifeLovers_origin",
                     paintingTitle: "My Wife’s Lovers",
                     painter: "Carl Kahler",

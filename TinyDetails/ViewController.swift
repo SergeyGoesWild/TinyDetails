@@ -206,7 +206,7 @@ class ViewController: UIViewController {
         
         let centerX = (scrollView.contentSize.width - scrollView.bounds.width) / 2
         let centerY = (scrollView.contentSize.height - scrollView.bounds.height) / 2
-        scrollView.setContentOffset(CGPoint(x: centerX, y: centerY), animated: false)
+        scrollView.setContentOffset(CGPoint(x: centerX+currentLevel.paintingOffset, y: centerY), animated: false)
         
         setupClickableArea()
     }
