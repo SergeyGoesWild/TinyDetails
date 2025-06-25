@@ -11,6 +11,7 @@ import UIKit
 final class EndLevelScreen: UIViewController {
     weak var delegate: EndLevelDelegate?
     
+    var isFirstLaunch: Bool = true
     var paintingObject: PaintingObject!
     
     var endScrollView: UIScrollView!
@@ -68,7 +69,7 @@ final class EndLevelScreen: UIViewController {
         subtitleView.lineBreakMode = .byWordWrapping
         subtitleView.numberOfLines = 0
         
-        imageView = UIImageView(image: UIImage(named: paintingObject.paintingFile))
+        imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         descriptionView = UILabel()
@@ -132,19 +133,26 @@ final class EndLevelScreen: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        let imageSize = getImageSize(image: UIImage(named: paintingObject.paintingFile)!, view: self.view)
-        imageWidthConstraint.constant = imageSize.width
-        imageHeightConstraint.constant = imageSize.height
-//        bottomConstraint.constant = -view.safeAreaInsets.bottom
+         if isFirstLaunch {
+             isFirstLaunch = false
+             guard let path = Bundle.main.path(forResource: paintingObject.paintingFile, ofType: "jpg") else {
+                 print("Item Image not found in EndLevelScreen: ", paintingObject.paintingFile)
+                 return
+             }
+             guard let currentImage = UIImage(contentsOfFile: path) else {
+                 print("Image not found in EndLevelScreen (UIImage): ", paintingObject.paintingFile)
+                 return
+             }
+             imageView.image = currentImage
+             let imageSize = getImageSize(image: currentImage, view: self.view)
+             imageWidthConstraint.constant = imageSize.width
+             imageHeightConstraint.constant = imageSize.height
+     //        bottomConstraint.constant = -view.safeAreaInsets.bottom
+        }
     }
     
     @objc private func nextLevelButtonPushed() {
-        delegate?.didPassNextLevel {
-            // TODO: THIS IS TRASH SOLUTION CHANGE IT ASAP
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-                    self?.dismiss(animated: true, completion: nil)
-                }
-        }
+        dismiss(animated: true, completion: nil)
     }
     
     private func getImageSize(image: UIImage, view: UIView) -> CGSize {

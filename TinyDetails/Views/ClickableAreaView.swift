@@ -51,7 +51,7 @@ final class ClickableAreaView: UIView {
     
     func updateClickableArea(with clickableAreaData: ClickableArea) {
         guard let path = Bundle.main.path(forResource: clickableAreaData.pictureName, ofType: "png") else {
-            print("Item Image not found: ", clickableAreaData.pictureName)
+            print("Item Image not found in ClickableArea: ", clickableAreaData.pictureName)
             return
         }
         

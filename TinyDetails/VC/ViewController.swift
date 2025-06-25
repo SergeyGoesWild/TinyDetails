@@ -95,9 +95,14 @@ class ViewController: UIViewController {
     }
     
     @objc private func changeLevel() {
+        let endLevelScreen = EndLevelScreen(paintingObject: currentLevel, delegate: self)
+        endLevelScreen.modalPresentationStyle = .automatic
+        present(endLevelScreen, animated: true, completion: nil)
+        
         removeClickableAreas()
         currentLevelIndex += 1
         currentItemIndex = 0
+        
         // TODO: TRASH, CHANGE THAT, THE ANIMATION PREVENTS CONTROL
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.setupPictureLayout(currentLevel: self.currentLevel)
@@ -214,7 +219,7 @@ class ViewController: UIViewController {
         }
         
         guard let currentLevelImage = UIImage(contentsOfFile: path) else {
-            print("Level Image file not found (UIImage): ", currentLevel.paintingTitle)
+            print("Level Image file not found in ViewController (UIImage): ", currentLevel.paintingTitle)
             return
         }
         imagePH.image = currentLevelImage
@@ -298,8 +303,8 @@ extension ViewController: ClickableAreaDelegate {
 
 extension ViewController: EndLevelDelegate {
     func didPassNextLevel(completion: @escaping () -> Void) {
-        changeLevel()
-        completion()
+//        changeLevel()
+//        completion()
     }
 }
 
