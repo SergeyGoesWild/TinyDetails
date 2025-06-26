@@ -11,12 +11,14 @@ import UIKit
 final class EndLevelScreen: UIViewController {
     weak var delegate: EndLevelDelegate?
     
+    var isLastLevel: Bool!
     var isFirstLaunch: Bool = true
     var paintingObject: PaintingObject!
     
     var endScrollView: UIScrollView!
     var titleView: UILabel!
     var subtitleView: UILabel!
+    var lastLevelLabel: UILabel!
     var descriptionView: UILabel!
     var imageView: UIImageView!
     var nextLevelButton: UIButton!
@@ -28,9 +30,10 @@ final class EndLevelScreen: UIViewController {
     var imageWidthConstraint: NSLayoutConstraint!
     var imageHeightConstraint: NSLayoutConstraint!
     
-    init(paintingObject: PaintingObject, delegate: EndLevelDelegate) {
+    init(paintingObject: PaintingObject, delegate: EndLevelDelegate, isLastLevel: Bool) {
         self.paintingObject = paintingObject
         self.delegate = delegate
+        self.isLastLevel = isLastLevel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -82,7 +85,7 @@ final class EndLevelScreen: UIViewController {
         descriptionView.numberOfLines = 0
         
         nextLevelButton = UIButton(type: .system)
-        nextLevelButton.setTitle("Следующий уровень", for: .normal)
+        nextLevelButton.setTitle(isLastLevel ? "Finish game" : "Next Level", for: .normal)
         nextLevelButton.setTitleColor(.white, for: .normal)
         nextLevelButton.backgroundColor = .systemBlue
         nextLevelButton.layer.cornerRadius = 8
@@ -95,8 +98,7 @@ final class EndLevelScreen: UIViewController {
         endScrollView.addSubview(imageView)
         endScrollView.addSubview(descriptionView)
         endScrollView.addSubview(nextLevelButton)
-        
-        bottomConstraint = nextLevelButton.bottomAnchor.constraint(equalTo: endScrollView.bottomAnchor, constant: 0)
+
         imageWidthConstraint = imageView.widthAnchor.constraint(equalToConstant: 0)
         imageHeightConstraint = imageView.heightAnchor.constraint(equalToConstant: 0)
         
@@ -125,7 +127,7 @@ final class EndLevelScreen: UIViewController {
             
             nextLevelButton.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
             nextLevelButton.topAnchor.constraint(equalTo: descriptionView.bottomAnchor, constant: 20),
-            bottomConstraint,
+            nextLevelButton.bottomAnchor.constraint(equalTo: endScrollView.bottomAnchor, constant: -20),
             nextLevelButton.widthAnchor.constraint(equalToConstant: 200),
             nextLevelButton.heightAnchor.constraint(equalToConstant: 50),
         ])
@@ -152,6 +154,7 @@ final class EndLevelScreen: UIViewController {
     }
     
     @objc private func nextLevelButtonPushed() {
+        delegate?.didPassNextLevel()
         dismiss(animated: true, completion: nil)
     }
     

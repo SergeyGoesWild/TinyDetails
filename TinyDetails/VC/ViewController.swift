@@ -13,7 +13,7 @@ protocol ClickableAreaDelegate: AnyObject {
 }
 
 protocol EndLevelDelegate: AnyObject {
-    func didPassNextLevel(completion: @escaping () -> Void)
+    func didPassNextLevel()
 }
 
 class ViewController: UIViewController {
@@ -32,6 +32,10 @@ class ViewController: UIViewController {
     
     var levelIsOver: Bool {
         return currentItemIndex >= currentLevel.areas.count - 1
+    }
+    
+    var gameIsOver: Bool {
+        return currentLevelIndex >= ViewController.paintingList.count - 1
     }
     
     var imageViewSize: CGSize!
@@ -54,6 +58,7 @@ class ViewController: UIViewController {
     var image: UIImage!
     var clickableArea: ClickableAreaView!
     var confirmationOverlayView: ConfirmationOverlay!
+    var endGameView: EndGameScreen!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -95,19 +100,26 @@ class ViewController: UIViewController {
     }
     
     @objc private func changeLevel() {
-        let endLevelScreen = EndLevelScreen(paintingObject: currentLevel, delegate: self)
+        
+        let endLevelScreen = EndLevelScreen(paintingObject: currentLevel, delegate: self, isLastLevel: gameIsOver)
         endLevelScreen.modalPresentationStyle = .automatic
         present(endLevelScreen, animated: true, completion: nil)
         
-        removeClickableAreas()
-        currentLevelIndex += 1
-        currentItemIndex = 0
-        
-        // TODO: TRASH, CHANGE THAT, THE ANIMATION PREVENTS CONTROL
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.setupPictureLayout(currentLevel: self.currentLevel)
-            self.setNextItem(clickableAreaData: self.currentItem)
-            self.scrollView.zoomScale = 1
+        if !gameIsOver {
+            removeClickableAreas()
+            currentLevelIndex += 1
+            currentItemIndex = 0
+            
+            // TODO: TRASH, CHANGE THAT, THE ANIMATION PREVENTS CONTROL
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.setupPictureLayout(currentLevel: self.currentLevel)
+                self.setNextItem(clickableAreaData: self.currentItem)
+                self.scrollView.zoomScale = 1
+            }
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.endGameView.isHidden = false
+            }
         }
     }
     
@@ -166,6 +178,11 @@ class ViewController: UIViewController {
         confirmationOverlayView.isHidden = true
         confirmationOverlayView.alpha = 0.0
         
+        endGameView = EndGameScreen()
+        endGameView.translatesAutoresizingMaskIntoConstraints = false
+        endGameView.isUserInteractionEnabled = false
+        endGameView.isHidden = true
+        
         view.addSubview(bgSolid)
         view.addSubview(scrollView)
         //        view.addSubview(centerCommon)
@@ -174,6 +191,7 @@ class ViewController: UIViewController {
         view.addSubview(questionTextLabel)
         view.addSubview(itemTextLabel)
         view.addSubview(confirmationOverlayView)
+        view.addSubview(endGameView)
         //        imagePH.addSubview(centerScroll)
         
         NSLayoutConstraint.activate([
@@ -196,6 +214,11 @@ class ViewController: UIViewController {
             gradientView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             gradientView.topAnchor.constraint(equalTo: questionTextLabel.topAnchor, constant: -30),
             gradientView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            endGameView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            endGameView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            endGameView.topAnchor.constraint(equalTo: view.topAnchor),
+            endGameView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             itemTextLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             itemTextLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
@@ -302,7 +325,7 @@ extension ViewController: ClickableAreaDelegate {
 }
 
 extension ViewController: EndLevelDelegate {
-    func didPassNextLevel(completion: @escaping () -> Void) {
+    func didPassNextLevel() {
 //        changeLevel()
 //        completion()
     }
