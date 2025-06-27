@@ -152,6 +152,7 @@ class ViewController: UIViewController {
         
         questionLabelView = QuestionLabelView(questionText: "Can you find", itemText: currentItem.hintText)
         questionLabelView.translatesAutoresizingMaskIntoConstraints = false
+        questionLabelView.isUserInteractionEnabled = false
         questionLabelViewbottomConstraint = questionLabelView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0)
         questionLabelView.isHidden = false
         
