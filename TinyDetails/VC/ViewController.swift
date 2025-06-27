@@ -85,13 +85,13 @@ class ViewController: UIViewController {
         if currentItemIndex == 0 {
             questionLabelView.updateItemText(itemText: currentItem.hintText)
         } else {
-            questionLabelView.isHidden = true
+            questionLabelView.alpha = 0.0
             questionLabelView.updateItemText(itemText: currentItem.hintText)
             questionLabelViewbottomConstraint.constant = -50
             view.layoutIfNeeded()
 
-            questionLabelView.isHidden = false
             UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: {
+                self.questionLabelView.alpha = 1.0
                 self.questionLabelViewbottomConstraint.constant = 0
                 self.view.layoutIfNeeded()
             }, completion: nil)
@@ -112,9 +112,9 @@ class ViewController: UIViewController {
     
     @objc private func changeLevel() {
         
-//        let endLevelScreen = EndLevelScreen(paintingObject: currentLevel, delegate: self, isLastLevel: gameIsOver)
-//        endLevelScreen.modalPresentationStyle = .automatic
-//        present(endLevelScreen, animated: true, completion: nil)
+        let endLevelScreen = EndLevelScreen(paintingObject: currentLevel, delegate: self, isLastLevel: gameIsOver)
+        endLevelScreen.modalPresentationStyle = .automatic
+        present(endLevelScreen, animated: true, completion: nil)
         
         if !gameIsOver {
             removeClickableAreas()
