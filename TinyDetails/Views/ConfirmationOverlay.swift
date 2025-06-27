@@ -44,13 +44,6 @@ final class ConfirmationOverlay: UIView {
         avatarImageView.layer.cornerRadius = 100
         avatarImageView.translatesAutoresizingMaskIntoConstraints = false
         
-        guard let path = Bundle.main.path(forResource: "EchoAndNarcissus_echo_av", ofType: "jpg") else {
-            print("Item Image not found in ClickableArea")
-            return
-        }
-        let currentImage = UIImage(contentsOfFile: path)
-        avatarImageView.image = currentImage
-        
         emojiLabel = UILabel()
         emojiLabel.text = "✅"
         emojiLabel.font = .systemFont(ofSize: 50, weight: .bold)
@@ -58,7 +51,6 @@ final class ConfirmationOverlay: UIView {
         emojiLabel.translatesAutoresizingMaskIntoConstraints = false
         
         titleLabel = UILabel()
-        titleLabel.text = "Echo"
         titleLabel.font = .systemFont(ofSize: 40, weight: .bold)
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
@@ -140,5 +132,15 @@ final class ConfirmationOverlay: UIView {
         commonContainer.alpha = 1.0
         backgroundView.alpha = 0.0
         emojiLabel.alpha = 0.0
+    }
+    
+    func updateConfirmationOverlay(areaData: ClickableArea) {
+        titleLabel.text = areaData.hintText
+        guard let path = Bundle.main.path(forResource: areaData.avatarName, ofType: "jpg") else {
+            print("Avatar not found (Confirmation Overlay) for area: \(areaData)")
+            return
+        }
+        let currentImage = UIImage(contentsOfFile: path)
+        avatarImageView.image = currentImage
     }
 }

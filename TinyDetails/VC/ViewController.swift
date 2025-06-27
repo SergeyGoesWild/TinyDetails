@@ -294,6 +294,7 @@ class ViewController: UIViewController {
 
 extension ViewController: ClickableAreaDelegate {
     func didReceiveClick(area: ClickableAreaView) {
+        confirmationOverlayView.updateConfirmationOverlay(areaData: currentItem)
         confirmationOverlayView.isHidden = false
         confirmationOverlayView.revealOverlay(completion: {
             self.confirmationOverlayView.isHidden = true
