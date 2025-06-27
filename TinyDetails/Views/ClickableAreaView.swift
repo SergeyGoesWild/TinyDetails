@@ -58,21 +58,4 @@ final class ClickableAreaView: UIView {
         let currentImage = UIImage(contentsOfFile: path)
         imageView.image = currentImage
     }
-    
-    func launchRightGuessAnimation(completion: @escaping () -> Void) {
-        UIView.animate(withDuration: 0.6, animations: {
-            self.imageView.layer.shadowOpacity = 0.6
-            self.imageView.layer.shadowOffset = CGSize(width: 10, height: 10)
-        }, completion: { _ in
-            self.delegate?.showOverlay()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                UIView.animate(withDuration: 0.6, animations: {
-                    self.imageView.layer.shadowOpacity = 0.0
-                    self.imageView.layer.shadowOffset = CGSize(width: 0, height: 0)
-                }, completion: { _ in
-                    completion()
-                })
-            }
-        })
-    }
 }

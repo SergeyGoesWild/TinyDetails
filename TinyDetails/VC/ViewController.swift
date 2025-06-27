@@ -9,7 +9,6 @@ import UIKit
 
 protocol ClickableAreaDelegate: AnyObject {
     func didReceiveClick(area: ClickableAreaView)
-    func showOverlay()
 }
 
 protocol EndLevelDelegate: AnyObject {
@@ -177,7 +176,7 @@ class ViewController: UIViewController {
         confirmationOverlayView = ConfirmationOverlay()
         confirmationOverlayView.translatesAutoresizingMaskIntoConstraints = false
         confirmationOverlayView.isUserInteractionEnabled = false
-        confirmationOverlayView.isHidden = false
+        confirmationOverlayView.isHidden = true
         confirmationOverlayView.alpha = 1.0
         
         endGameView = EndGameScreen()
@@ -286,10 +285,6 @@ class ViewController: UIViewController {
         imagePH.bringSubviewToFront(clickableArea)
     }
     
-//    private func fillClickableArea(clickableAreaData: ClickableArea) {
-//        clickableArea.updateClickableArea(with: clickableAreaData)
-//    }
-    
     private func removeClickableAreas() {
         for area in imagePH.subviews.compactMap({ $0 as? ClickableAreaView }) {
             area.removeFromSuperview()
@@ -298,26 +293,12 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: ClickableAreaDelegate {
-    func showOverlay() {
-        confirmationOverlayView.isHidden = false
-        UIView.animate(withDuration: 0.3, animations: {
-            self.confirmationOverlayView.alpha = 1
-            self.questionLabelView.alpha = 0
-        }, completion: { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
-                UIView.animate(withDuration: 0.3, animations: {
-                    self.confirmationOverlayView.alpha = 0
-                }, completion: { _ in
-                    self.confirmationOverlayView.isHidden = true
-                })
-            }
-        })
-    }
-    
     func didReceiveClick(area: ClickableAreaView) {
-        clickableArea.launchRightGuessAnimation {
+        confirmationOverlayView.isHidden = false
+        confirmationOverlayView.revealOverlay(completion: {
+            self.confirmationOverlayView.isHidden = true
             self.checkLevelComplete()
-        }
+        })
     }
 }
 

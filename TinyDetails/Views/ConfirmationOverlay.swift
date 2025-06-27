@@ -8,6 +8,7 @@
 import SwiftUI
 
 final class ConfirmationOverlay: UIView {
+    var commonContainer: UIView!
     var backgroundView: UIView!
     var titleLabel: UILabel!
     var emojiLabel: UILabel!
@@ -24,11 +25,15 @@ final class ConfirmationOverlay: UIView {
     }
     
     private func setupView() {
+        commonContainer = UIView()
+        commonContainer.translatesAutoresizingMaskIntoConstraints = false
+        commonContainer.backgroundColor = .clear
+        commonContainer.alpha = 1.0
+        
         backgroundView = UIView()
         backgroundView.backgroundColor = .black
-        backgroundView.alpha = 0.2
+        backgroundView.alpha = 0.0
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(backgroundView)
         
         let imageContainer = UIView()
         imageContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -45,14 +50,12 @@ final class ConfirmationOverlay: UIView {
         }
         let currentImage = UIImage(contentsOfFile: path)
         avatarImageView.image = currentImage
-        imageContainer.addSubview(avatarImageView)
         
         emojiLabel = UILabel()
         emojiLabel.text = "✅"
         emojiLabel.font = .systemFont(ofSize: 50, weight: .bold)
         emojiLabel.textAlignment = .center
         emojiLabel.translatesAutoresizingMaskIntoConstraints = false
-        imageContainer.addSubview(emojiLabel)
         
         titleLabel = UILabel()
         titleLabel.text = "Echo"
@@ -67,13 +70,23 @@ final class ConfirmationOverlay: UIView {
         centralStackView.alignment = .center
         centralStackView.spacing = 10
         centralStackView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(centralStackView)
+        
+        addSubview(commonContainer)
+        commonContainer.addSubview(backgroundView)
+        commonContainer.addSubview(centralStackView)
+        imageContainer.addSubview(avatarImageView)
+        imageContainer.addSubview(emojiLabel)
         
         NSLayoutConstraint.activate([
-            backgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            backgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            backgroundView.topAnchor.constraint(equalTo: self.topAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            commonContainer.leadingAnchor.constraint(equalTo: leadingAnchor),
+            commonContainer.trailingAnchor.constraint(equalTo: trailingAnchor),
+            commonContainer.topAnchor.constraint(equalTo: topAnchor),
+            commonContainer.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            backgroundView.leadingAnchor.constraint(equalTo: commonContainer.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: commonContainer.trailingAnchor),
+            backgroundView.topAnchor.constraint(equalTo: commonContainer.topAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: commonContainer.bottomAnchor),
             
             imageContainer.heightAnchor.constraint(equalToConstant: 200),
             imageContainer.widthAnchor.constraint(equalToConstant: 200),
@@ -89,5 +102,43 @@ final class ConfirmationOverlay: UIView {
             centralStackView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
             centralStackView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor),
         ])
+    }
+    
+    func revealOverlay(completion: @escaping () -> Void) {
+        emojiLabel.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+        emojiLabel.alpha = 0
+        emojiLabel.isHidden = false
+        
+        UIView.animate(withDuration: 0.3) {
+            self.backgroundView.alpha = 0.3
+        }
+        
+        UIView.animate(withDuration: 0.1, animations: {
+            self.emojiLabel.alpha = 1
+        })
+        
+        UIView.animate(withDuration: 0.8,
+                       delay: 0,
+                       usingSpringWithDamping: 0.5,
+                       initialSpringVelocity: 5,
+                       options: [.curveEaseInOut],
+                       animations: {
+            self.emojiLabel.transform = .identity
+        }, completion: { _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.commonContainer.alpha = 0
+                }, completion: { _ in
+                    completion()
+                    self.restoreStartingState()
+                })
+            }
+        })
+    }
+    
+    private func restoreStartingState() {
+        commonContainer.alpha = 1.0
+        backgroundView.alpha = 0.0
+        emojiLabel.alpha = 0.0
     }
 }
