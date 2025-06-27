@@ -47,14 +47,14 @@ class ViewController: UIViewController {
     
     var widthConstraintImagePH: NSLayoutConstraint!
     var heightConstraintImagePH: NSLayoutConstraint!
+    var questionLabelViewbottomConstraint: NSLayoutConstraint!
     
     var bgSolid: UIView!
     var imagePH: UIImageView!
     var centerCommon: UIView!
     var centerScroll: UIView!
     var scrollView: UIScrollView!
-    var questionTextLabel: UILabel!
-    var itemTextLabel: UILabel!
+    var questionLabelView: QuestionLabelView!
     var image: UIImage!
     var clickableArea: ClickableAreaView!
     var confirmationOverlayView: ConfirmationOverlay!
@@ -80,11 +80,22 @@ class ViewController: UIViewController {
     // MARK: - Flow
     
     private func setNextItem(clickableAreaData: ClickableArea) {
-        itemTextLabel.text = currentItem.hintText + "?"
-//        removeClickableAreas()
-//        setupClickableArea(areaData: currentItem)
         clickableArea.updateClickableArea(with: clickableAreaData)
-//        view.layoutIfNeeded()
+        
+        if currentItemIndex == 0 {
+            questionLabelView.updateItemText(itemText: currentItem.hintText)
+        } else {
+            questionLabelView.isHidden = true
+            questionLabelView.updateItemText(itemText: currentItem.hintText)
+            questionLabelViewbottomConstraint.constant = -50
+            view.layoutIfNeeded()
+
+            questionLabelView.isHidden = false
+            UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: {
+                self.questionLabelViewbottomConstraint.constant = 0
+                self.view.layoutIfNeeded()
+            }, completion: nil)
+        }
     }
     
     private func checkLevelComplete() {
@@ -101,9 +112,9 @@ class ViewController: UIViewController {
     
     @objc private func changeLevel() {
         
-        let endLevelScreen = EndLevelScreen(paintingObject: currentLevel, delegate: self, isLastLevel: gameIsOver)
-        endLevelScreen.modalPresentationStyle = .automatic
-        present(endLevelScreen, animated: true, completion: nil)
+//        let endLevelScreen = EndLevelScreen(paintingObject: currentLevel, delegate: self, isLastLevel: gameIsOver)
+//        endLevelScreen.modalPresentationStyle = .automatic
+//        present(endLevelScreen, animated: true, completion: nil)
         
         if !gameIsOver {
             removeClickableAreas()
@@ -127,7 +138,7 @@ class ViewController: UIViewController {
     
     private func setupNormalLayout() {
         bgSolid = UIView()
-        bgSolid.backgroundColor = UIColor(red: 0.18, green: 0.53, blue: 0.87, alpha: 1.00)
+        bgSolid.backgroundColor = .black
         bgSolid.translatesAutoresizingMaskIntoConstraints = false
         
         scrollView = UIScrollView()
@@ -138,6 +149,11 @@ class ViewController: UIViewController {
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        
+        questionLabelView = QuestionLabelView(questionText: "Can you find", itemText: currentItem.hintText)
+        questionLabelView.translatesAutoresizingMaskIntoConstraints = false
+        questionLabelViewbottomConstraint = questionLabelView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0)
+        questionLabelView.isHidden = false
         
         centerCommon = UIView()
         centerCommon.backgroundColor = .black
@@ -152,21 +168,6 @@ class ViewController: UIViewController {
         imagePH.isUserInteractionEnabled = true
         widthConstraintImagePH = imagePH.widthAnchor.constraint(equalToConstant: 0)
         heightConstraintImagePH = imagePH.heightAnchor.constraint(equalToConstant: 0)
-        
-        questionTextLabel = UILabel()
-        questionTextLabel.text = "Can you find"
-        questionTextLabel.textColor = .white
-        questionTextLabel.font = UIFont.systemFont(ofSize: 40, weight: .medium)
-        questionTextLabel.textAlignment = .left
-        questionTextLabel.translatesAutoresizingMaskIntoConstraints = false
-        questionTextLabel.isUserInteractionEnabled = false
-        
-        itemTextLabel = UILabel()
-        itemTextLabel.textColor = .white
-        itemTextLabel.font = UIFont.systemFont(ofSize: 55, weight: .bold)
-        itemTextLabel.textAlignment = .left
-        itemTextLabel.translatesAutoresizingMaskIntoConstraints = false
-        itemTextLabel.isUserInteractionEnabled = false
         
         let gradientView = GradientView()
         gradientView.translatesAutoresizingMaskIntoConstraints = false
@@ -185,14 +186,11 @@ class ViewController: UIViewController {
         
         view.addSubview(bgSolid)
         view.addSubview(scrollView)
-        //        view.addSubview(centerCommon)
         scrollView.addSubview(imagePH)
         view.addSubview(gradientView)
-        view.addSubview(questionTextLabel)
-        view.addSubview(itemTextLabel)
+        view.addSubview(questionLabelView)
         view.addSubview(confirmationOverlayView)
         view.addSubview(endGameView)
-        //        imagePH.addSubview(centerScroll)
         
         NSLayoutConstraint.activate([
             bgSolid.widthAnchor.constraint(equalTo: view.widthAnchor),
@@ -205,6 +203,9 @@ class ViewController: UIViewController {
             scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             scrollView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
+            questionLabelViewbottomConstraint,
+            questionLabelView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            
             confirmationOverlayView.widthAnchor.constraint(equalTo: view.widthAnchor),
             confirmationOverlayView.heightAnchor.constraint(equalTo: view.heightAnchor),
             confirmationOverlayView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -212,19 +213,13 @@ class ViewController: UIViewController {
             
             gradientView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             gradientView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            gradientView.topAnchor.constraint(equalTo: questionTextLabel.topAnchor, constant: -30),
+            gradientView.heightAnchor.constraint(equalTo: questionLabelView.heightAnchor, constant: 30),
             gradientView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             endGameView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             endGameView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             endGameView.topAnchor.constraint(equalTo: view.topAnchor),
             endGameView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            
-            itemTextLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
-            itemTextLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            
-            questionTextLabel.bottomAnchor.constraint(equalTo: itemTextLabel.topAnchor, constant: 5),
-            questionTextLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             
             widthConstraintImagePH,
             heightConstraintImagePH,
