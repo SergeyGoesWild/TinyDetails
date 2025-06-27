@@ -83,6 +83,7 @@ class ViewController: UIViewController {
         clickableArea.updateClickableArea(with: clickableAreaData)
         
         if currentItemIndex == 0 {
+            questionLabelView.alpha = 1.0
             questionLabelView.updateItemText(itemText: currentItem.hintText)
         } else {
             questionLabelView.alpha = 0.0
@@ -176,8 +177,8 @@ class ViewController: UIViewController {
         confirmationOverlayView = ConfirmationOverlay()
         confirmationOverlayView.translatesAutoresizingMaskIntoConstraints = false
         confirmationOverlayView.isUserInteractionEnabled = false
-        confirmationOverlayView.isHidden = true
-        confirmationOverlayView.alpha = 0.0
+        confirmationOverlayView.isHidden = false
+        confirmationOverlayView.alpha = 1.0
         
         endGameView = EndGameScreen()
         endGameView.translatesAutoresizingMaskIntoConstraints = false
@@ -301,6 +302,7 @@ extension ViewController: ClickableAreaDelegate {
         confirmationOverlayView.isHidden = false
         UIView.animate(withDuration: 0.3, animations: {
             self.confirmationOverlayView.alpha = 1
+            self.questionLabelView.alpha = 0
         }, completion: { _ in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
                 UIView.animate(withDuration: 0.3, animations: {
