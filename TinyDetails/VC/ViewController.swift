@@ -53,6 +53,7 @@ class ViewController: UIViewController {
     var centerCommon: UIView!
     var centerScroll: UIView!
     var scrollView: UIScrollView!
+    var questionLabelContainer: UIView!
     var questionLabelView: QuestionLabelView!
     var image: UIImage!
     var clickableArea: ClickableAreaView!
@@ -83,6 +84,7 @@ class ViewController: UIViewController {
         
         if currentItemIndex == 0 {
             questionLabelView.alpha = 1.0
+            questionLabelViewbottomConstraint.constant = 0
             questionLabelView.updateItemText(itemText: currentItem.hintText)
         } else {
             questionLabelView.alpha = 0.0
@@ -150,10 +152,15 @@ class ViewController: UIViewController {
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         
+        questionLabelContainer = UIView()
+        questionLabelContainer.backgroundColor = .clear
+        questionLabelContainer.translatesAutoresizingMaskIntoConstraints = false
+        questionLabelContainer.isUserInteractionEnabled = false
+        
         questionLabelView = QuestionLabelView(questionText: "Can you find", itemText: currentItem.hintText)
         questionLabelView.translatesAutoresizingMaskIntoConstraints = false
         questionLabelView.isUserInteractionEnabled = false
-        questionLabelViewbottomConstraint = questionLabelView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0)
+        questionLabelViewbottomConstraint = questionLabelView.bottomAnchor.constraint(equalTo: questionLabelContainer.bottomAnchor, constant: 0)
         questionLabelView.isHidden = false
         
         centerCommon = UIView()
@@ -176,7 +183,7 @@ class ViewController: UIViewController {
         
         confirmationOverlayView = ConfirmationOverlay()
         confirmationOverlayView.translatesAutoresizingMaskIntoConstraints = false
-        confirmationOverlayView.isUserInteractionEnabled = false
+        confirmationOverlayView.isUserInteractionEnabled = true
         confirmationOverlayView.isHidden = true
         confirmationOverlayView.alpha = 1.0
         
@@ -189,7 +196,8 @@ class ViewController: UIViewController {
         view.addSubview(scrollView)
         scrollView.addSubview(imagePH)
         view.addSubview(gradientView)
-        view.addSubview(questionLabelView)
+        view.addSubview(questionLabelContainer)
+        questionLabelContainer.addSubview(questionLabelView)
         view.addSubview(confirmationOverlayView)
         view.addSubview(endGameView)
         
@@ -204,8 +212,13 @@ class ViewController: UIViewController {
             scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             scrollView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
+            questionLabelContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            questionLabelContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            questionLabelContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            questionLabelContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
             questionLabelViewbottomConstraint,
-            questionLabelView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            questionLabelView.leadingAnchor.constraint(equalTo: questionLabelContainer.leadingAnchor, constant: 16),
             
             confirmationOverlayView.widthAnchor.constraint(equalTo: view.widthAnchor),
             confirmationOverlayView.heightAnchor.constraint(equalTo: view.heightAnchor),
@@ -297,6 +310,11 @@ extension ViewController: ClickableAreaDelegate {
     func didReceiveClick(area: ClickableAreaView) {
         confirmationOverlayView.updateConfirmationOverlay(areaData: currentItem)
         confirmationOverlayView.isHidden = false
+        UIView.animate(withDuration: 0.3, animations: {
+            self.questionLabelView.alpha = 0
+            self.questionLabelViewbottomConstraint.constant = 50
+            self.questionLabelContainer.layoutIfNeeded()
+        })
         confirmationOverlayView.revealOverlay(completion: {
             self.confirmationOverlayView.isHidden = true
             self.checkLevelComplete()
