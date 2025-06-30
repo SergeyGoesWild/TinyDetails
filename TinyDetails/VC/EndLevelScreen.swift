@@ -103,7 +103,7 @@ final class EndLevelScreen: UIViewController {
         imageHeightConstraint = imageView.heightAnchor.constraint(equalToConstant: 0)
         
         NSLayoutConstraint.activate([
-            endScrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            endScrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 4),
             endScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             endScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             endScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -113,20 +113,20 @@ final class EndLevelScreen: UIViewController {
             titleView.widthAnchor.constraint(equalTo: endScrollView.widthAnchor, constant: -sideMargin * 2),
             
             subtitleView.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
-            subtitleView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 20),
+            subtitleView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 30),
             subtitleView.widthAnchor.constraint(equalTo: endScrollView.widthAnchor, constant: -sideMargin * 2),
             
             imageView.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
-            imageView.topAnchor.constraint(equalTo: subtitleView.bottomAnchor, constant: 20),
+            imageView.topAnchor.constraint(equalTo: subtitleView.bottomAnchor, constant: 40),
             imageWidthConstraint,
             imageHeightConstraint,
             
             descriptionView.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
-            descriptionView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
+            descriptionView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 30),
             descriptionView.widthAnchor.constraint(equalTo: endScrollView.widthAnchor, constant: -sideMargin * 2),
             
             nextLevelButton.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
-            nextLevelButton.topAnchor.constraint(equalTo: descriptionView.bottomAnchor, constant: 20),
+            nextLevelButton.topAnchor.constraint(equalTo: descriptionView.bottomAnchor, constant: 50),
             nextLevelButton.bottomAnchor.constraint(equalTo: endScrollView.bottomAnchor, constant: -20),
             nextLevelButton.widthAnchor.constraint(equalToConstant: 200),
             nextLevelButton.heightAnchor.constraint(equalToConstant: 50),

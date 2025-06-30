@@ -219,15 +219,16 @@ class ViewController: UIViewController {
             
             questionLabelViewbottomConstraint,
             questionLabelView.leadingAnchor.constraint(equalTo: questionLabelContainer.leadingAnchor, constant: 16),
+            questionLabelView.trailingAnchor.constraint(equalTo: questionLabelContainer.trailingAnchor, constant: -16),
             
-            confirmationOverlayView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            confirmationOverlayView.heightAnchor.constraint(equalTo: view.heightAnchor),
+            confirmationOverlayView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             confirmationOverlayView.topAnchor.constraint(equalTo: view.topAnchor),
+            confirmationOverlayView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             confirmationOverlayView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             gradientView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             gradientView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            gradientView.heightAnchor.constraint(equalTo: questionLabelView.heightAnchor, constant: 30),
+            gradientView.heightAnchor.constraint(equalTo: questionLabelContainer.heightAnchor, multiplier: 0.2),
             gradientView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             endGameView.bottomAnchor.constraint(equalTo: view.bottomAnchor),

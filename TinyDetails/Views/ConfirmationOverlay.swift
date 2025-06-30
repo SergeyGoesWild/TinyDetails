@@ -55,6 +55,10 @@ final class ConfirmationOverlay: UIView {
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.adjustsFontSizeToFitWidth = true
+        titleLabel.minimumScaleFactor = 0.5
+        titleLabel.lineBreakMode = .byTruncatingTail
+        titleLabel.numberOfLines = 1
         
         centralStackView = UIStackView(arrangedSubviews: [imageContainer, titleLabel])
         centralStackView.axis = .vertical
@@ -91,7 +95,8 @@ final class ConfirmationOverlay: UIView {
             emojiLabel.centerXAnchor.constraint(equalTo: imageContainer.centerXAnchor, constant: 70),
             emojiLabel.centerYAnchor.constraint(equalTo: imageContainer.centerYAnchor, constant: 70),
             
-            centralStackView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            centralStackView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: 16),
+            centralStackView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -16),
             centralStackView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor),
         ])
     }
@@ -102,7 +107,7 @@ final class ConfirmationOverlay: UIView {
         emojiLabel.isHidden = false
         
         UIView.animate(withDuration: 0.3) {
-            self.backgroundView.alpha = 0.3
+            self.backgroundView.alpha = 0.4
         }
         
         UIView.animate(withDuration: 0.1, animations: {

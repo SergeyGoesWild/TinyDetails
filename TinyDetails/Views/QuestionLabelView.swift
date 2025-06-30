@@ -50,6 +50,10 @@ final class QuestionLabelView: UIView {
         itemLabel.textAlignment = .left
         itemLabel.translatesAutoresizingMaskIntoConstraints = false
         itemLabel.isUserInteractionEnabled = false
+        itemLabel.adjustsFontSizeToFitWidth = true
+        itemLabel.minimumScaleFactor = 0.5
+        itemLabel.lineBreakMode = .byTruncatingTail
+        itemLabel.numberOfLines = 1
         
         addSubview(questionLabel)
         addSubview(itemLabel)
@@ -70,6 +74,25 @@ final class QuestionLabelView: UIView {
         self.itemText = itemText
         if let questionText = questionText {
             self.questionText = questionText
+        }
+        if self.itemText.count > 20 {
+            adaptToLongText(gettingBack: false)
+        } else {
+            adaptToLongText(gettingBack: true)
+        }
+    }
+    
+    private func adaptToLongText(gettingBack: Bool) {
+        if gettingBack {
+            itemLabel.font = UIFont.systemFont(ofSize: 55, weight: .bold)
+            itemLabel.adjustsFontSizeToFitWidth = true
+            itemLabel.lineBreakMode = .byTruncatingTail
+            itemLabel.numberOfLines = 1
+        } else {
+            itemLabel.font = UIFont.systemFont(ofSize: 45, weight: .bold)
+            itemLabel.adjustsFontSizeToFitWidth = false
+            itemLabel.lineBreakMode = .byWordWrapping
+            itemLabel.numberOfLines = 0
         }
     }
 }
