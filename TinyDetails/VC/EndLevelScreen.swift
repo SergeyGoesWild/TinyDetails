@@ -67,7 +67,7 @@ final class EndLevelScreen: UIViewController {
         subtitleView.text = paintingObject.endSubtitle
         subtitleView.textAlignment = .center
         subtitleView.textColor = .black
-        subtitleView.font = UIFont.systemFont(ofSize: 20, weight: .regular)
+        subtitleView.font = UIFont.italicSystemFont(ofSize: 20)
         subtitleView.translatesAutoresizingMaskIntoConstraints = false
         subtitleView.lineBreakMode = .byWordWrapping
         subtitleView.numberOfLines = 0
