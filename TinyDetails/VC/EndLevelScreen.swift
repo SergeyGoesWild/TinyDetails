@@ -55,7 +55,7 @@ final class EndLevelScreen: UIViewController {
         endScrollView.backgroundColor = .clear
         
         titleView = UILabel()
-        titleView.text = "Поздравляем"
+        titleView.text = "Level Complete"
         titleView.textAlignment = .center
         titleView.textColor = .black
         titleView.font = UIFont.systemFont(ofSize: 40, weight: .bold)
