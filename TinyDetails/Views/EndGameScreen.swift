@@ -7,13 +7,17 @@
 import UIKit
 
 final class EndGameScreen: UIView {
+    weak var delegate: EndGameDelegate?
+    
     private var titleLabel: UILabel!
     private var additionalLabel: UILabel!
     private var backgroundView: UIView!
     private var imageView: UIImageView!
+    private var restartButton: UIButton!
     
-    init() {
+    init(delegate: EndGameDelegate) {
         super.init(frame: .zero)
+        self.delegate = delegate
         setupUI()
     }
     
@@ -47,6 +51,14 @@ final class EndGameScreen: UIView {
         Until we meet again in "Tiny Details"!
         """
         
+        restartButton = UIButton(type: .system)
+        restartButton.translatesAutoresizingMaskIntoConstraints = false
+        let config = UIImage.SymbolConfiguration(pointSize: 30, weight: .regular)
+        let restartImage = UIImage(systemName: "arrow.clockwise.circle", withConfiguration: config)
+        restartButton.setImage(restartImage, for: .normal)
+        restartButton.tintColor = .white
+        restartButton.addTarget(self, action: #selector(restartTapped), for: .touchUpInside)
+        
         guard let path = Bundle.main.path(forResource: "finalScreenOsteria", ofType: "png") else {
             print("Final screen image not found")
             return
@@ -67,6 +79,7 @@ final class EndGameScreen: UIView {
         addSubview(spacer)
         addSubview(titleLabel)
         addSubview(additionalLabel)
+        addSubview(restartButton)
         addSubview(imageView)
         
         NSLayoutConstraint.activate([
@@ -86,10 +99,19 @@ final class EndGameScreen: UIView {
             additionalLabel.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
             additionalLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
             
+            restartButton.topAnchor.constraint(equalTo: additionalLabel.bottomAnchor, constant: 30),
+            restartButton.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            restartButton.widthAnchor.constraint(equalToConstant: 50),
+            restartButton.heightAnchor.constraint(equalToConstant: 50),
+            
             imageView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor, constant: 0),
             imageView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: 200),
             imageView.widthAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 1.2),
             imageView.heightAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 1.2),
         ])
+    }
+    
+    @objc private func restartTapped() {
+        delegate?.restartGame()
     }
 }
