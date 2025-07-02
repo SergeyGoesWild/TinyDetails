@@ -66,7 +66,9 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadSaveData()
+//        loadSaveData()
+        SaveProvider.shared.onEndScreen = false
+        SaveProvider.shared.onModal = false
         setupNormalLayout()
         
         print("onModal : ", SaveProvider.shared.onModal)
@@ -82,8 +84,8 @@ class ViewController: UIViewController {
         if SaveProvider.shared.onModal {
             changeLevel()
         } else if SaveProvider.shared.onEndScreen {
-            endGameView.isHidden = false
-            endGameView.isUserInteractionEnabled = true
+//            endGameView.isHidden = false
+//            endGameView.isUserInteractionEnabled = true
         }
     }
     
@@ -123,7 +125,7 @@ class ViewController: UIViewController {
         } else {
             print("about SET ITEM")
             currentItemIndex += 1
-            savingData(onModal: false)
+//            savingData(onModal: false)
             print("**********")
             print("onModal : ", SaveProvider.shared.onModal)
             print("onEnd : ", SaveProvider.shared.onEndScreen)
@@ -133,23 +135,22 @@ class ViewController: UIViewController {
         }
     }
     
-    private func savingData(onModal: Bool, onEnd: Bool = false) {
-        SaveProvider.shared.latestLevelIndex = currentLevelIndex
-        SaveProvider.shared.latestItemIndex = currentItemIndex
-        if onModal {
-            SaveProvider.shared.onModal = true
-        } else {
-            SaveProvider.shared.onModal = false
-        }
-    }
+//    private func savingData(onModal: Bool, onEnd: Bool = false) {
+//        SaveProvider.shared.latestLevelIndex = currentLevelIndex
+//        SaveProvider.shared.latestItemIndex = currentItemIndex
+//        if onModal {
+//            SaveProvider.shared.onModal = true
+//        } else {
+//            SaveProvider.shared.onModal = false
+//        }
+//    }
     
     @objc private func changeLevel() {
         
-        savingData(onModal: true)
+//        savingData(onModal: true)
         
-        let endLevelScreen = EndLevelScreen(paintingObject: currentLevel, delegate: self, isLastLevel: gameIsOver)
-        endLevelScreen.modalPresentationStyle = .automatic
-        present(endLevelScreen, animated: true, completion: nil)
+        let endLevelScreen = EndLevelScreen(paintingObject: currentLevel, delegate: self, isLastLevel: gameIsOver, endGameDelegate: self)
+        navigationController?.pushViewController(endLevelScreen, animated: true)
         
         if !gameIsOver {
             removeClickableAreas()
@@ -164,8 +165,8 @@ class ViewController: UIViewController {
             }
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.endGameView.isHidden = false
-                self.endGameView.isUserInteractionEnabled = true
+//                self.endGameView.isHidden = false
+//                self.endGameView.isUserInteractionEnabled = true
             }
         }
     }
@@ -221,10 +222,10 @@ class ViewController: UIViewController {
         confirmationOverlayView.isHidden = true
         confirmationOverlayView.alpha = 1.0
         
-        endGameView = EndGameScreen(delegate: self)
-        endGameView.translatesAutoresizingMaskIntoConstraints = false
-        endGameView.isUserInteractionEnabled = false
-        endGameView.isHidden = true
+//        endGameView = EndGameScreen(delegate: self)
+//        endGameView.translatesAutoresizingMaskIntoConstraints = false
+//        endGameView.isUserInteractionEnabled = false
+//        endGameView.isHidden = true
         
         view.addSubview(bgSolid)
         view.addSubview(scrollView)
@@ -233,7 +234,7 @@ class ViewController: UIViewController {
         view.addSubview(questionLabelContainer)
         questionLabelContainer.addSubview(questionLabelView)
         view.addSubview(confirmationOverlayView)
-        view.addSubview(endGameView)
+//        view.addSubview(endGameView)
         
         NSLayoutConstraint.activate([
             bgSolid.widthAnchor.constraint(equalTo: view.widthAnchor),
@@ -265,10 +266,10 @@ class ViewController: UIViewController {
             gradientView.heightAnchor.constraint(equalTo: questionLabelContainer.heightAnchor, multiplier: 0.2),
             gradientView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            endGameView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            endGameView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            endGameView.topAnchor.constraint(equalTo: view.topAnchor),
-            endGameView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//            endGameView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+//            endGameView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+//            endGameView.topAnchor.constraint(equalTo: view.topAnchor),
+//            endGameView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             widthConstraintImagePH,
             heightConstraintImagePH,
@@ -360,12 +361,12 @@ extension ViewController: ClickableAreaDelegate {
 
 extension ViewController: EndLevelDelegate {
     func didPassNextLevel() {
-        savingData(onModal: false, onEnd: gameIsOver)
-        print("^^^^^^^^^^^^")
-        print("onModal : ", SaveProvider.shared.onModal)
-        print("onEnd : ", SaveProvider.shared.onEndScreen)
-        print("on level : ", SaveProvider.shared.latestLevelIndex)
-        print("on item : ", SaveProvider.shared.latestItemIndex)
+//        savingData(onModal: false, onEnd: gameIsOver)
+//        print("^^^^^^^^^^^^")
+//        print("onModal : ", SaveProvider.shared.onModal)
+//        print("onEnd : ", SaveProvider.shared.onEndScreen)
+//        print("on level : ", SaveProvider.shared.latestLevelIndex)
+//        print("on item : ", SaveProvider.shared.latestItemIndex)
     }
 }
 
@@ -385,11 +386,12 @@ extension ViewController: EndGameDelegate {
     func restartGame() {
         currentItemIndex = 0
         currentLevelIndex = 0
-        savingData(onModal: false)
+        skipStartAnimation = true
+//        savingData(onModal: false)
         setupPictureLayout(currentLevel: currentLevel)
         setNextItem(clickableAreaData: currentItem)
-        endGameView.isHidden = true
-        endGameView.isUserInteractionEnabled = false
+//        endGameView.isHidden = true
+//        endGameView.isUserInteractionEnabled = false
     }
 }
 

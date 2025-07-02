@@ -10,6 +10,7 @@ import UIKit
 
 final class EndLevelScreen: UIViewController {
     weak var delegate: EndLevelDelegate?
+    weak var endGamedelegate: EndGameDelegate?
     
     var isLastLevel: Bool!
     var isFirstLaunch: Bool = true
@@ -30,10 +31,11 @@ final class EndLevelScreen: UIViewController {
     var imageWidthConstraint: NSLayoutConstraint!
     var imageHeightConstraint: NSLayoutConstraint!
     
-    init(paintingObject: PaintingObject, delegate: EndLevelDelegate, isLastLevel: Bool) {
+    init(paintingObject: PaintingObject, delegate: EndLevelDelegate, isLastLevel: Bool, endGameDelegate: EndGameDelegate) {
         self.paintingObject = paintingObject
         self.delegate = delegate
         self.isLastLevel = isLastLevel
+        self.endGamedelegate = endGameDelegate
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -154,8 +156,13 @@ final class EndLevelScreen: UIViewController {
     }
     
     @objc private func nextLevelButtonPushed() {
-        delegate?.didPassNextLevel()
-        dismiss(animated: true, completion: nil)
+        if isLastLevel {
+            let endGameScreen = EndGameScreen(delegate: endGamedelegate)
+            navigationController?.pushViewController(endGameScreen, animated: true)
+        } else {
+            navigationController?.popToRootViewController(animated: true)
+            delegate?.didPassNextLevel()
+        }
     }
     
     private func getImageSize(image: UIImage, view: UIView) -> CGSize {
@@ -175,6 +182,6 @@ final class EndLevelScreen: UIViewController {
     }
     
     deinit {
-        print("DEALOCATED!")
+        print("DEALOCATED end-LEVEL-Screen!")
     }
 }

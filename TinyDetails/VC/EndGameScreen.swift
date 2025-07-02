@@ -6,7 +6,7 @@
 //
 import UIKit
 
-final class EndGameScreen: UIView {
+final class EndGameScreen: UIViewController {
     weak var delegate: EndGameDelegate?
     
     private var titleLabel: UILabel!
@@ -15,14 +15,18 @@ final class EndGameScreen: UIView {
     private var imageView: UIImageView!
     private var restartButton: UIButton!
     
-    init(delegate: EndGameDelegate) {
-        super.init(frame: .zero)
+    init(delegate: EndGameDelegate?) {
         self.delegate = delegate
-        setupUI()
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
     }
     
     private func setupUI() {
@@ -70,23 +74,29 @@ final class EndGameScreen: UIView {
         imageView.image = currentImage
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
+        let imageViewContainer = UIView()
+        imageViewContainer.translatesAutoresizingMaskIntoConstraints = false
+        imageViewContainer.clipsToBounds = true
+        imageViewContainer.isUserInteractionEnabled = false
+        
         let spacer = UIView()
         spacer.translatesAutoresizingMaskIntoConstraints = false
         spacer.isUserInteractionEnabled = false
         spacer.backgroundColor = .clear
         
-        addSubview(backgroundView)
-        addSubview(spacer)
-        addSubview(titleLabel)
-        addSubview(additionalLabel)
-        addSubview(restartButton)
-        addSubview(imageView)
+        view.addSubview(backgroundView)
+        view.addSubview(spacer)
+        view.addSubview(titleLabel)
+        view.addSubview(additionalLabel)
+        view.addSubview(restartButton)
+        view.addSubview(imageViewContainer)
+        imageViewContainer.addSubview(imageView)
         
         NSLayoutConstraint.activate([
-            backgroundView.topAnchor.constraint(equalTo: topAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
             spacer.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
             spacer.topAnchor.constraint(equalTo: backgroundView.topAnchor),
@@ -104,14 +114,24 @@ final class EndGameScreen: UIView {
             restartButton.widthAnchor.constraint(equalToConstant: 50),
             restartButton.heightAnchor.constraint(equalToConstant: 50),
             
-            imageView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor, constant: 0),
-            imageView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: 200),
-            imageView.widthAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 1.2),
-            imageView.heightAnchor.constraint(equalTo: backgroundView.widthAnchor, multiplier: 1.2),
+            imageViewContainer.topAnchor.constraint(equalTo: view.topAnchor),
+            imageViewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            imageViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            imageViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            imageView.centerXAnchor.constraint(equalTo: imageViewContainer.centerXAnchor, constant: 0),
+            imageView.centerYAnchor.constraint(equalTo: imageViewContainer.centerYAnchor, constant: 200),
+            imageView.widthAnchor.constraint(equalTo: imageViewContainer.widthAnchor, multiplier: 1.2),
+            imageView.heightAnchor.constraint(equalTo: imageViewContainer.widthAnchor, multiplier: 1.2),
         ])
     }
     
     @objc private func restartTapped() {
         delegate?.restartGame()
+        navigationController?.popToRootViewController(animated: true)
+    }
+    
+    deinit {
+        print("DEALOCATED end-GAME-screen!")
     }
 }

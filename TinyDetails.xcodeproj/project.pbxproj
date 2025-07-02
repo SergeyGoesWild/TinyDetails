@@ -28,6 +28,7 @@
 		2A9EE34C2E0C16030019F7CD /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				EndGameScreen.swift,
 				EndLevelScreen.swift,
 				ViewController.swift,
 			);
