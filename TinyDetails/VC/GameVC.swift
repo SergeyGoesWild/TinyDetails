@@ -19,7 +19,7 @@ protocol EndGameDelegate: AnyObject {
     func restartGame()
 }
 
-class ViewController: UIViewController {
+class GameVC: UIViewController {
     static let paintingList = DataProvider.shared.paintingList
     static let saveProvider = SaveProvider.shared
     
@@ -27,11 +27,11 @@ class ViewController: UIViewController {
     var currentItemIndex: Int = 0
     
     var currentLevel: PaintingObject {
-        return ViewController.paintingList[currentLevelIndex]
+        return GameVC.paintingList[currentLevelIndex]
     }
     
     var currentItem: ClickableArea {
-        return ViewController.paintingList[currentLevelIndex].areas[currentItemIndex]
+        return GameVC.paintingList[currentLevelIndex].areas[currentItemIndex]
     }
     
     var levelIsOver: Bool {
@@ -39,7 +39,7 @@ class ViewController: UIViewController {
     }
     
     var gameIsOver: Bool {
-        return currentLevelIndex >= ViewController.paintingList.count - 1
+        return currentLevelIndex >= GameVC.paintingList.count - 1
     }
     
     var imageViewSize: CGSize!
@@ -318,7 +318,7 @@ class ViewController: UIViewController {
     //    }
 }
 
-extension ViewController: ClickableAreaDelegate {
+extension GameVC: ClickableAreaDelegate {
     func didReceiveClick(area: ClickableAreaView) {
         skipStartAnimation = false
         confirmationOverlayView.updateConfirmationOverlay(areaData: currentItem)
@@ -335,7 +335,7 @@ extension ViewController: ClickableAreaDelegate {
     }
 }
 
-extension ViewController: EndLevelDelegate {
+extension GameVC: EndLevelDelegate {
     func didPassNextLevel() {
 //        savingData(onModal: false, onEnd: gameIsOver)
 //        print("^^^^^^^^^^^^")
@@ -346,17 +346,18 @@ extension ViewController: EndLevelDelegate {
     }
 }
 
-extension ViewController: UIScrollViewDelegate {
+extension GameVC: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imagePH
     }
 }
 
-extension ViewController: EndGameDelegate {
+extension GameVC: EndGameDelegate {
     func restartGame() {
         currentItemIndex = 0
         currentLevelIndex = 0
         skipStartAnimation = true
+        scrollView.zoomScale = 1
 //        savingData(onModal: false)
         setupPictureLayout(currentLevel: currentLevel)
         launchNextItem(clickableAreaData: currentItem)

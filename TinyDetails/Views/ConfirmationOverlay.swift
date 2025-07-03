@@ -122,7 +122,7 @@ final class ConfirmationOverlay: UIView {
                        animations: {
             self.emojiLabel.transform = .identity
         }, completion: { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 UIView.animate(withDuration: 0.3, animations: {
                     self.commonContainer.alpha = 0
                 }, completion: { _ in

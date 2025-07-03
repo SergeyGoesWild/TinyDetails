@@ -30,7 +30,8 @@
 			membershipExceptions = (
 				EndGameScreen.swift,
 				EndLevelScreen.swift,
-				ViewController.swift,
+				GameVC.swift,
+				MainVC.swift,
 			);
 			target = 2AC06B0C2D872950005F3189 /* TinyDetails */;
 		};
