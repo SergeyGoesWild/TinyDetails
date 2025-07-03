@@ -12,10 +12,12 @@ protocol ClickableAreaDelegate: AnyObject {
 }
 
 protocol EndLevelDelegate: AnyObject {
+    func enteredEndLevel()
     func didPassNextLevel()
 }
 
 protocol EndGameDelegate: AnyObject {
+    func enteredEndGame()
     func restartGame()
 }
 
@@ -66,27 +68,14 @@ class GameVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        loadSaveData()
-        SaveProvider.shared.onEndScreen = false
-        SaveProvider.shared.onModal = false
+        loadSaveData()
         setupNormalLayout()
-        
-        print("onModal : ", SaveProvider.shared.onModal)
-        print("onEnd : ", SaveProvider.shared.onEndScreen)
-        print("on level : ", SaveProvider.shared.latestLevelIndex)
-        print("on item : ", SaveProvider.shared.latestItemIndex)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         setupPictureLayout(currentLevel: currentLevel)
         launchNextItem(clickableAreaData: currentItem)
-//        if SaveProvider.shared.onModal {
-//            changeLevel()
-//        } else if SaveProvider.shared.onEndScreen {
-//            endGameView.isHidden = false
-//            endGameView.isUserInteractionEnabled = true
-//        }
     }
     
     // MARK: - Flow
@@ -116,6 +105,7 @@ class GameVC: UIViewController {
         removeClickableAreas()
         currentLevelIndex += 1
         currentItemIndex = 0
+        savingData(onModal: false, onEnd: false)
         setupPictureLayout(currentLevel: self.currentLevel)
         launchNextItem(clickableAreaData: self.currentItem)
         scrollView.zoomScale = 1
@@ -132,12 +122,7 @@ class GameVC: UIViewController {
             }
         } else {
             currentItemIndex += 1
-//            savingData(onModal: false)
-            print("**********")
-            print("onModal : ", SaveProvider.shared.onModal)
-            print("onEnd : ", SaveProvider.shared.onEndScreen)
-            print("on level : ", SaveProvider.shared.latestLevelIndex)
-            print("on item : ", SaveProvider.shared.latestItemIndex)
+            savingData(onModal: false, onEnd: false)
             launchNextItem(clickableAreaData: currentItem)
         }
     }
@@ -216,7 +201,7 @@ class GameVC: UIViewController {
             bgSolid.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 7/8),
+            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 8/9),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
@@ -311,18 +296,15 @@ class GameVC: UIViewController {
     
     private func loadSaveData() {
         currentLevelIndex = SaveProvider.shared.latestLevelIndex
-        currentItemIndex = SaveProvider.shared.latestItemIndex
+//        currentItemIndex = SaveProvider.shared.latestItemIndex
     }
     
-    //    private func savingData(onModal: Bool, onEnd: Bool = false) {
-    //        SaveProvider.shared.latestLevelIndex = currentLevelIndex
-    //        SaveProvider.shared.latestItemIndex = currentItemIndex
-    //        if onModal {
-    //            SaveProvider.shared.onModal = true
-    //        } else {
-    //            SaveProvider.shared.onModal = false
-    //        }
-    //    }
+    private func savingData(onModal: Bool, onEnd: Bool) {
+        SaveProvider.shared.latestLevelIndex = currentLevelIndex
+        SaveProvider.shared.latestItemIndex = currentItemIndex
+        SaveProvider.shared.onModal = onModal
+        SaveProvider.shared.onEndScreen = onEnd
+    }
 }
 
 extension GameVC: ClickableAreaDelegate {
@@ -343,13 +325,12 @@ extension GameVC: ClickableAreaDelegate {
 }
 
 extension GameVC: EndLevelDelegate {
+    func enteredEndLevel() {
+
+    }
+    
     func didPassNextLevel() {
-//        savingData(onModal: false, onEnd: gameIsOver)
-//        print("^^^^^^^^^^^^")
-//        print("onModal : ", SaveProvider.shared.onModal)
-//        print("onEnd : ", SaveProvider.shared.onEndScreen)
-//        print("on level : ", SaveProvider.shared.latestLevelIndex)
-//        print("on item : ", SaveProvider.shared.latestItemIndex)
+        
     }
 }
 
@@ -360,15 +341,18 @@ extension GameVC: UIScrollViewDelegate {
 }
 
 extension GameVC: EndGameDelegate {
+    func enteredEndGame() {
+
+    }
+    
     func restartGame() {
         removeClickableAreas()
         currentItemIndex = 0
         currentLevelIndex = 0
+        savingData(onModal: false, onEnd: false)
         skipStartAnimation = true
         scrollView.zoomScale = 1
-//        savingData(onModal: false)
         setupPictureLayout(currentLevel: currentLevel)
         launchNextItem(clickableAreaData: currentItem)
     }
 }
-

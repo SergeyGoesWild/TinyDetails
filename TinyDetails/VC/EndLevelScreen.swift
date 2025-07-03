@@ -46,6 +46,7 @@ final class EndLevelScreen: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
+        delegate?.enteredEndLevel()
     }
     
     private func setupLayout() {
@@ -160,8 +161,8 @@ final class EndLevelScreen: UIViewController {
             let endGameScreen = EndGameScreen(delegate: endGamedelegate)
             navigationController?.pushViewController(endGameScreen, animated: true)
         } else {
-            navigationController?.popToRootViewController(animated: true)
             delegate?.didPassNextLevel()
+            navigationController?.popToRootViewController(animated: true)
         }
     }
     

@@ -27,6 +27,7 @@ final class EndGameScreen: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        delegate?.enteredEndGame()
     }
     
     private func setupUI() {
