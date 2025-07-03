@@ -211,10 +211,10 @@ class GameVC: UIViewController {
             bgSolid.topAnchor.constraint(equalTo: view.topAnchor),
             bgSolid.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
-            scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor),
-            scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            scrollView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
             questionLabelContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             questionLabelContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -233,7 +233,7 @@ class GameVC: UIViewController {
             gradientView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             gradientView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             gradientView.heightAnchor.constraint(equalTo: questionLabelContainer.heightAnchor, multiplier: 0.2),
-            gradientView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            gradientView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
             widthConstraintImagePH,
             heightConstraintImagePH,
@@ -357,6 +357,7 @@ extension GameVC: UIScrollViewDelegate {
 
 extension GameVC: EndGameDelegate {
     func restartGame() {
+        removeClickableAreas()
         currentItemIndex = 0
         currentLevelIndex = 0
         skipStartAnimation = true
