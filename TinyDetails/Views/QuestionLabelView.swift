@@ -19,13 +19,15 @@ final class QuestionLabelView: UIView {
         }
     }
     
+    var smallScreen: Bool = false
+    
     private var questionLabel: UILabel!
     private var itemLabel: UILabel!
     
-    init(questionText: String, itemText: String) {
-        
+    init(questionText: String, itemText: String, smallScreen: Bool) {
         self.questionText = questionText
         self.itemText = itemText
+        self.smallScreen = smallScreen
         super.init(frame: .zero)
         setupUI()
     }
@@ -35,10 +37,12 @@ final class QuestionLabelView: UIView {
     }
     
     private func setupUI() {
+        print("Small screen: \(smallScreen)")
+        
         questionLabel = UILabel()
         questionLabel.text = questionText
         questionLabel.textColor = .white
-        questionLabel.font = UIFont.systemFont(ofSize: 40, weight: .medium)
+        questionLabel.font = UIFont.systemFont(ofSize: smallScreen ? 40 : 45, weight: .medium)
         questionLabel.textAlignment = .left
         questionLabel.translatesAutoresizingMaskIntoConstraints = false
         questionLabel.isUserInteractionEnabled = false
@@ -46,7 +50,7 @@ final class QuestionLabelView: UIView {
         itemLabel = UILabel()
         itemLabel.text = itemText
         itemLabel.textColor = .white
-        itemLabel.font = UIFont.systemFont(ofSize: 55, weight: .bold)
+        itemLabel.font = UIFont.systemFont(ofSize: smallScreen ? 55 : 70, weight: .bold)
         itemLabel.textAlignment = .left
         itemLabel.translatesAutoresizingMaskIntoConstraints = false
         itemLabel.isUserInteractionEnabled = false

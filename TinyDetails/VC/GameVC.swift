@@ -44,6 +44,7 @@ class GameVC: UIViewController {
     
     var imageViewSize: CGSize!
     var skipStartAnimation: Bool = true
+    var smallScreen: Bool = false
     
     let sideMargin: CGFloat = 16
     let collectionInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
@@ -149,6 +150,9 @@ class GameVC: UIViewController {
     // MARK: - Layout
     
     private func setupNormalLayout() {
+        let screenSize = UIScreen.main.bounds
+        smallScreen = screenSize.width <= 375 && screenSize.height < 812
+        
         bgSolid = UIView()
         bgSolid.backgroundColor = .black
         bgSolid.translatesAutoresizingMaskIntoConstraints = false
@@ -167,7 +171,7 @@ class GameVC: UIViewController {
         questionLabelContainer.translatesAutoresizingMaskIntoConstraints = false
         questionLabelContainer.isUserInteractionEnabled = false
         
-        questionLabelView = QuestionLabelView(questionText: "Can you find", itemText: currentItem.hintText)
+        questionLabelView = QuestionLabelView(questionText: "Can you find", itemText: currentItem.hintText, smallScreen: smallScreen)
         questionLabelView.translatesAutoresizingMaskIntoConstraints = false
         questionLabelView.isUserInteractionEnabled = false
         questionLabelViewbottomConstraint = questionLabelView.bottomAnchor.constraint(equalTo: questionLabelContainer.bottomAnchor, constant: 0)
@@ -212,7 +216,7 @@ class GameVC: UIViewController {
             bgSolid.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100),
+            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 7/8),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
@@ -232,7 +236,7 @@ class GameVC: UIViewController {
             
             gradientView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             gradientView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            gradientView.heightAnchor.constraint(equalTo: questionLabelContainer.heightAnchor, multiplier: 0.2),
+            gradientView.heightAnchor.constraint(equalTo: questionLabelContainer.heightAnchor, multiplier: 0.15),
             gradientView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
             widthConstraintImagePH,
