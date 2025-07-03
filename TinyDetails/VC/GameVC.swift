@@ -124,7 +124,10 @@ class GameVC: UIViewController {
         if levelIsOver {
             showEndLevelModal()
             if !gameIsOver {
-                launchNextLevel()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                    self.scrollView.zoomScale = 1
+                    self.launchNextLevel()
+                }
             }
         } else {
             currentItemIndex += 1
