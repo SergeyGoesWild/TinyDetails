@@ -11,7 +11,6 @@
 		2AC06B132D872950005F3189 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC06B122D872950005F3189 /* SceneDelegate.swift */; };
 		2AC06B182D872950005F3189 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 2AC06B172D872950005F3189 /* Base */; };
 		2AC06B1A2D872952005F3189 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2AC06B192D872952005F3189 /* Assets.xcassets */; };
-		2AC06B1D2D872952005F3189 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 2AC06B1C2D872952005F3189 /* Base */; };
 		2AEEA7912E1606D300913BF3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2AC06B1B2D872952005F3189 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -156,7 +155,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2AC06B1A2D872952005F3189 /* Assets.xcassets in Resources */,
-				2AC06B1D2D872952005F3189 /* Base in Resources */,
 				2AEEA7912E1606D300913BF3 /* LaunchScreen.storyboard in Resources */,
 				2AC06B182D872950005F3189 /* Base in Resources */,
 			);
