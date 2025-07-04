@@ -70,7 +70,7 @@ final class DataProvider {
                                              avatarName: "LadyWithAnErmine_ermine_av"),
                        ]),
         PaintingObject(idPainting: UUID(),
-                    paintingOffset: 0,
+                       paintingOffset: -0.2,
                     paintingFile: "CompositionRedBlueYellow_origin",
                     paintingTitle: "Composition with Red, Blue and Yellow",
                     painter: "Piet Mondrian",

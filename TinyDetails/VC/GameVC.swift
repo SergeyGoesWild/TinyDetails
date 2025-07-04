@@ -28,6 +28,8 @@ class GameVC: UIViewController {
     var currentLevelIndex: Int = 0
     var currentItemIndex: Int = 0
     
+    var isFirstLaunch: Bool = true
+    
     var currentLevel: PaintingObject {
         return GameVC.paintingList[currentLevelIndex]
     }
@@ -49,7 +51,6 @@ class GameVC: UIViewController {
     var smallScreen: Bool = false
     
     let sideMargin: CGFloat = 16
-    let collectionInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     
     var widthConstraintImagePH: NSLayoutConstraint!
     var heightConstraintImagePH: NSLayoutConstraint!
@@ -72,10 +73,13 @@ class GameVC: UIViewController {
         setupNormalLayout()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        setupPictureLayout(currentLevel: currentLevel)
-        launchNextItem(clickableAreaData: currentItem)
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if isFirstLaunch {
+            setupPictureLayout(currentLevel: currentLevel)
+            launchNextItem(clickableAreaData: currentItem)
+            isFirstLaunch = false
+        }
     }
     
     // MARK: - Flow
