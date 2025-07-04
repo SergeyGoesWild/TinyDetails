@@ -167,18 +167,19 @@ final class EndLevelScreen: UIViewController {
     }
     
     private func getImageSize(image: UIImage, view: UIView) -> CGSize {
-        if image.size.height > image.size.width {
-            let wantedHeight = view.frame.height * 0.5
-            let multiplier = image.size.height / wantedHeight
-            let height = wantedHeight
-            let width = image.size.width / multiplier
-            return CGSize(width: width, height: height)
+        let usableWidth = view.frame.width - sideMargin * 2
+        let multiplier01 = image.size.width / usableWidth
+        let height01 = image.size.height / multiplier01
+        let width01 = usableWidth
+        
+        if height01 > view.frame.height / 2 {
+            let usableHeight = view.frame.height / 2
+            let multiplier02 = height01 / usableHeight
+            let width02 = width01 / multiplier02
+            let height02 = usableHeight
+            return CGSize(width: width02, height: height02)
         } else {
-            let usableWidth = view.frame.width - sideMargin * 2
-            let multiplier = image.size.width / usableWidth
-            let height = image.size.height / multiplier
-            let width = usableWidth
-            return CGSize(width: width, height: height)
+            return CGSize(width: width01, height: height01)
         }
     }
     
