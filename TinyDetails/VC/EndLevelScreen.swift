@@ -82,7 +82,7 @@ final class EndLevelScreen: UIViewController {
         descriptionView.text = paintingObject.endDescription
         descriptionView.textAlignment = .left
         descriptionView.textColor = .black
-        descriptionView.font = UIFont.systemFont(ofSize: 20, weight: .thin)
+        descriptionView.font = UIFont.systemFont(ofSize: 20, weight: .light)
         descriptionView.translatesAutoresizingMaskIntoConstraints = false
         descriptionView.lineBreakMode = .byWordWrapping
         descriptionView.numberOfLines = 0

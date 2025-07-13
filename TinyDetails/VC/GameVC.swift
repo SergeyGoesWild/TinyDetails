@@ -21,6 +21,10 @@ protocol EndGameDelegate: AnyObject {
     func restartGame()
 }
 
+protocol TutorialDelegate: AnyObject {
+    func leavingTutorial()
+}
+
 class GameVC: UIViewController {
     static let paintingList = DataProvider.shared.paintingList
     static let saveProvider = SaveProvider.shared
@@ -66,10 +70,11 @@ class GameVC: UIViewController {
     var image: UIImage!
     var clickableArea: ClickableAreaView!
     var confirmationOverlayView: ConfirmationOverlay!
+    private var tutorialOverlay: TutorialOverlay?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadSaveData()
+//        loadSaveData()
         setupNormalLayout()
     }
     
@@ -111,6 +116,9 @@ class GameVC: UIViewController {
         currentItemIndex = 0
         savingData(onModal: false, onEnd: false)
         setupPictureLayout(currentLevel: self.currentLevel)
+        if let tutorialData = self.currentLevel.tutorialData {
+            setupTutorial(data: tutorialData)
+        }
         launchNextItem(clickableAreaData: self.currentItem)
         scrollView.zoomScale = 1
     }
@@ -236,8 +244,21 @@ class GameVC: UIViewController {
         ])
     }
     
-    private func setupPictureLayout(currentLevel: PaintingObject) {
+    private func setupTutorial(data: TutorialData) {
+        tutorialOverlay = TutorialOverlay(delegate: self, title: data.title, hintText: data.explainerText, iconName: data.iconName)
+        guard let tutorialOverlay else { return }
+        tutorialOverlay.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(tutorialOverlay)
         
+        NSLayoutConstraint.activate([
+            tutorialOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tutorialOverlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tutorialOverlay.topAnchor.constraint(equalTo: view.topAnchor),
+            tutorialOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+        ])
+    }
+    
+    private func setupPictureLayout(currentLevel: PaintingObject) {
         guard let path = Bundle.main.path(forResource: currentLevel.paintingFile, ofType: "jpg") else {
             print("Level Image path not found: ", currentLevel.paintingTitle)
             return
@@ -358,5 +379,13 @@ extension GameVC: EndGameDelegate {
         scrollView.zoomScale = 1
         setupPictureLayout(currentLevel: currentLevel)
         launchNextItem(clickableAreaData: currentItem)
+    }
+}
+
+extension GameVC: TutorialDelegate {
+    func leavingTutorial() {
+        print("about to leave tutorial")
+        tutorialOverlay?.removeFromSuperview()
+        tutorialOverlay = nil
     }
 }

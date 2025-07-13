@@ -7,15 +7,27 @@
 
 import UIKit
 
-final class ConfirmationOverlay: UIView {
+final class TutorialOverlay: UIView {
+    weak var delegate: TutorialDelegate?
+    
+    private var title: String!
+    private var hintText: String!
+    private var iconName: String!
+    
     private var commonContainer: UIView!
     private var backgroundView: UIView!
     private var titleLabel: UILabel!
+    private var hintLabel: UILabel!
     private var emojiLabel: UILabel!
-    private var avatarImageView: UIImageView!
+    private var iconImageView: UIImageView!
     private var centralStackView: UIStackView!
     
-    init() {
+    init(delegate: TutorialDelegate, title: String, hintText: String, iconName: String) {
+        self.delegate = delegate
+        self.title = title
+        self.hintText = hintText
+        self.iconName = iconName
+        
         super.init(frame: .zero)
         setupView()
     }
@@ -32,26 +44,24 @@ final class ConfirmationOverlay: UIView {
         
         backgroundView = UIView()
         backgroundView.backgroundColor = .black
-        backgroundView.alpha = 0.0
+        backgroundView.alpha = 0.9
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         
-        let imageContainer = UIView()
-        imageContainer.translatesAutoresizingMaskIntoConstraints = false
+        let touchView = UIView()
+        touchView.translatesAutoresizingMaskIntoConstraints = false
+        let gestureRecogniser = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        touchView.addGestureRecognizer(gestureRecogniser)
+        touchView.isUserInteractionEnabled = true
+        touchView.backgroundColor = .clear
         
-        avatarImageView = UIImageView()
-        avatarImageView.contentMode = .scaleAspectFit
-        avatarImageView.clipsToBounds = true
-        avatarImageView.layer.cornerRadius = 100
-        avatarImageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        emojiLabel = UILabel()
-        emojiLabel.text = "✅"
-        emojiLabel.font = .systemFont(ofSize: 50, weight: .bold)
-        emojiLabel.textAlignment = .center
-        emojiLabel.translatesAutoresizingMaskIntoConstraints = false
+        let config = UIImage.SymbolConfiguration(hierarchicalColor: .white)
+        iconImageView = UIImageView()
+        iconImageView.contentMode = .scaleAspectFit
+        iconImageView.translatesAutoresizingMaskIntoConstraints = false
+        iconImageView.image = UIImage(systemName: iconName, withConfiguration: config)
         
         titleLabel = UILabel()
-        titleLabel.font = .systemFont(ofSize: 40, weight: .bold)
+        titleLabel.font = .systemFont(ofSize: 20, weight: .bold)
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -59,19 +69,35 @@ final class ConfirmationOverlay: UIView {
         titleLabel.minimumScaleFactor = 0.5
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.numberOfLines = 1
+        titleLabel.text = title
         
-        centralStackView = UIStackView(arrangedSubviews: [imageContainer, titleLabel])
+        hintLabel = UILabel()
+        hintLabel.font = .systemFont(ofSize: 25, weight: .regular)
+        hintLabel.textColor = .white
+        hintLabel.textAlignment = .center
+        hintLabel.translatesAutoresizingMaskIntoConstraints = false
+        hintLabel.adjustsFontSizeToFitWidth = true
+        hintLabel.minimumScaleFactor = 0.5
+        hintLabel.lineBreakMode = .byTruncatingTail
+        hintLabel.numberOfLines = 1
+        hintLabel.text = hintText
+        
+        let spacer = UIView()
+        spacer.translatesAutoresizingMaskIntoConstraints = false
+        spacer.backgroundColor = .clear
+        
+        centralStackView = UIStackView(arrangedSubviews: [iconImageView, spacer, titleLabel, hintLabel])
         centralStackView.axis = .vertical
         centralStackView.distribution = .fill
         centralStackView.alignment = .center
-        centralStackView.spacing = 10
+        centralStackView.spacing = 5
         centralStackView.translatesAutoresizingMaskIntoConstraints = false
+        centralStackView.backgroundColor = .clear
         
         addSubview(commonContainer)
         commonContainer.addSubview(backgroundView)
         commonContainer.addSubview(centralStackView)
-        imageContainer.addSubview(avatarImageView)
-        imageContainer.addSubview(emojiLabel)
+        commonContainer.addSubview(touchView)
         
         NSLayoutConstraint.activate([
             commonContainer.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -84,20 +110,20 @@ final class ConfirmationOverlay: UIView {
             backgroundView.topAnchor.constraint(equalTo: commonContainer.topAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: commonContainer.bottomAnchor),
             
-            imageContainer.heightAnchor.constraint(equalToConstant: 200),
-            imageContainer.widthAnchor.constraint(equalToConstant: 200),
-            
-            avatarImageView.topAnchor.constraint(equalTo: imageContainer.topAnchor),
-            avatarImageView.bottomAnchor.constraint(equalTo: imageContainer.bottomAnchor),
-            avatarImageView.leadingAnchor.constraint(equalTo: imageContainer.leadingAnchor),
-            avatarImageView.trailingAnchor.constraint(equalTo: imageContainer.trailingAnchor),
-            
-            emojiLabel.centerXAnchor.constraint(equalTo: imageContainer.centerXAnchor, constant: 70),
-            emojiLabel.centerYAnchor.constraint(equalTo: imageContainer.centerYAnchor, constant: 70),
+            touchView.leadingAnchor.constraint(equalTo: commonContainer.leadingAnchor),
+            touchView.trailingAnchor.constraint(equalTo: commonContainer.trailingAnchor),
+            touchView.topAnchor.constraint(equalTo: commonContainer.topAnchor),
+            touchView.bottomAnchor.constraint(equalTo: commonContainer.bottomAnchor),
             
             centralStackView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: 16),
             centralStackView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -16),
             centralStackView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor),
+            
+            spacer.heightAnchor.constraint(equalToConstant: 30),
+            spacer.widthAnchor.constraint(equalTo: centralStackView.widthAnchor),
+            
+            iconImageView.heightAnchor.constraint(equalToConstant: 100),
+            iconImageView.widthAnchor.constraint(equalToConstant: 100),
         ])
     }
     
@@ -139,13 +165,16 @@ final class ConfirmationOverlay: UIView {
         emojiLabel.alpha = 0.0
     }
     
-    func updateConfirmationOverlay(areaData: ClickableArea) {
-        titleLabel.text = areaData.hintText
-        guard let path = Bundle.main.path(forResource: areaData.avatarName, ofType: "jpg") else {
-            print("Avatar not found (Confirmation Overlay) for area: \(areaData)")
-            return
-        }
-        let currentImage = UIImage(contentsOfFile: path)
-        avatarImageView.image = currentImage
+    @objc private func handleTap() {
+        print("in HANDLE TAP")
+        UIView.animate(withDuration: 0.3, animations: {
+            self.commonContainer.alpha = 0
+        }, completion: { _ in
+            self.delegate?.leavingTutorial()
+        })
+    }
+    
+    deinit {
+        print("GONE")
     }
 }
