@@ -126,12 +126,12 @@ class GameVC: UIViewController {
     private func checkLevelComplete() {
         if levelIsOver {
             showEndLevelModal()
-            if !gameIsOver {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                    self.scrollView.zoomScale = 1
-                    self.launchNextLevel()
-                }
-            }
+//            if !gameIsOver {
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+//                    self.scrollView.zoomScale = 1
+//                    self.launchNextLevel()
+//                }
+//            }
         } else {
             currentItemIndex += 1
             savingData(onModal: false, onEnd: false)
@@ -355,7 +355,8 @@ extension GameVC: EndLevelDelegate {
     }
     
     func didPassNextLevel() {
-        
+        scrollView.zoomScale = 1
+        launchNextLevel()
     }
 }
 

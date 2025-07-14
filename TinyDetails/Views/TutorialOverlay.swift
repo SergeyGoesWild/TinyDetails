@@ -9,6 +9,7 @@ import UIKit
 
 final class TutorialOverlay: UIView {
     weak var delegate: TutorialDelegate?
+    private var dispatchItem: DispatchWorkItem?
     
     private var title: String!
     private var hintText: String!
@@ -30,10 +31,20 @@ final class TutorialOverlay: UIView {
         
         super.init(frame: .zero)
         setupView()
+        
+        scheduleDismissal()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func scheduleDismissal() {
+        dispatchItem?.cancel()
+        dispatchItem = DispatchWorkItem { [weak self] in
+            self?.leaveTutorial()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: dispatchItem!)
     }
     
     private func setupView() {
@@ -127,54 +138,21 @@ final class TutorialOverlay: UIView {
         ])
     }
     
-    func revealOverlay(completion: @escaping () -> Void) {
-        emojiLabel.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
-        emojiLabel.alpha = 0
-        emojiLabel.isHidden = false
-        
-        UIView.animate(withDuration: 0.3) {
-            self.backgroundView.alpha = 0.4
-        }
-        
-        UIView.animate(withDuration: 0.1, animations: {
-            self.emojiLabel.alpha = 1
-        })
-        
-        UIView.animate(withDuration: 0.8,
-                       delay: 0,
-                       usingSpringWithDamping: 0.5,
-                       initialSpringVelocity: 5,
-                       options: [.curveEaseInOut],
-                       animations: {
-            self.emojiLabel.transform = .identity
-        }, completion: { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                UIView.animate(withDuration: 0.3, animations: {
-                    self.commonContainer.alpha = 0
-                }, completion: { _ in
-                    completion()
-                    self.restoreStartingState()
-                })
-            }
-        })
-    }
-    
-    private func restoreStartingState() {
-        commonContainer.alpha = 1.0
-        backgroundView.alpha = 0.0
-        emojiLabel.alpha = 0.0
-    }
-    
     @objc private func handleTap() {
-        print("in HANDLE TAP")
+        leaveTutorial()
+    }
+    
+    private func leaveTutorial() {
+        dispatchItem?.cancel()
         UIView.animate(withDuration: 0.3, animations: {
             self.commonContainer.alpha = 0
-        }, completion: { _ in
-            self.delegate?.leavingTutorial()
+        }, completion: { [weak self] _ in
+            self?.delegate?.leavingTutorial()
         })
     }
     
     deinit {
-        print("GONE")
+        print("Tutorial deallocated")
+        dispatchItem?.cancel()
     }
 }

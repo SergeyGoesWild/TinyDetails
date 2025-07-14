@@ -105,32 +105,45 @@ final class ConfirmationOverlay: UIView {
         emojiLabel.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
         emojiLabel.alpha = 0
         emojiLabel.isHidden = false
+        backgroundView.alpha = 0
         
-        UIView.animate(withDuration: 0.3) {
-            self.backgroundView.alpha = 0.4
-        }
-        
-        UIView.animate(withDuration: 0.1, animations: {
-            self.emojiLabel.alpha = 1
-        })
-        
-        UIView.animate(withDuration: 0.8,
-                       delay: 0,
-                       usingSpringWithDamping: 0.5,
-                       initialSpringVelocity: 5,
-                       options: [.curveEaseInOut],
-                       animations: {
-            self.emojiLabel.transform = .identity
-        }, completion: { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                UIView.animate(withDuration: 0.3, animations: {
-                    self.commonContainer.alpha = 0
-                }, completion: { _ in
-                    completion()
-                    self.restoreStartingState()
-                })
+        UIView.animateKeyframes(
+            withDuration: 2.0,
+            delay: 0,
+            options: [.calculationModeLinear],
+            animations: { [weak self] in
+                
+                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.1/2.0) {
+                    self?.backgroundView.alpha = 0.4
+                }
+                
+                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.0/2.0) {
+                    self?.emojiLabel.alpha = 1
+                }
+                
+                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.8/2.0) {
+                                // Nested spring animation
+                                UIView.animate(
+                                    withDuration: 0.4,
+                                    delay: 0,
+                                    usingSpringWithDamping: 0.4,
+                                    initialSpringVelocity: 15,
+                                    animations: { [weak self] in
+                                        self?.emojiLabel.transform = .identity
+                                    },
+                                    completion: nil
+                                )
+                            }
+                
+                UIView.addKeyframe(withRelativeStartTime: 1.9/2.0, relativeDuration: 0.1/2.0) {
+                    self?.commonContainer.alpha = 0
+                }
+            },
+            completion: { [weak self] _ in
+                self?.restoreStartingState()
+                completion()
             }
-        })
+        )
     }
     
     private func restoreStartingState() {
