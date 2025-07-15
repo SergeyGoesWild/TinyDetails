@@ -158,12 +158,16 @@ final class EndLevelScreen: UIViewController {
     
     @objc private func nextLevelButtonPushed() {
         if isLastLevel {
-            let endGameScreen = EndGameScreen(delegate: endGamedelegate)
-            navigationController?.pushViewController(endGameScreen, animated: true)
+            launchEndScreen()
         } else {
             delegate?.didPassNextLevel()
             navigationController?.popToRootViewController(animated: true)
         }
+    }
+    
+    func launchEndScreen() {
+        let endGameScreen = EndGameScreen(delegate: endGamedelegate)
+        navigationController?.pushViewController(endGameScreen, animated: true)
     }
     
     private func getImageSize(image: UIImage, view: UIView) -> CGSize {

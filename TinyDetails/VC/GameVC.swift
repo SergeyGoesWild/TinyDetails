@@ -74,8 +74,16 @@ class GameVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        loadSaveData()
+        loadSaveData()
         setupNormalLayout()
+        
+        if SaveProvider.shared.onModal {
+            showEndLevelModal()
+        } else if SaveProvider.shared.onEndScreen {
+            print("--HERE--")
+            let endGameScreen = EndGameScreen(delegate: self)
+            navigationController?.pushViewController(endGameScreen, animated: true)
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -126,12 +134,6 @@ class GameVC: UIViewController {
     private func checkLevelComplete() {
         if levelIsOver {
             showEndLevelModal()
-//            if !gameIsOver {
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-//                    self.scrollView.zoomScale = 1
-//                    self.launchNextLevel()
-//                }
-//            }
         } else {
             currentItemIndex += 1
             savingData(onModal: false, onEnd: false)
@@ -139,9 +141,12 @@ class GameVC: UIViewController {
         }
     }
     
-    private func showEndLevelModal() {
+    private func showEndLevelModal(toEndScreen: Bool = false) {
         let endLevelScreen = EndLevelScreen(paintingObject: currentLevel, delegate: self, isLastLevel: gameIsOver, endGameDelegate: self)
         navigationController?.pushViewController(endLevelScreen, animated: true)
+        if toEndScreen {
+            endLevelScreen.launchEndScreen()
+        }
     }
     
     // MARK: - Layout
@@ -320,15 +325,28 @@ class GameVC: UIViewController {
     }
     
     private func loadSaveData() {
+        print("--- in LOAD savedata ---")
+        print("loading SaveProvider.shared.latestLevelIndex : ", SaveProvider.shared.latestLevelIndex)
+        print("loading SaveProvider.shared.latestItemIndex : ", SaveProvider.shared.latestItemIndex)
+        print("loading modal : ", SaveProvider.shared.onModal)
+        print("loading end : ", SaveProvider.shared.onEndScreen)
         currentLevelIndex = SaveProvider.shared.latestLevelIndex
-//        currentItemIndex = SaveProvider.shared.latestItemIndex
+        currentItemIndex = SaveProvider.shared.latestItemIndex
     }
     
     private func savingData(onModal: Bool, onEnd: Bool) {
+        print("--- in SAVE data START ---")
+        print("saving currentLevelIndex : ", currentLevelIndex)
+        print("saving currentItemIndex : ", currentItemIndex)
+        
         SaveProvider.shared.latestLevelIndex = currentLevelIndex
         SaveProvider.shared.latestItemIndex = currentItemIndex
         SaveProvider.shared.onModal = onModal
         SaveProvider.shared.onEndScreen = onEnd
+        
+        print("--- in SAVE data END ---")
+        print("saved SaveProvider.shared.latestLevelIndex : ", SaveProvider.shared.latestLevelIndex)
+        print("saved SaveProvider.shared.latestItemIndex : ", SaveProvider.shared.latestItemIndex)
     }
 }
 
@@ -351,7 +369,7 @@ extension GameVC: ClickableAreaDelegate {
 
 extension GameVC: EndLevelDelegate {
     func enteredEndLevel() {
-
+        savingData(onModal: true, onEnd: false)
     }
     
     func didPassNextLevel() {
@@ -368,7 +386,8 @@ extension GameVC: UIScrollViewDelegate {
 
 extension GameVC: EndGameDelegate {
     func enteredEndGame() {
-
+        print("!!!!!!!!!!!!!!!!!")
+        savingData(onModal: false, onEnd: true)
     }
     
     func restartGame() {
