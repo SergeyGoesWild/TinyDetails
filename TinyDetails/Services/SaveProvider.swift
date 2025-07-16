@@ -7,10 +7,8 @@
 import Foundation
 
 final class SaveProvider {
-    // MARK: - Singleton
     static let shared = SaveProvider()
     
-    // MARK: - File Management
     private let saveFileName = "game_save_v2.json"
     private lazy var saveFileURL: URL = {
         do {
@@ -26,7 +24,6 @@ final class SaveProvider {
         }
     }()
     
-    // MARK: - Data Model
     private struct GameData: Codable {
         var latestLevelIndex: Int = 0
         var latestItemIndex: Int = 0
@@ -40,13 +37,11 @@ final class SaveProvider {
         }
     }
     
-    // MARK: - Initialization
     private init() {
         loadInitialData()
         print("Save file location: \(saveFileURL.path)")
     }
     
-    // MARK: - Public Properties
     var latestLevelIndex: Int {
         get { currentData.latestLevelIndex }
         set { currentData.latestLevelIndex = newValue }
@@ -70,7 +65,6 @@ final class SaveProvider {
     // MARK: - Data Operations
     private func loadInitialData() {
         guard FileManager.default.fileExists(atPath: saveFileURL.path) else {
-            // First launch - file doesn't exist yet
             return
         }
         
@@ -79,7 +73,6 @@ final class SaveProvider {
             currentData = try JSONDecoder().decode(GameData.self, from: data)
         } catch {
             print("Failed to load save data: \(error)")
-            // Reset to defaults but don't crash
             currentData = GameData()
         }
     }
@@ -90,11 +83,9 @@ final class SaveProvider {
             try data.write(to: saveFileURL, options: [.atomic, .completeFileProtection])
         } catch {
             print("Failed to save data: \(error)")
-            // Consider implementing a retry mechanism here
         }
     }
     
-    // MARK: - Debug Helpers
     func printSaveLocation() {
         print("Save file location: \(saveFileURL.path)")
     }
