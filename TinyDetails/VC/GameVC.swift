@@ -27,12 +27,13 @@ protocol TutorialDelegate: AnyObject {
 
 class GameVC: UIViewController {
     static let paintingList = DataProvider.shared.paintingList
-    static let saveProvider = SaveProvider.shared
     
     var currentLevelIndex: Int = 0
     var currentItemIndex: Int = 0
     
     var isFirstLaunch: Bool = true
+    var loadingModal: Bool = false
+    var loadingEndScreen: Bool = false
     
     var currentLevel: PaintingObject {
         return GameVC.paintingList[currentLevelIndex]
@@ -77,12 +78,10 @@ class GameVC: UIViewController {
         loadSaveData()
         setupNormalLayout()
         
-        if SaveProvider.shared.onModal {
-            showEndLevelModal()
-        } else if SaveProvider.shared.onEndScreen {
-            print("--HERE--")
-            let endGameScreen = EndGameScreen(delegate: self)
-            navigationController?.pushViewController(endGameScreen, animated: true)
+        if loadingModal {
+            loadingFromModal()
+        } else if loadingEndScreen {
+            loadingFromEndScreen()
         }
     }
     
@@ -147,6 +146,20 @@ class GameVC: UIViewController {
         if toEndScreen {
             endLevelScreen.launchEndScreen()
         }
+    }
+    
+    private func setupTutorial(data: TutorialData) {
+        tutorialOverlay = TutorialOverlay(delegate: self, title: data.title, hintText: data.explainerText, iconName: data.iconName)
+        guard let tutorialOverlay else { return }
+        tutorialOverlay.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(tutorialOverlay)
+        
+        NSLayoutConstraint.activate([
+            tutorialOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tutorialOverlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tutorialOverlay.topAnchor.constraint(equalTo: view.topAnchor),
+            tutorialOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+        ])
     }
     
     // MARK: - Layout
@@ -249,20 +262,6 @@ class GameVC: UIViewController {
         ])
     }
     
-    private func setupTutorial(data: TutorialData) {
-        tutorialOverlay = TutorialOverlay(delegate: self, title: data.title, hintText: data.explainerText, iconName: data.iconName)
-        guard let tutorialOverlay else { return }
-        tutorialOverlay.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(tutorialOverlay)
-        
-        NSLayoutConstraint.activate([
-            tutorialOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tutorialOverlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tutorialOverlay.topAnchor.constraint(equalTo: view.topAnchor),
-            tutorialOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-        ])
-    }
-    
     private func setupPictureLayout(currentLevel: PaintingObject) {
         guard let path = Bundle.main.path(forResource: currentLevel.paintingFile, ofType: "jpg") else {
             print("Level Image path not found: ", currentLevel.paintingTitle)
@@ -324,29 +323,29 @@ class GameVC: UIViewController {
         }
     }
     
-    private func loadSaveData() {
-        print("--- in LOAD savedata ---")
-        print("loading SaveProvider.shared.latestLevelIndex : ", SaveProvider.shared.latestLevelIndex)
-        print("loading SaveProvider.shared.latestItemIndex : ", SaveProvider.shared.latestItemIndex)
-        print("loading modal : ", SaveProvider.shared.onModal)
-        print("loading end : ", SaveProvider.shared.onEndScreen)
-        currentLevelIndex = SaveProvider.shared.latestLevelIndex
-        currentItemIndex = SaveProvider.shared.latestItemIndex
-    }
+    // MARK: - Data persistence
     
+private func loadSaveData() {
+    currentLevelIndex = SaveProvider.shared.latestLevelIndex
+    currentItemIndex = SaveProvider.shared.latestItemIndex
+    loadingModal = SaveProvider.shared.onModal
+    loadingEndScreen = SaveProvider.shared.onEndScreen
+}
+
     private func savingData(onModal: Bool, onEnd: Bool) {
-        print("--- in SAVE data START ---")
-        print("saving currentLevelIndex : ", currentLevelIndex)
-        print("saving currentItemIndex : ", currentItemIndex)
-        
         SaveProvider.shared.latestLevelIndex = currentLevelIndex
         SaveProvider.shared.latestItemIndex = currentItemIndex
         SaveProvider.shared.onModal = onModal
         SaveProvider.shared.onEndScreen = onEnd
-        
-        print("--- in SAVE data END ---")
-        print("saved SaveProvider.shared.latestLevelIndex : ", SaveProvider.shared.latestLevelIndex)
-        print("saved SaveProvider.shared.latestItemIndex : ", SaveProvider.shared.latestItemIndex)
+    }
+    
+    private func loadingFromModal() {
+        showEndLevelModal()
+    }
+    
+    private func loadingFromEndScreen() {
+        let endGameScreen = EndGameScreen(delegate: self)
+        navigationController?.pushViewController(endGameScreen, animated: true)
     }
 }
 
@@ -386,7 +385,6 @@ extension GameVC: UIScrollViewDelegate {
 
 extension GameVC: EndGameDelegate {
     func enteredEndGame() {
-        print("!!!!!!!!!!!!!!!!!")
         savingData(onModal: false, onEnd: true)
     }
     
