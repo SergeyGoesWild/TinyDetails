@@ -108,7 +108,7 @@ class GameVC: UIViewController {
             questionLabelView.updateItemText(itemText: currentItem.hintText)
             questionLabelViewbottomConstraint.constant = -50
             view.layoutIfNeeded()
-
+            
             UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: {
                 self.questionLabelView.alpha = 1.0
                 self.questionLabelViewbottomConstraint.constant = 0
@@ -186,7 +186,7 @@ class GameVC: UIViewController {
         questionLabelContainer.translatesAutoresizingMaskIntoConstraints = false
         questionLabelContainer.isUserInteractionEnabled = false
         
-        questionLabelView = QuestionLabelView(questionText: "Can you find", itemText: currentItem.hintText, smallScreen: smallScreen)
+        questionLabelView = QuestionLabelView(questionText: "Can you find:", itemText: currentItem.hintText, smallScreen: smallScreen)
         questionLabelView.translatesAutoresizingMaskIntoConstraints = false
         questionLabelView.isUserInteractionEnabled = false
         questionLabelViewbottomConstraint = questionLabelView.bottomAnchor.constraint(equalTo: questionLabelContainer.bottomAnchor, constant: 0)
@@ -325,13 +325,13 @@ class GameVC: UIViewController {
     
     // MARK: - Data persistence
     
-private func loadSaveData() {
-    currentLevelIndex = SaveProvider.shared.latestLevelIndex
-    currentItemIndex = SaveProvider.shared.latestItemIndex
-    loadingModal = SaveProvider.shared.onModal
-    loadingEndScreen = SaveProvider.shared.onEndScreen
-}
-
+    private func loadSaveData() {
+        currentLevelIndex = SaveProvider.shared.latestLevelIndex
+        currentItemIndex = SaveProvider.shared.latestItemIndex
+        loadingModal = SaveProvider.shared.onModal
+        loadingEndScreen = SaveProvider.shared.onEndScreen
+    }
+    
     private func savingData(onModal: Bool, onEnd: Bool) {
         SaveProvider.shared.latestLevelIndex = currentLevelIndex
         SaveProvider.shared.latestItemIndex = currentItemIndex

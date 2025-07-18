@@ -23,6 +23,7 @@ final class EndLevelScreen: UIViewController {
     var descriptionView: UILabel!
     var imageView: UIImageView!
     var nextLevelButton: UIButton!
+    var buttonGradient: CAGradientLayer!
     
     private let sideMargin: CGFloat = 25
     private var bottomInset: CGFloat!
@@ -90,10 +91,22 @@ final class EndLevelScreen: UIViewController {
         nextLevelButton = UIButton(type: .system)
         nextLevelButton.setTitle(isLastLevel ? "Finish game" : "Next Level", for: .normal)
         nextLevelButton.setTitleColor(.white, for: .normal)
-        nextLevelButton.backgroundColor = .systemBlue
+        nextLevelButton.backgroundColor = .black
         nextLevelButton.layer.cornerRadius = 8
         nextLevelButton.translatesAutoresizingMaskIntoConstraints = false
         nextLevelButton.addTarget(self, action: #selector(nextLevelButtonPushed), for: .touchUpInside)
+        
+        nextLevelButton.backgroundColor = .clear
+        buttonGradient = CAGradientLayer()
+        buttonGradient.colors = [
+            UIColor.gray.cgColor,
+            UIColor.black.cgColor
+        ]
+        buttonGradient.locations = [0.0, 1.0]
+        buttonGradient.startPoint = CGPoint(x: 0.5, y: 0.0)
+        buttonGradient.endPoint = CGPoint(x: 0.5, y: 1.0)
+        buttonGradient.cornerRadius = nextLevelButton.layer.cornerRadius
+        nextLevelButton.layer.insertSublayer(buttonGradient, at: 0)
         
         view.addSubview(endScrollView)
         endScrollView.addSubview(titleView)
@@ -116,11 +129,11 @@ final class EndLevelScreen: UIViewController {
             titleView.widthAnchor.constraint(equalTo: endScrollView.widthAnchor, constant: -sideMargin * 2),
             
             subtitleView.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
-            subtitleView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 30),
+            subtitleView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 20),
             subtitleView.widthAnchor.constraint(equalTo: endScrollView.widthAnchor, constant: -sideMargin * 2),
             
             imageView.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
-            imageView.topAnchor.constraint(equalTo: subtitleView.bottomAnchor, constant: 40),
+            imageView.topAnchor.constraint(equalTo: subtitleView.bottomAnchor, constant: 25),
             imageWidthConstraint,
             imageHeightConstraint,
             
@@ -130,7 +143,7 @@ final class EndLevelScreen: UIViewController {
             
             nextLevelButton.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
             nextLevelButton.topAnchor.constraint(equalTo: descriptionView.bottomAnchor, constant: 50),
-            nextLevelButton.bottomAnchor.constraint(equalTo: endScrollView.bottomAnchor, constant: -20),
+            nextLevelButton.bottomAnchor.constraint(equalTo: endScrollView.bottomAnchor, constant: -10),
             nextLevelButton.widthAnchor.constraint(equalToConstant: 200),
             nextLevelButton.heightAnchor.constraint(equalToConstant: 50),
         ])
@@ -138,8 +151,13 @@ final class EndLevelScreen: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        if buttonGradient.frame != nextLevelButton.bounds {
+                buttonGradient.frame = nextLevelButton.bounds
+            }
+        
          if isFirstLaunch {
              isFirstLaunch = false
+             
              guard let path = Bundle.main.path(forResource: paintingObject.paintingFile, ofType: "jpg") else {
                  print("Item Image not found in EndLevelScreen: ", paintingObject.paintingFile)
                  return
