@@ -231,7 +231,7 @@ class GameVC: UIViewController {
             bgSolid.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 8/9),
+            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.8),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
