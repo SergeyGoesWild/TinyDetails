@@ -231,7 +231,7 @@ class GameVC: UIViewController {
             bgSolid.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.8),
+            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.91),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
@@ -251,7 +251,7 @@ class GameVC: UIViewController {
             
             gradientView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             gradientView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            gradientView.heightAnchor.constraint(equalTo: questionLabelContainer.heightAnchor, multiplier: 0.15),
+            gradientView.heightAnchor.constraint(equalTo: questionLabelContainer.heightAnchor, multiplier: 0.14),
             gradientView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
             widthConstraintImagePH,
