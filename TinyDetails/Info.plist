@@ -21,8 +21,8 @@
 			</array>
 		</dict>
 	</dict>
-	<key>UIStatusBarHidden</key>
-	<false/>
+	<key>CFBundleIdentifier</key>
+	<string></string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 </dict>
