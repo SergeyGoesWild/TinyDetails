@@ -29,8 +29,13 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				EndGameScreen.swift,
-				EndLevelScreen.swift,
-				GameVC.swift,
+				EndLevelScreen/EndLevelModel.swift,
+				EndLevelScreen/EndLevelPresenter.swift,
+				EndLevelScreen/EndLevelVC.swift,
+				LevelScreen/GameStateProvider.swift,
+				LevelScreen/LevelModel.swift,
+				LevelScreen/LevelPresenter.swift,
+				LevelScreen/LevelVC.swift,
 				MainVC.swift,
 			);
 			target = 2AC06B0C2D872950005F3189 /* TinyDetails */;
