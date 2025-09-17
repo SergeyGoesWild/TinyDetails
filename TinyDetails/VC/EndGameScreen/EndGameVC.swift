@@ -7,6 +7,14 @@
 import UIKit
 
 final class EndGameScreen: UIViewController {
+    var dataItem: EndGameData {
+        get {
+            return endGamePresenter.provideItem()
+        }
+    }
+    
+    var endGamePresenter: EndGamePresenter!
+    
     weak var delegate: EndGameDelegate?
     
     private var titleLabel: UILabel!
@@ -39,7 +47,7 @@ final class EndGameScreen: UIViewController {
         titleLabel.font = .systemFont(ofSize: 45, weight: .bold)
         titleLabel.textAlignment = .center
         titleLabel.textColor = .white
-        titleLabel.text = "Bravo!"
+        titleLabel.text = dataItem.title
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         additionalLabel = UILabel()
@@ -48,14 +56,7 @@ final class EndGameScreen: UIViewController {
         additionalLabel.textAlignment = .center
         additionalLabel.textColor = .white
         additionalLabel.translatesAutoresizingMaskIntoConstraints = false
-        additionalLabel.text =
-        """
-        You finished the game in style!
-        Soon there will be updates and new puzzles,
-        so keep an eye on those.
-        Until we meet again in "Tiny Details"!
-        """
-        
+        additionalLabel.text = dataItem.endText
         restartButton = UIButton(type: .system)
         restartButton.translatesAutoresizingMaskIntoConstraints = false
         let config = UIImage.SymbolConfiguration(pointSize: 30, weight: .regular)
@@ -64,7 +65,7 @@ final class EndGameScreen: UIViewController {
         restartButton.tintColor = .white
         restartButton.addTarget(self, action: #selector(restartTapped), for: .touchUpInside)
         
-        guard let path = Bundle.main.path(forResource: "finalScreenOsteria", ofType: "png") else {
+        guard let path = Bundle.main.path(forResource: dataItem.imageName, ofType: dataItem.imageType) else {
             print("Final screen image not found")
             return
         }
@@ -128,8 +129,7 @@ final class EndGameScreen: UIViewController {
     }
     
     @objc private func restartTapped() {
-        delegate?.restartGame()
-        navigationController?.popToRootViewController(animated: true)
+        endGamePresenter.onButtonPress()
     }
     
     deinit {

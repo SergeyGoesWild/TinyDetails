@@ -82,4 +82,19 @@ final class GameStateProvider {
         loadData()
         return currentStateData
     }
+    
+    func incrementLevel() {
+        levelIndex += 1
+    }
+    
+    func incrementArea() {
+        areaIndex += 1
+    }
+    
+    func resetState() {
+        levelIndex = 0
+        areaIndex = 0
+        onEndLevel = false
+        onEndGame = false
+    }
 }
