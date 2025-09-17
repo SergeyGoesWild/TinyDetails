@@ -7,6 +7,7 @@
 
 final class EndLevelModel {
     
+    // TODO: Link this
     private var currentItem: PaintingObject?
     
     let gameStateProvider: GameStateProvider

@@ -7,9 +7,18 @@
 
 final class LevelModel {
     
-    var currentItem: PaintingObject?
-    var areaIndex: Int
-    var firstRound: Bool
+    private var currentItem: PaintingObject {
+        get {
+            let currentLevelIndex = gameStateProvider.levelIndex
+            return dataProvider.paintingList[currentLevelIndex]
+        }
+    }
+    
+    private var areaIndex: Int {
+        get {
+            gameStateProvider.areaIndex
+        }
+    }
     
     let gameStateProvider: GameStateProvider
     let dataProvider: DataProvider
@@ -17,40 +26,25 @@ final class LevelModel {
     init(dataProvider: DataProvider, gameStateProvider: GameStateProvider) {
         self.dataProvider = dataProvider
         self.gameStateProvider = gameStateProvider
-        
-        areaIndex = 0
-        firstRound = true
-    }
-    
-    func fetchNextItem(levelIndex: Int) {
-        currentItem = dataProvider.paintingList[levelIndex]
     }
     
     func checkIfLevelOver() -> Bool {
-        if areaIndex == currentItem!.areas.count - 1 {
+        if areaIndex == currentItem.areas.count - 1 {
             return true
         } else {
             return false
         }
     }
     
-    func switchToNextArea() -> ClickableArea {
-        if !firstRound {
-            incrementAreaIndex()
-        }
-        firstRound = false
-        return getAreaObject()
+    func shareCurrentLevel() -> PaintingObject {
+        return currentItem
     }
     
-    func getPaintingImage() -> String {
-        return currentItem!.paintingTitle
+    func shareCurrentArea() -> ClickableArea {
+        return currentItem.areas[areaIndex]
     }
     
-    private func getAreaObject() -> ClickableArea {
-        return currentItem!.areas[areaIndex]
-    }
-    
-    private func incrementAreaIndex() {
-        areaIndex += 1
+    func incrementAreaIndex() {
+        gameStateProvider.incrementArea()
     }
 }

@@ -16,6 +16,7 @@ final class EndLevelScreen: UIViewController {
     weak var endGamedelegate: EndGameDelegate?
     
     var isFirstLaunch: Bool = true
+    
     private var paintingObject: PaintingObject {
         get {
             presenter.provideItem()
