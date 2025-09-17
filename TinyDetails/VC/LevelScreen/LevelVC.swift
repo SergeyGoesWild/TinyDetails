@@ -25,30 +25,21 @@ protocol TutorialDelegate: AnyObject {
     func leavingTutorial()
 }
 
-class GameVC: UIViewController {
-    static let paintingList = DataProvider.shared.paintingList
+class LevelVC: UIViewController {
+    
+    var levelPresenter: LevelPresenter!
     
     var currentLevelIndex: Int = 0
     var currentItemIndex: Int = 0
     
     var isFirstLaunch: Bool = true
-    var loadingModal: Bool = false
-    var loadingEndScreen: Bool = false
     
     var currentLevel: PaintingObject {
-        return GameVC.paintingList[currentLevelIndex]
+        return levelPresenter.provideLevel()
     }
     
-    var currentItem: ClickableArea {
-        return GameVC.paintingList[currentLevelIndex].areas[currentItemIndex]
-    }
-    
-    var levelIsOver: Bool {
-        return currentItemIndex >= currentLevel.areas.count - 1
-    }
-    
-    var gameIsOver: Bool {
-        return currentLevelIndex >= GameVC.paintingList.count - 1
+    var currentArea: ClickableArea {
+        return levelPresenter.provideArea()
     }
     
     var imageViewSize: CGSize!
@@ -75,21 +66,16 @@ class GameVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadSaveData()
+
         setupNormalLayout()
-        
-        if loadingModal {
-            loadingFromModal()
-        } else if loadingEndScreen {
-            loadingFromEndScreen()
-        }
     }
     
+    // TODO: remove that, switch to autolayout
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if isFirstLaunch {
             setupPictureLayout(currentLevel: currentLevel)
-            launchNextItem(clickableAreaData: currentItem)
+            launchNextItem(clickableAreaData: currentArea)
             isFirstLaunch = false
         }
     }
@@ -102,10 +88,10 @@ class GameVC: UIViewController {
         if currentItemIndex == 0 || skipStartAnimation {
             questionLabelView.alpha = 1.0
             questionLabelViewbottomConstraint.constant = 0
-            questionLabelView.updateItemText(itemText: currentItem.hintText)
+            questionLabelView.updateItemText(itemText: currentArea.hintText)
         } else {
             questionLabelView.alpha = 0.0
-            questionLabelView.updateItemText(itemText: currentItem.hintText)
+            questionLabelView.updateItemText(itemText: currentArea.hintText)
             questionLabelViewbottomConstraint.constant = -50
             view.layoutIfNeeded()
             
@@ -117,35 +103,27 @@ class GameVC: UIViewController {
         }
     }
     
+    // MARK: - Priority
+
+    // TODO: Add loadNewLevel method maybe something like below:
+    //    func restartGame() {
+    //        removeClickableAreas()
+    //        currentItemIndex = 0
+    //        currentLevelIndex = 0
+    //        savingData(onModal: false, onEnd: false)
+    //        skipStartAnimation = true
+    //        scrollView.zoomScale = 1
+    //        setupPictureLayout(currentLevel: currentLevel)
+    //        launchNextItem(clickableAreaData: currentArea)
+    //    }
     private func launchNextLevel() {
         removeClickableAreas()
-        currentLevelIndex += 1
-        currentItemIndex = 0
-        savingData(onModal: false, onEnd: false)
         setupPictureLayout(currentLevel: self.currentLevel)
         if let tutorialData = self.currentLevel.tutorialData {
             setupTutorial(data: tutorialData)
         }
-        launchNextItem(clickableAreaData: self.currentItem)
+        launchNextItem(clickableAreaData: self.currentArea)
         scrollView.zoomScale = 1
-    }
-    
-    private func checkLevelComplete() {
-        if levelIsOver {
-            showEndLevelModal()
-        } else {
-            currentItemIndex += 1
-            savingData(onModal: false, onEnd: false)
-            launchNextItem(clickableAreaData: currentItem)
-        }
-    }
-    
-    private func showEndLevelModal(toEndScreen: Bool = false) {
-        let endLevelScreen = EndLevelScreen(paintingObject: currentLevel, delegate: self, isLastLevel: gameIsOver, endGameDelegate: self)
-        navigationController?.pushViewController(endLevelScreen, animated: true)
-        if toEndScreen {
-            endLevelScreen.launchEndScreen()
-        }
     }
     
     private func setupTutorial(data: TutorialData) {
@@ -186,7 +164,7 @@ class GameVC: UIViewController {
         questionLabelContainer.translatesAutoresizingMaskIntoConstraints = false
         questionLabelContainer.isUserInteractionEnabled = false
         
-        questionLabelView = QuestionLabelView(questionText: "Can you find:", itemText: currentItem.hintText, smallScreen: smallScreen)
+        questionLabelView = QuestionLabelView(questionText: "Can you find:", itemText: currentArea.hintText, smallScreen: smallScreen)
         questionLabelView.translatesAutoresizingMaskIntoConstraints = false
         questionLabelView.isUserInteractionEnabled = false
         questionLabelViewbottomConstraint = questionLabelView.bottomAnchor.constraint(equalTo: questionLabelContainer.bottomAnchor, constant: 0)
@@ -322,37 +300,14 @@ class GameVC: UIViewController {
             area.removeFromSuperview()
         }
     }
-    
-    // MARK: - Data persistence
-    
-    private func loadSaveData() {
-        currentLevelIndex = SaveProvider.shared.latestLevelIndex
-        currentItemIndex = SaveProvider.shared.latestItemIndex
-        loadingModal = SaveProvider.shared.onModal
-        loadingEndScreen = SaveProvider.shared.onEndScreen
-    }
-    
-    private func savingData(onModal: Bool, onEnd: Bool) {
-        SaveProvider.shared.latestLevelIndex = currentLevelIndex
-        SaveProvider.shared.latestItemIndex = currentItemIndex
-        SaveProvider.shared.onModal = onModal
-        SaveProvider.shared.onEndScreen = onEnd
-    }
-    
-    private func loadingFromModal() {
-        showEndLevelModal()
-    }
-    
-    private func loadingFromEndScreen() {
-        let endGameScreen = EndGameScreen(delegate: self)
-        navigationController?.pushViewController(endGameScreen, animated: true)
-    }
 }
 
-extension GameVC: ClickableAreaDelegate {
+// MARK: - Extensions
+
+extension LevelVC: ClickableAreaDelegate {
     func didReceiveClick(area: ClickableAreaView) {
         skipStartAnimation = false
-        confirmationOverlayView.updateConfirmationOverlay(areaData: currentItem)
+        confirmationOverlayView.updateConfirmationOverlay(areaData: currentArea)
         confirmationOverlayView.isHidden = false
         UIView.animate(withDuration: 0.3, animations: {
             self.questionLabelView.alpha = 0
@@ -361,46 +316,18 @@ extension GameVC: ClickableAreaDelegate {
         })
         confirmationOverlayView.revealOverlay(completion: {
             self.confirmationOverlayView.isHidden = true
-            self.checkLevelComplete()
+            self.levelPresenter.onAreaPress()
         })
     }
 }
 
-extension GameVC: EndLevelDelegate {
-    func enteredEndLevel() {
-        savingData(onModal: true, onEnd: false)
-    }
-    
-    func didPassNextLevel() {
-        scrollView.zoomScale = 1
-        launchNextLevel()
-    }
-}
-
-extension GameVC: UIScrollViewDelegate {
+extension LevelVC: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imagePH
     }
 }
 
-extension GameVC: EndGameDelegate {
-    func enteredEndGame() {
-        savingData(onModal: false, onEnd: true)
-    }
-    
-    func restartGame() {
-        removeClickableAreas()
-        currentItemIndex = 0
-        currentLevelIndex = 0
-        savingData(onModal: false, onEnd: false)
-        skipStartAnimation = true
-        scrollView.zoomScale = 1
-        setupPictureLayout(currentLevel: currentLevel)
-        launchNextItem(clickableAreaData: currentItem)
-    }
-}
-
-extension GameVC: TutorialDelegate {
+extension LevelVC: TutorialDelegate {
     func leavingTutorial() {
         print("about to leave tutorial")
         tutorialOverlay?.removeFromSuperview()

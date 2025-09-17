@@ -10,7 +10,7 @@ import UIKit
 
 final class EndLevelScreen: UIViewController {
     
-    var presenter: EndLevelPresenter!
+    var endLevelPresenter: EndLevelPresenter!
     
     weak var delegate: EndLevelDelegate?
     weak var endGamedelegate: EndGameDelegate?
@@ -19,7 +19,7 @@ final class EndLevelScreen: UIViewController {
     
     private var paintingObject: PaintingObject {
         get {
-            presenter.provideItem()
+            endLevelPresenter.provideItem()
         }
     }
     
@@ -179,7 +179,7 @@ final class EndLevelScreen: UIViewController {
     }
     
     @objc private func nextLevelButtonPushed() {
-        presenter.onButtonPress()
+        endLevelPresenter.onButtonPress()
     }
     
     private func getImageSize(image: UIImage, view: UIView) -> CGSize {

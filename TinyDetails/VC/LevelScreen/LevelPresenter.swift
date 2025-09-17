@@ -21,6 +21,7 @@ final class LevelPresenter {
     
     func onAreaPress() {
         if model.checkIfLevelOver() {
+            // TODO: reset the level 
             // TODO: call router
         } else {
             onNextStep?()
