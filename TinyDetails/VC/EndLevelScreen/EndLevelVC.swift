@@ -9,12 +9,18 @@ import Foundation
 import UIKit
 
 final class EndLevelScreen: UIViewController {
+    
+    var presenter: EndLevelPresenter!
+    
     weak var delegate: EndLevelDelegate?
     weak var endGamedelegate: EndGameDelegate?
     
-    var isLastLevel: Bool!
     var isFirstLaunch: Bool = true
-    var paintingObject: PaintingObject!
+    private var paintingObject: PaintingObject {
+        get {
+            presenter.provideItem()
+        }
+    }
     
     var endScrollView: UIScrollView!
     var titleView: UILabel!
@@ -32,11 +38,8 @@ final class EndLevelScreen: UIViewController {
     var imageWidthConstraint: NSLayoutConstraint!
     var imageHeightConstraint: NSLayoutConstraint!
     
-    init(paintingObject: PaintingObject, delegate: EndLevelDelegate, isLastLevel: Bool, endGameDelegate: EndGameDelegate) {
-        self.paintingObject = paintingObject
+    init(delegate: EndLevelDelegate) {
         self.delegate = delegate
-        self.isLastLevel = isLastLevel
-        self.endGamedelegate = endGameDelegate
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -89,7 +92,7 @@ final class EndLevelScreen: UIViewController {
         descriptionView.numberOfLines = 0
         
         nextLevelButton = UIButton(type: .system)
-        nextLevelButton.setTitle(isLastLevel ? "Finish game" : "Next Level", for: .normal)
+        nextLevelButton.setTitle("Next Level", for: .normal)
         nextLevelButton.setTitleColor(.white, for: .normal)
         nextLevelButton.backgroundColor = .black
         nextLevelButton.layer.cornerRadius = 8
@@ -149,6 +152,7 @@ final class EndLevelScreen: UIViewController {
         ])
     }
     
+    // TODO: use an autolayout approach and this method will not be necessary
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if buttonGradient.frame != nextLevelButton.bounds {
@@ -170,22 +174,11 @@ final class EndLevelScreen: UIViewController {
              let imageSize = getImageSize(image: currentImage, view: self.view)
              imageWidthConstraint.constant = imageSize.width
              imageHeightConstraint.constant = imageSize.height
-     //        bottomConstraint.constant = -view.safeAreaInsets.bottom
         }
     }
     
     @objc private func nextLevelButtonPushed() {
-        if isLastLevel {
-            launchEndScreen()
-        } else {
-            delegate?.didPassNextLevel()
-            navigationController?.popToRootViewController(animated: true)
-        }
-    }
-    
-    func launchEndScreen() {
-        let endGameScreen = EndGameScreen(delegate: endGamedelegate)
-        navigationController?.pushViewController(endGameScreen, animated: true)
+        presenter.onButtonPress()
     }
     
     private func getImageSize(image: UIImage, view: UIView) -> CGSize {
@@ -206,6 +199,6 @@ final class EndLevelScreen: UIViewController {
     }
     
     deinit {
-        print("DEALOCATED end-LEVEL-Screen!")
+        print("DEALOCATED EndLevelVC")
     }
 }

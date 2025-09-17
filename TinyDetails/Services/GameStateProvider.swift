@@ -9,7 +9,7 @@ import Foundation
 
 final class GameStateProvider {
     
-    private struct GameStateData: Codable {
+    struct GameStateData: Codable {
         var levelIndex: Int = 0
         var areaIndex: Int = 0
         var onModal: Bool = false
@@ -76,5 +76,10 @@ final class GameStateProvider {
             print("Failed to load save data: \(error)")
             currentStateData = GameStateData()
         }
+    }
+    
+    func provideGameState() -> GameStateData {
+        loadData()
+        return currentStateData
     }
 }

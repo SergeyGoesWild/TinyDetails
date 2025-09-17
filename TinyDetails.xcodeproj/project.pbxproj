@@ -32,7 +32,6 @@
 				EndLevelScreen/EndLevelModel.swift,
 				EndLevelScreen/EndLevelPresenter.swift,
 				EndLevelScreen/EndLevelVC.swift,
-				LevelScreen/GameStateProvider.swift,
 				LevelScreen/LevelModel.swift,
 				LevelScreen/LevelPresenter.swift,
 				LevelScreen/LevelVC.swift,
