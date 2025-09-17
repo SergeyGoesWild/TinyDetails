@@ -11,16 +11,6 @@ protocol ClickableAreaDelegate: AnyObject {
     func didReceiveClick(area: ClickableAreaView)
 }
 
-protocol EndLevelDelegate: AnyObject {
-    func enteredEndLevel()
-    func didPassNextLevel()
-}
-
-protocol EndGameDelegate: AnyObject {
-    func enteredEndGame()
-    func restartGame()
-}
-
 protocol TutorialDelegate: AnyObject {
     func leavingTutorial()
 }
@@ -28,9 +18,6 @@ protocol TutorialDelegate: AnyObject {
 class LevelVC: UIViewController {
     
     var levelPresenter: LevelPresenter!
-    
-    var currentLevelIndex: Int = 0
-    var currentItemIndex: Int = 0
     
     var isFirstLaunch: Bool = true
     
@@ -40,6 +27,11 @@ class LevelVC: UIViewController {
     
     var currentArea: ClickableArea {
         return levelPresenter.provideArea()
+    }
+    
+    // TODO: remove it, temp mesure
+    var currentItemIndex: Int {
+        return levelPresenter.provideItemIndex()
     }
     
     var imageViewSize: CGSize!
@@ -66,8 +58,14 @@ class LevelVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         setupNormalLayout()
+        // TODO: check this, maybe optimise
+        levelPresenter.onNextStep = { [weak self] currentArea in
+            self?.launchNextItem(clickableAreaData: currentArea)
+        }
+        levelPresenter.onRestart = { [weak self] in
+            self?.launchNewLevel()
+        }
     }
     
     // TODO: remove that, switch to autolayout
@@ -83,6 +81,8 @@ class LevelVC: UIViewController {
     // MARK: - Flow
     
     private func launchNextItem(clickableAreaData: ClickableArea) {
+        
+        // TODO: are you actually removing the previous clickable area?
         clickableArea.updateClickableArea(with: clickableAreaData)
         
         if currentItemIndex == 0 || skipStartAnimation {
@@ -103,26 +103,14 @@ class LevelVC: UIViewController {
         }
     }
     
-    // MARK: - Priority
-
-    // TODO: Add loadNewLevel method maybe something like below:
-    //    func restartGame() {
-    //        removeClickableAreas()
-    //        currentItemIndex = 0
-    //        currentLevelIndex = 0
-    //        savingData(onModal: false, onEnd: false)
-    //        skipStartAnimation = true
-    //        scrollView.zoomScale = 1
-    //        setupPictureLayout(currentLevel: currentLevel)
-    //        launchNextItem(clickableAreaData: currentArea)
-    //    }
-    private func launchNextLevel() {
+    private func launchNewLevel() {
         removeClickableAreas()
         setupPictureLayout(currentLevel: self.currentLevel)
         if let tutorialData = self.currentLevel.tutorialData {
             setupTutorial(data: tutorialData)
         }
         launchNextItem(clickableAreaData: self.currentArea)
+        skipStartAnimation = true
         scrollView.zoomScale = 1
     }
     

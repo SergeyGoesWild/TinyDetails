@@ -14,6 +14,12 @@ final class LevelModel {
         }
     }
     
+    private var levelIndex: Int {
+        get {
+            gameStateProvider.levelIndex
+        }
+    }
+    
     private var areaIndex: Int {
         get {
             gameStateProvider.areaIndex
@@ -36,12 +42,24 @@ final class LevelModel {
         }
     }
     
+    func checkIfGameOver() -> Bool {
+        if levelIndex == dataProvider.paintingList.count - 1 {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     func shareCurrentLevel() -> PaintingObject {
         return currentItem
     }
     
     func shareCurrentArea() -> ClickableArea {
         return currentItem.areas[areaIndex]
+    }
+    
+    func shareItemIndex() -> Int {
+        return areaIndex
     }
     
     func incrementAreaIndex() {
