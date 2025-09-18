@@ -6,14 +6,14 @@
 //
 import UIKit
 
-final class EndGameScreen: UIViewController {
+final class EndGameVC: UIViewController {
     var dataItem: EndGameData {
         get {
             return endGamePresenter.provideItem()
         }
     }
     
-    var endGamePresenter: EndGamePresenter!
+    var endGamePresenter: EndGamePresenter
     
     private var titleLabel: UILabel!
     private var additionalLabel: UILabel!
@@ -21,8 +21,13 @@ final class EndGameScreen: UIViewController {
     private var imageView: UIImageView!
     private var restartButton: UIButton!
     
+    init(endGamePresenter: EndGamePresenter) {
+        self.endGamePresenter = endGamePresenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {

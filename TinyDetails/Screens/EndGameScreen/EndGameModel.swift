@@ -36,10 +36,6 @@ final class EndGameModel {
         return endGameData
     }
     
-    func nextAndSave() {
-        gameStateProvider.resetState()
-    }
-    
     func changeScreenState() {
         gameStateProvider.onEndLevel = false
         gameStateProvider.onEndGame = true

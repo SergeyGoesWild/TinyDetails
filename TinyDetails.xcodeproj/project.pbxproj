@@ -28,16 +28,20 @@
 		2A9EE34C2E0C16030019F7CD /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				EndGameScreen/EndGameAssembly.swift,
 				EndGameScreen/EndGameModel.swift,
 				EndGameScreen/EndGamePresenter.swift,
 				EndGameScreen/EndGameVC.swift,
+				EndLevelScreen/EndLevelAssembly.swift,
 				EndLevelScreen/EndLevelModel.swift,
 				EndLevelScreen/EndLevelPresenter.swift,
 				EndLevelScreen/EndLevelVC.swift,
+				LevelScreen/LevelAssembly.swift,
 				LevelScreen/LevelModel.swift,
 				LevelScreen/LevelPresenter.swift,
 				LevelScreen/LevelVC.swift,
 				MainVC.swift,
+				Router.swift,
 			);
 			target = 2AC06B0C2D872950005F3189 /* TinyDetails */;
 		};
@@ -48,7 +52,7 @@
 		2A9EE3472E0C158A0019F7CD /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Views; sourceTree = "<group>"; };
 		2A9EE3492E0C15A90019F7CD /* Helpers */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Helpers; sourceTree = "<group>"; };
 		2A9EE34A2E0C15CD0019F7CD /* Services */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Services; sourceTree = "<group>"; };
-		2A9EE34B2E0C15F70019F7CD /* VC */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (2A9EE34C2E0C16030019F7CD /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = VC; sourceTree = "<group>"; };
+		2A9EE34B2E0C15F70019F7CD /* Screens */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (2A9EE34C2E0C16030019F7CD /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Screens; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,7 +87,7 @@
 			children = (
 				2AC06B102D872950005F3189 /* AppDelegate.swift */,
 				2AC06B122D872950005F3189 /* SceneDelegate.swift */,
-				2A9EE34B2E0C15F70019F7CD /* VC */,
+				2A9EE34B2E0C15F70019F7CD /* Screens */,
 				2A9EE34A2E0C15CD0019F7CD /* Services */,
 				2A9EE3492E0C15A90019F7CD /* Helpers */,
 				2A9EE3472E0C158A0019F7CD /* Views */,

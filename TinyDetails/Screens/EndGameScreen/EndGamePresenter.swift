@@ -7,14 +7,19 @@
 
 final class EndGamePresenter {
     
-    var model: EndGameModel!
+    var model: EndGameModel
+    var router: RouterProtocol
+    
+    init(model: EndGameModel, router: RouterProtocol) {
+        self.model = model
+        self.router = router
+    }
     
     func provideItem() -> EndGameData {
         return model.shareItem()
     }
     
     func onButtonPress() {
-        model.nextAndSave()
         // TODO: call router
     }
     

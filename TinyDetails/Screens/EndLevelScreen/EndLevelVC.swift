@@ -8,9 +8,9 @@
 import Foundation
 import UIKit
 
-final class EndLevelScreen: UIViewController {
+final class EndLevelVC: UIViewController {
     
-    var endLevelPresenter: EndLevelPresenter!
+    var endLevelPresenter: EndLevelPresenter
     
     var isFirstLaunch: Bool = true
     
@@ -35,6 +35,11 @@ final class EndLevelScreen: UIViewController {
     var bottomConstraint: NSLayoutConstraint!
     var imageWidthConstraint: NSLayoutConstraint!
     var imageHeightConstraint: NSLayoutConstraint!
+    
+    init(endLevelPresenter: EndLevelPresenter) {
+        self.endLevelPresenter = endLevelPresenter
+        super.init(nibName: nil, bundle: nil)
+    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

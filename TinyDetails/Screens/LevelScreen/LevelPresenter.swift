@@ -7,44 +7,50 @@
 
 final class LevelPresenter {
     
-    var model: LevelModel!
+    var levelModel: LevelModel
+    var router: RouterProtocol
     
     var onNextArea: ((ClickableArea) -> Void)?
     var onNextLevel: (() -> Void)?
     
+    init(model: LevelModel, router: RouterProtocol) {
+        self.levelModel = model
+        self.router = router
+    }
+    
     func provideLevel() -> PaintingObject {
-        return model.shareCurrentLevel()
+        return levelModel.shareCurrentLevel()
     }
     
     func provideArea() -> ClickableArea {
-        return model.shareCurrentArea()
+        return levelModel.shareCurrentArea()
     }
     
     func provideItemIndex() -> Int {
-        return model.shareItemIndex()
+        return levelModel.shareItemIndex()
     }
     
     func onAreaPress() {
-        if model.checkIfLevelOver() {
-            if model.checkIfGameOver(){
-                model.gameReset()
+        if levelModel.checkIfLevelOver() {
+            if levelModel.checkIfGameOver(){
+                levelModel.gameReset()
                 // TODO: call router with a flag
                 onNextLevel?() // + delay
             } else {
-                model.incrementLevelIndex()
+                levelModel.incrementLevelIndex()
                 // TODO: call router
                 onNextLevel?() // + delay
             }
             
         } else {
-            model.incrementAreaIndex()
+            levelModel.incrementAreaIndex()
             onNextArea?(provideArea())
         }
     }
     // TODO: work on onModal, onEndScreen
     
     func onAppear() {
-        model.changeScreenState()
+        levelModel.changeScreenState()
     }
     
     deinit {

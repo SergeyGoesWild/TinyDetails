@@ -7,7 +7,13 @@
 
 final class EndLevelPresenter {
     
-    var model: EndLevelModel!
+    var model: EndLevelModel
+    var router: RouterProtocol
+    
+    init(model: EndLevelModel, router: RouterProtocol) {
+        self.model = model
+        self.router = router
+    }
     
     func provideItem() -> PaintingObject {
         return model.shareItem()

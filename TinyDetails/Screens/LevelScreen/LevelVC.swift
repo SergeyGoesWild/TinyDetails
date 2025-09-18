@@ -17,7 +17,7 @@ protocol TutorialDelegate: AnyObject {
 
 class LevelVC: UIViewController {
     
-    var levelPresenter: LevelPresenter!
+    var levelPresenter: LevelPresenter
     
     var isFirstLaunch: Bool = true
     
@@ -55,6 +55,15 @@ class LevelVC: UIViewController {
     var clickableArea: ClickableAreaView!
     var confirmationOverlayView: ConfirmationOverlay!
     private var tutorialOverlay: TutorialOverlay?
+    
+    init(levelPresenter: LevelPresenter) {
+        self.levelPresenter = levelPresenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
