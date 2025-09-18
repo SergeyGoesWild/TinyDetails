@@ -7,7 +7,7 @@
 
 final class EndGameAssembly {
     
-    static func makeEndLevelScreen(router: RouterProtocol,
+    static func makeEndGameScreen(router: RouterProtocol,
                                 dataProvider: DataProvider,
                                 gameStateProvider: GameStateProvider) -> EndGameVC {
         let endGameModel = EndGameModel(gameStateProvider: gameStateProvider)

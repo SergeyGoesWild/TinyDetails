@@ -57,9 +57,6 @@ struct TutorialData {
 
 final class DataProvider {
     
-    static let shared = DataProvider()
-    private init() { }
-    
     let paintingList =
     [
         //        PaintingObject(idPainting: UUID(),
