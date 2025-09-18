@@ -9,8 +9,8 @@ final class LevelPresenter {
     
     var model: LevelModel!
     
-    var onNextStep: ((ClickableArea) -> Void)?
-    var onRestart: (() -> Void)?
+    var onNextArea: ((ClickableArea) -> Void)?
+    var onNextLevel: (() -> Void)?
     
     func provideLevel() -> PaintingObject {
         return model.shareCurrentLevel()
@@ -27,16 +27,25 @@ final class LevelPresenter {
     func onAreaPress() {
         if model.checkIfLevelOver() {
             if model.checkIfGameOver(){
-                
+                model.gameReset()
+                // TODO: call router with a flag
+                onNextLevel?() // + delay
+            } else {
+                model.incrementLevelIndex()
+                // TODO: call router
+                onNextLevel?() // + delay
             }
-            onRestart?()
-            // TODO: call router DEPENDING ON the game over or not
+            
         } else {
             model.incrementAreaIndex()
-            onNextStep?(provideArea())
+            onNextArea?(provideArea())
         }
     }
     // TODO: work on onModal, onEndScreen
+    
+    func onAppear() {
+        model.changeScreenState()
+    }
     
     deinit {
         print("DEALOCATED EndLevelPresenter")

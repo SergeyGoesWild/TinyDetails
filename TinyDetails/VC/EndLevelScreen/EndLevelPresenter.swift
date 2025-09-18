@@ -14,8 +14,11 @@ final class EndLevelPresenter {
     }
     
     func onButtonPress() {
-        model.nextAndSave()
         // TODO: call router
+    }
+    
+    func onAppear() {
+        model.changeScreenState()
     }
     
     deinit {

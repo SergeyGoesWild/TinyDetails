@@ -40,6 +40,11 @@ final class EndGameModel {
         gameStateProvider.resetState()
     }
     
+    func changeScreenState() {
+        gameStateProvider.onEndLevel = false
+        gameStateProvider.onEndGame = true
+    }
+    
     deinit {
         print("DEALOCATED EndLevelModel")
     }

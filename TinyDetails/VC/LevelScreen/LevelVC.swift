@@ -59,11 +59,12 @@ class LevelVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNormalLayout()
+        
         // TODO: check this, maybe optimise
-        levelPresenter.onNextStep = { [weak self] currentArea in
-            self?.launchNextItem(clickableAreaData: currentArea)
+        levelPresenter.onNextArea = { [weak self] currentArea in
+            self?.launchNextArea(clickableAreaData: currentArea)
         }
-        levelPresenter.onRestart = { [weak self] in
+        levelPresenter.onNextLevel = { [weak self] in
             self?.launchNewLevel()
         }
     }
@@ -73,14 +74,19 @@ class LevelVC: UIViewController {
         super.viewDidLayoutSubviews()
         if isFirstLaunch {
             setupPictureLayout(currentLevel: currentLevel)
-            launchNextItem(clickableAreaData: currentArea)
+            launchNextArea(clickableAreaData: currentArea)
             isFirstLaunch = false
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        levelPresenter.onAppear()
+    }
+    
     // MARK: - Flow
     
-    private func launchNextItem(clickableAreaData: ClickableArea) {
+    private func launchNextArea(clickableAreaData: ClickableArea) {
         
         // TODO: are you actually removing the previous clickable area?
         clickableArea.updateClickableArea(with: clickableAreaData)
@@ -109,7 +115,7 @@ class LevelVC: UIViewController {
         if let tutorialData = self.currentLevel.tutorialData {
             setupTutorial(data: tutorialData)
         }
-        launchNextItem(clickableAreaData: self.currentArea)
+        launchNextArea(clickableAreaData: self.currentArea)
         skipStartAnimation = true
         scrollView.zoomScale = 1
     }

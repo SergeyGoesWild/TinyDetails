@@ -65,4 +65,17 @@ final class LevelModel {
     func incrementAreaIndex() {
         gameStateProvider.incrementArea()
     }
+    
+    func incrementLevelIndex() {
+        gameStateProvider.incrementLevel()
+    }
+    
+    func gameReset() {
+        gameStateProvider.resetState()
+    }
+    
+    func changeScreenState() {
+        gameStateProvider.onEndLevel = false
+        gameStateProvider.onEndGame = false
+    }
 }

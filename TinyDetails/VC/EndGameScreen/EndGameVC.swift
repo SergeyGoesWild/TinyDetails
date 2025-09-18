@@ -15,18 +15,11 @@ final class EndGameScreen: UIViewController {
     
     var endGamePresenter: EndGamePresenter!
     
-    weak var delegate: EndGameDelegate?
-    
     private var titleLabel: UILabel!
     private var additionalLabel: UILabel!
     private var backgroundView: UIView!
     private var imageView: UIImageView!
     private var restartButton: UIButton!
-    
-    init(delegate: EndGameDelegate?) {
-        self.delegate = delegate
-        super.init(nibName: nil, bundle: nil)
-    }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -35,7 +28,11 @@ final class EndGameScreen: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        delegate?.enteredEndGame()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        endGamePresenter.onAppear()
     }
     
     private func setupUI() {

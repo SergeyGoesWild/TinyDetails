@@ -18,6 +18,10 @@ final class EndGamePresenter {
         // TODO: call router
     }
     
+    func onAppear() {
+        model.changeScreenState()
+    }
+    
     deinit {
         print("DEALOCATED EndLevelPresenter")
     }

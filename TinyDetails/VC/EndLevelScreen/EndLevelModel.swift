@@ -29,8 +29,9 @@ final class EndLevelModel {
         return currentItem!
     }
     
-    func nextAndSave() {
-        gameStateProvider.levelIndex += 1
+    func changeScreenState() {
+        gameStateProvider.onEndLevel = true
+        gameStateProvider.onEndGame = false
     }
     
     deinit {

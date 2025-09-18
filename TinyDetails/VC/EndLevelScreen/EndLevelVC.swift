@@ -12,9 +12,6 @@ final class EndLevelScreen: UIViewController {
     
     var endLevelPresenter: EndLevelPresenter!
     
-    weak var delegate: EndLevelDelegate?
-    weak var endGamedelegate: EndGameDelegate?
-    
     var isFirstLaunch: Bool = true
     
     private var paintingObject: PaintingObject {
@@ -39,11 +36,6 @@ final class EndLevelScreen: UIViewController {
     var imageWidthConstraint: NSLayoutConstraint!
     var imageHeightConstraint: NSLayoutConstraint!
     
-    init(delegate: EndLevelDelegate) {
-        self.delegate = delegate
-        super.init(nibName: nil, bundle: nil)
-    }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -51,7 +43,11 @@ final class EndLevelScreen: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        delegate?.enteredEndLevel()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        endLevelPresenter.onAppear()
     }
     
     private func setupLayout() {
