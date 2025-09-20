@@ -16,14 +16,15 @@ protocol RouterProtocol {
 final class Router: RouterProtocol {
     
     private weak var nav: UINavigationController?
-    
-    let dataProvider = DataProvider()
-    let gameStateProvider = GameStateProvider()
+    private var dataProvider: DataProvider
+    private var gameStateProvider: GameStateProvider
     
     var gameOver: Bool = false
     
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController, dataProvider: DataProvider, gameStateProvider: GameStateProvider) {
         self.nav = navigationController
+        self.dataProvider = dataProvider
+        self.gameStateProvider = gameStateProvider
     }
     
     func switchAfterLevelScreen(isGameOver: Bool) {

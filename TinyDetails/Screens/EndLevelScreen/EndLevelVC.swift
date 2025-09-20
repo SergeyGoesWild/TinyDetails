@@ -61,6 +61,7 @@ final class EndLevelVC: UIViewController {
         
         endScrollView = UIScrollView()
         endScrollView.translatesAutoresizingMaskIntoConstraints = false
+        endScrollView.showsVerticalScrollIndicator = false
         endScrollView.backgroundColor = .clear
         
         titleView = UILabel()

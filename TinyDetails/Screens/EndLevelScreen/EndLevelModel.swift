@@ -7,8 +7,12 @@
 
 final class EndLevelModel {
     
-    // TODO: Link this
-    private var currentItem: PaintingObject?
+    private var currentItem: PaintingObject {
+        get {
+            let currentLevelIndex = gameStateProvider.levelIndex
+            return dataProvider.paintingList[currentLevelIndex]
+        }
+    }
     
     let gameStateProvider: GameStateProvider
     let dataProvider: DataProvider
@@ -16,17 +20,10 @@ final class EndLevelModel {
     init(dataProvider: DataProvider, gameStateProvider: GameStateProvider) {
         self.dataProvider = dataProvider
         self.gameStateProvider = gameStateProvider
-        
-        updateItem()
-    }
-    
-    func updateItem() {
-        let currentLevelIndex = gameStateProvider.levelIndex
-        currentItem = dataProvider.paintingList[currentLevelIndex]
     }
     
     func shareItem() -> PaintingObject {
-        return currentItem!
+        return currentItem
     }
     
     func changeScreenState() {
