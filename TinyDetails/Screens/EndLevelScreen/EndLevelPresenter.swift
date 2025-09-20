@@ -20,7 +20,7 @@ final class EndLevelPresenter {
     }
     
     func onButtonPress() {
-        // TODO: call router
+        router.switchAfterEndLevelScreen()
     }
     
     func onAppear() {

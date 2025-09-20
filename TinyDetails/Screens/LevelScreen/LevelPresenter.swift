@@ -34,12 +34,14 @@ final class LevelPresenter {
         if levelModel.checkIfLevelOver() {
             if levelModel.checkIfGameOver(){
                 levelModel.gameReset()
-                // TODO: call router with a flag
-                onNextLevel?() // + delay
+                router.switchAfterLevelScreen(isGameOver: true)
+                // TODO: add delay here
+                onNextLevel?()
             } else {
                 levelModel.incrementLevelIndex()
-                // TODO: call router
-                onNextLevel?() // + delay
+                router.switchAfterLevelScreen(isGameOver: false)
+                // TODO: add delay here
+                onNextLevel?()
             }
             
         } else {
@@ -47,7 +49,6 @@ final class LevelPresenter {
             onNextArea?(provideArea())
         }
     }
-    // TODO: work on onModal, onEndScreen
     
     func onAppear() {
         levelModel.changeScreenState()

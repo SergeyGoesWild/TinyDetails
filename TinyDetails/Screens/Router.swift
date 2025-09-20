@@ -8,7 +8,9 @@
 import UIKit
 
 protocol RouterProtocol {
-    
+    func switchAfterLevelScreen(isGameOver: Bool)
+    func switchAfterEndLevelScreen()
+    func switchAfterEndGameScreen()
 }
 
 final class Router: RouterProtocol {
@@ -24,31 +26,37 @@ final class Router: RouterProtocol {
         self.nav = navigationController
     }
     
-    func goNextScreen() {
+    func switchAfterLevelScreen(isGameOver: Bool) {
+        gameOver = isGameOver
+        goEndLevel()
+    }
+    
+    func switchAfterEndLevelScreen() {
         if gameOver {
+            gameOver = false
             goEndGame()
         } else {
-            popToRoot()
+            goNextLevel()
         }
     }
     
-    func setGameOverFlag() {
-        gameOver = true
+    func switchAfterEndGameScreen() {
+        goNextLevel()
     }
     
-    func goEndLevel() {
+    private func goEndLevel() {
         guard let nav else { return }
         let vc = EndLevelAssembly.makeEndLevelScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider)
         nav.pushViewController(vc, animated: true)
     }
     
-    func goEndGame() {
+    private func goEndGame() {
         guard let nav else { return }
         let vc = EndGameAssembly.makeEndGameScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider)
         nav.pushViewController(vc, animated: true)
     }
     
-    func popToRoot(animated: Bool = true) {
+    private func goNextLevel(animated: Bool = true) {
         nav?.popToRootViewController(animated: animated)
     }
 }
