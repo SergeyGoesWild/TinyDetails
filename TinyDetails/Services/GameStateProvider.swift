@@ -15,7 +15,7 @@ final class GameStateProvider {
         var onModal: Bool = false
         var onEndScreen: Bool = false
     }
-    
+    // TODO: save load (loading from some screen other than the main one)
     private var currentStateData = GameStateData() {
         didSet {
             saveData()

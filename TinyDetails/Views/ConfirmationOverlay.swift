@@ -101,6 +101,7 @@ final class ConfirmationOverlay: UIView {
         ])
     }
     
+    // TODO: make the animation more impactful
     func revealOverlay(completion: @escaping () -> Void) {
         emojiLabel.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
         emojiLabel.alpha = 0
@@ -123,7 +124,6 @@ final class ConfirmationOverlay: UIView {
                 }
                 
                 UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.8/2.0) {
-                                // Nested spring animation
                                 UIView.animate(
                                     withDuration: 0.4,
                                     delay: 0,

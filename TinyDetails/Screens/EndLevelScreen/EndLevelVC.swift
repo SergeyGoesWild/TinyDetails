@@ -24,7 +24,7 @@ final class EndLevelVC: UIViewController {
     var titleView: UILabel!
     var subtitleView: UILabel!
     var lastLevelLabel: UILabel!
-    var descriptionView: UILabel!
+    var descriptionView: UITextView!
     var imageView: UIImageView!
     var nextLevelButton: UIButton!
     var buttonGradient: CAGradientLayer!
@@ -55,6 +55,7 @@ final class EndLevelVC: UIViewController {
         endLevelPresenter.onAppear()
     }
     
+    // TODO: maybe arrange the text like in books
     private func setupLayout() {
         view.backgroundColor = .white
         self.isModalInPresentation = true
@@ -85,14 +86,22 @@ final class EndLevelVC: UIViewController {
         imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
-        descriptionView = UILabel()
-        descriptionView.text = paintingObject.endDescription
-        descriptionView.textAlignment = .left
-        descriptionView.textColor = .black
+        descriptionView = UITextView()
         descriptionView.font = UIFont.systemFont(ofSize: 20, weight: .light)
+        descriptionView.isEditable = false
+        descriptionView.isScrollEnabled = false
+        descriptionView.textContainerInset = .zero
+        descriptionView.textContainer.lineFragmentPadding = 0
         descriptionView.translatesAutoresizingMaskIntoConstraints = false
-        descriptionView.lineBreakMode = .byWordWrapping
-        descriptionView.numberOfLines = 0
+        let para = NSMutableParagraphStyle()
+        para.alignment = .justified
+        para.hyphenationFactor = 1.0
+        let attr = NSMutableAttributedString(string: paintingObject.endDescription, attributes: [
+            .font: UIFont.systemFont(ofSize: 20, weight: .light),
+            .paragraphStyle: para,
+            NSAttributedString.Key(rawValue: kCTLanguageAttributeName as String): "en"
+        ])
+        descriptionView.attributedText = attr
         
         nextLevelButton = UIButton(type: .system)
         nextLevelButton.setTitle("Next Level", for: .normal)
