@@ -9,10 +9,8 @@ import UIKit
 
 class MainVC: UIViewController {
     
-    // TODO: scrollView side and navBar
-    // TODO: the score tracker is not right
-    // TODO: endLevel switches beforehand
     // TODO: maybe arrange the text like in books
+    // TODO: save load (loading from some screen other than the main one)
     
 //    private let gameVC = GameVC()
 //    private var navController: UINavigationController!

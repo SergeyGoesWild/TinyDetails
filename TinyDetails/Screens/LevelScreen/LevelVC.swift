@@ -91,6 +91,7 @@ class LevelVC: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         levelPresenter.onAppear()
+        tutorialOverlay?.startTutorialCountdown()
     }
     
     // MARK: - Flow

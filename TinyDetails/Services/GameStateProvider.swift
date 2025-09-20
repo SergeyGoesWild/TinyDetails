@@ -85,7 +85,7 @@ final class GameStateProvider {
     
     func incrementLevel() {
         levelIndex += 1
-        areaIndex += 0
+        areaIndex = 0
     }
     
     func incrementArea() {

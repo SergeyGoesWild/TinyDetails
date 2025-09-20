@@ -5,6 +5,8 @@
 //  Created by Sergey Telnov on 10/09/2025.
 //
 
+import UIKit
+
 final class LevelPresenter {
     
     var levelModel: LevelModel
@@ -33,15 +35,18 @@ final class LevelPresenter {
     func onAreaPress() {
         if levelModel.checkIfLevelOver() {
             if levelModel.checkIfGameOver(){
-                levelModel.gameReset()
                 router.switchAfterLevelScreen(isGameOver: true)
-                // TODO: add delay here
-                onNextLevel?()
+                // TODO: think of a way to change it
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    self.levelModel.gameReset()
+                    self.onNextLevel?()
+                }
             } else {
-                levelModel.incrementLevelIndex()
                 router.switchAfterLevelScreen(isGameOver: false)
-                // TODO: add delay here
-                onNextLevel?()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    self.levelModel.incrementLevelIndex()
+                    self.onNextLevel?()
+                }
             }
             
         } else {

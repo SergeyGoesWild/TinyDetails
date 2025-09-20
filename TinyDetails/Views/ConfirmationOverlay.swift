@@ -114,7 +114,8 @@ final class ConfirmationOverlay: UIView {
             animations: { [weak self] in
                 
                 UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.1/2.0) {
-                    self?.backgroundView.alpha = 0.4
+                    // TODO: add this to constants
+                    self?.backgroundView.alpha = 0.6
                 }
                 
                 UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.0/2.0) {
