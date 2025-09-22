@@ -42,7 +42,7 @@ final class QuestionLabelView: UIView {
         questionLabel = UILabel()
         questionLabel.text = questionText
         questionLabel.textColor = .white
-        questionLabel.font = UIFont.systemFont(ofSize: smallScreen ? 40 : 45, weight: .medium)
+        questionLabel.font = UIFont.systemFont(ofSize: smallScreen ? QuestionViewConstants.questionFontSizeSmall : QuestionViewConstants.questionFontSizeBig, weight: .medium)
         questionLabel.textAlignment = .left
         questionLabel.translatesAutoresizingMaskIntoConstraints = false
         questionLabel.isUserInteractionEnabled = false
@@ -50,7 +50,7 @@ final class QuestionLabelView: UIView {
         itemLabel = UILabel()
         itemLabel.text = itemText
         itemLabel.textColor = .white
-        itemLabel.font = UIFont.systemFont(ofSize: smallScreen ? 55 : 70, weight: .bold)
+        itemLabel.font = UIFont.systemFont(ofSize: smallScreen ? QuestionViewConstants.itemFontSizeSmall : QuestionViewConstants.itemFontSizeBig, weight: .bold)
         itemLabel.textAlignment = .left
         itemLabel.translatesAutoresizingMaskIntoConstraints = false
         itemLabel.isUserInteractionEnabled = false
@@ -68,7 +68,7 @@ final class QuestionLabelView: UIView {
             itemLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             
             questionLabel.topAnchor.constraint(equalTo: topAnchor),
-            questionLabel.bottomAnchor.constraint(equalTo: itemLabel.topAnchor, constant: 5),
+            questionLabel.bottomAnchor.constraint(equalTo: itemLabel.topAnchor, constant: QuestionViewConstants.bottomMargin),
             questionLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             questionLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
@@ -79,7 +79,7 @@ final class QuestionLabelView: UIView {
         if let questionText = questionText {
             self.questionText = questionText
         }
-        if self.itemText.count > 20 {
+        if self.itemText.count > QuestionViewConstants.charLimit {
             adaptToLongText(gettingBack: false)
         } else {
             adaptToLongText(gettingBack: true)
@@ -88,12 +88,12 @@ final class QuestionLabelView: UIView {
     
     private func adaptToLongText(gettingBack: Bool) {
         if gettingBack {
-            itemLabel.font = UIFont.systemFont(ofSize: 55, weight: .bold)
+            itemLabel.font = UIFont.systemFont(ofSize: smallScreen ? QuestionViewConstants.itemFontSizeSmall : QuestionViewConstants.itemFontSizeBig, weight: .bold)
             itemLabel.adjustsFontSizeToFitWidth = true
             itemLabel.lineBreakMode = .byTruncatingTail
             itemLabel.numberOfLines = 1
         } else {
-            itemLabel.font = UIFont.systemFont(ofSize: 45, weight: .bold)
+            itemLabel.font = UIFont.systemFont(ofSize: QuestionViewConstants.longTextFontSizeSmall, weight: .bold)
             itemLabel.adjustsFontSizeToFitWidth = false
             itemLabel.lineBreakMode = .byWordWrapping
             itemLabel.numberOfLines = 0

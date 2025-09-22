@@ -10,7 +10,6 @@ import UIKit
 
 final class ClickableAreaView: UIView {
     
-//    let areaID: UUID!
     var imageView: TouchableImageView!
     weak var delegate: ClickableAreaDelegate?
     
@@ -24,8 +23,6 @@ final class ClickableAreaView: UIView {
     }
     
     private func setupView() {
-//        self.backgroundColor = .blue
-        
         imageView = TouchableImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.shadowColor = UIColor.black.cgColor

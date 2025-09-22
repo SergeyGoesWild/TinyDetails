@@ -8,8 +8,6 @@
 import UIKit
 
 class MainVC: UIViewController {
-    
-    // TODO: maybe arrange the text like in books
     // TODO: save load (loading from some screen other than the main one)
     
 //    private let gameVC = GameVC()

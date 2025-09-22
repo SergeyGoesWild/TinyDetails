@@ -29,7 +29,6 @@ final class EndLevelVC: UIViewController {
     var nextLevelButton: UIButton!
     var buttonGradient: CAGradientLayer!
     
-    private let sideMargin: CGFloat = 25
     private var bottomInset: CGFloat!
     
     var bottomConstraint: NSLayoutConstraint!
@@ -55,7 +54,6 @@ final class EndLevelVC: UIViewController {
         endLevelPresenter.onAppear()
     }
     
-    // TODO: maybe arrange the text like in books
     private func setupLayout() {
         view.backgroundColor = .white
         self.isModalInPresentation = true
@@ -69,7 +67,7 @@ final class EndLevelVC: UIViewController {
         titleView.text = "Level Complete"
         titleView.textAlignment = .center
         titleView.textColor = .black
-        titleView.font = UIFont.systemFont(ofSize: 40, weight: .bold)
+        titleView.font = UIFont.systemFont(ofSize: EndLevelConstants.titleFontSize, weight: .bold)
         titleView.translatesAutoresizingMaskIntoConstraints = false
         titleView.lineBreakMode = .byWordWrapping
         titleView.numberOfLines = 0
@@ -78,7 +76,7 @@ final class EndLevelVC: UIViewController {
         subtitleView.text = paintingObject.endSubtitle
         subtitleView.textAlignment = .center
         subtitleView.textColor = .black
-        subtitleView.font = UIFont.italicSystemFont(ofSize: 20)
+        subtitleView.font = UIFont.italicSystemFont(ofSize: EndLevelConstants.subtitleFontSize)
         subtitleView.translatesAutoresizingMaskIntoConstraints = false
         subtitleView.lineBreakMode = .byWordWrapping
         subtitleView.numberOfLines = 0
@@ -87,7 +85,7 @@ final class EndLevelVC: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         descriptionView = UITextView()
-        descriptionView.font = UIFont.systemFont(ofSize: 20, weight: .light)
+        descriptionView.font = UIFont.systemFont(ofSize: EndLevelConstants.descriptionFontSize, weight: .light)
         descriptionView.isEditable = false
         descriptionView.isScrollEnabled = false
         descriptionView.textContainerInset = .zero
@@ -97,7 +95,7 @@ final class EndLevelVC: UIViewController {
         para.alignment = .justified
         para.hyphenationFactor = 1.0
         let attr = NSMutableAttributedString(string: paintingObject.endDescription, attributes: [
-            .font: UIFont.systemFont(ofSize: 20, weight: .light),
+            .font: UIFont.systemFont(ofSize: EndLevelConstants.descriptionFontSize, weight: .light),
             .paragraphStyle: para,
             NSAttributedString.Key(rawValue: kCTLanguageAttributeName as String): "en"
         ])
@@ -107,7 +105,7 @@ final class EndLevelVC: UIViewController {
         nextLevelButton.setTitle("Next Level", for: .normal)
         nextLevelButton.setTitleColor(.white, for: .normal)
         nextLevelButton.backgroundColor = .black
-        nextLevelButton.layer.cornerRadius = 8
+        nextLevelButton.layer.cornerRadius = EndLevelConstants.buttonCornerRadius
         nextLevelButton.translatesAutoresizingMaskIntoConstraints = false
         nextLevelButton.addTarget(self, action: #selector(nextLevelButtonPushed), for: .touchUpInside)
         
@@ -134,33 +132,33 @@ final class EndLevelVC: UIViewController {
         imageHeightConstraint = imageView.heightAnchor.constraint(equalToConstant: 0)
         
         NSLayoutConstraint.activate([
-            endScrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 4),
+            endScrollView.topAnchor.constraint(equalTo: view.topAnchor),
             endScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             endScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             endScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
             titleView.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
-            titleView.topAnchor.constraint(equalTo: endScrollView.topAnchor, constant: 30),
-            titleView.widthAnchor.constraint(equalTo: endScrollView.widthAnchor, constant: -sideMargin * 2),
+            titleView.topAnchor.constraint(equalTo: endScrollView.topAnchor, constant: EndLevelConstants.titleViewTopMargin),
+            titleView.widthAnchor.constraint(equalTo: endScrollView.widthAnchor, constant: -EndLevelConstants.endLevelSideMargin * 2),
             
             subtitleView.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
-            subtitleView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 20),
-            subtitleView.widthAnchor.constraint(equalTo: endScrollView.widthAnchor, constant: -sideMargin * 2),
+            subtitleView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: EndLevelConstants.subtitleViewTopMargin),
+            subtitleView.widthAnchor.constraint(equalTo: endScrollView.widthAnchor, constant: -EndLevelConstants.endLevelSideMargin * 2),
             
             imageView.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
-            imageView.topAnchor.constraint(equalTo: subtitleView.bottomAnchor, constant: 25),
+            imageView.topAnchor.constraint(equalTo: subtitleView.bottomAnchor, constant: EndLevelConstants.imageViewTopMargin),
             imageWidthConstraint,
             imageHeightConstraint,
             
             descriptionView.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
-            descriptionView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 30),
-            descriptionView.widthAnchor.constraint(equalTo: endScrollView.widthAnchor, constant: -sideMargin * 2),
+            descriptionView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: EndLevelConstants.descriptionTopMargin),
+            descriptionView.widthAnchor.constraint(equalTo: endScrollView.widthAnchor, constant: -EndLevelConstants.endLevelSideMargin * 2),
             
             nextLevelButton.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
-            nextLevelButton.topAnchor.constraint(equalTo: descriptionView.bottomAnchor, constant: 50),
-            nextLevelButton.bottomAnchor.constraint(equalTo: endScrollView.bottomAnchor, constant: -10),
-            nextLevelButton.widthAnchor.constraint(equalToConstant: 200),
-            nextLevelButton.heightAnchor.constraint(equalToConstant: 50),
+            nextLevelButton.topAnchor.constraint(equalTo: descriptionView.bottomAnchor, constant: EndLevelConstants.buttonTopMargin),
+            nextLevelButton.bottomAnchor.constraint(equalTo: endScrollView.bottomAnchor, constant: -EndLevelConstants.buttonBotMargin),
+            nextLevelButton.widthAnchor.constraint(equalToConstant: EndLevelConstants.buttonWidth),
+            nextLevelButton.heightAnchor.constraint(equalToConstant: EndLevelConstants.buttonHeight),
         ])
     }
     
@@ -194,7 +192,7 @@ final class EndLevelVC: UIViewController {
     }
     
     private func getImageSize(image: UIImage, view: UIView) -> CGSize {
-        let usableWidth = view.frame.width - sideMargin * 2
+        let usableWidth = view.frame.width - EndLevelConstants.endLevelSideMargin * 2
         let multiplier01 = image.size.width / usableWidth
         let height01 = image.size.height / multiplier01
         let width01 = usableWidth

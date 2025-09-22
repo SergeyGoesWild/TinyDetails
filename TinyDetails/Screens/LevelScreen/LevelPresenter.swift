@@ -37,13 +37,13 @@ final class LevelPresenter {
             if levelModel.checkIfGameOver(){
                 router.switchAfterLevelScreen(isGameOver: true)
                 // TODO: think of a way to change it
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + LevelConstants.switchDelay) {
                     self.levelModel.gameReset()
                     self.onNextLevel?()
                 }
             } else {
                 router.switchAfterLevelScreen(isGameOver: false)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + LevelConstants.switchDelay) {
                     self.levelModel.incrementLevelIndex()
                     self.onNextLevel?()
                 }

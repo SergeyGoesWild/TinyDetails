@@ -41,17 +41,17 @@ final class ConfirmationOverlay: UIView {
         avatarImageView = UIImageView()
         avatarImageView.contentMode = .scaleAspectFit
         avatarImageView.clipsToBounds = true
-        avatarImageView.layer.cornerRadius = 100
+        avatarImageView.layer.cornerRadius = ConfirmationConstants.cornerRadius
         avatarImageView.translatesAutoresizingMaskIntoConstraints = false
         
         emojiLabel = UILabel()
         emojiLabel.text = "✅"
-        emojiLabel.font = .systemFont(ofSize: 50, weight: .bold)
+        emojiLabel.font = .systemFont(ofSize: ConfirmationConstants.emojiFontSize, weight: .bold)
         emojiLabel.textAlignment = .center
         emojiLabel.translatesAutoresizingMaskIntoConstraints = false
         
         titleLabel = UILabel()
-        titleLabel.font = .systemFont(ofSize: 40, weight: .bold)
+        titleLabel.font = .systemFont(ofSize: ConfirmationConstants.titleFontSize, weight: .bold)
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -64,7 +64,7 @@ final class ConfirmationOverlay: UIView {
         centralStackView.axis = .vertical
         centralStackView.distribution = .fill
         centralStackView.alignment = .center
-        centralStackView.spacing = 10
+        centralStackView.spacing = ConfirmationConstants.stackSpacingHeight
         centralStackView.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(commonContainer)
@@ -84,19 +84,19 @@ final class ConfirmationOverlay: UIView {
             backgroundView.topAnchor.constraint(equalTo: commonContainer.topAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: commonContainer.bottomAnchor),
             
-            imageContainer.heightAnchor.constraint(equalToConstant: 200),
-            imageContainer.widthAnchor.constraint(equalToConstant: 200),
+            imageContainer.heightAnchor.constraint(equalToConstant: ConfirmationConstants.imageHeight),
+            imageContainer.widthAnchor.constraint(equalToConstant: ConfirmationConstants.imageWidth),
             
             avatarImageView.topAnchor.constraint(equalTo: imageContainer.topAnchor),
             avatarImageView.bottomAnchor.constraint(equalTo: imageContainer.bottomAnchor),
             avatarImageView.leadingAnchor.constraint(equalTo: imageContainer.leadingAnchor),
             avatarImageView.trailingAnchor.constraint(equalTo: imageContainer.trailingAnchor),
             
-            emojiLabel.centerXAnchor.constraint(equalTo: imageContainer.centerXAnchor, constant: 70),
-            emojiLabel.centerYAnchor.constraint(equalTo: imageContainer.centerYAnchor, constant: 70),
+            emojiLabel.centerXAnchor.constraint(equalTo: imageContainer.centerXAnchor, constant: ConfirmationConstants.emojiOffsetX),
+            emojiLabel.centerYAnchor.constraint(equalTo: imageContainer.centerYAnchor, constant: ConfirmationConstants.emojiOffsetY),
             
-            centralStackView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: 16),
-            centralStackView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -16),
+            centralStackView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: ConfirmationConstants.sideMargin),
+            centralStackView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -ConfirmationConstants.sideMargin),
             centralStackView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor),
         ])
     }
@@ -115,8 +115,7 @@ final class ConfirmationOverlay: UIView {
             animations: { [weak self] in
                 
                 UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.1/2.0) {
-                    // TODO: add this to constants
-                    self?.backgroundView.alpha = 0.6
+                    self?.backgroundView.alpha = ConfirmationConstants.bgAlphaValue
                 }
                 
                 UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.0/2.0) {

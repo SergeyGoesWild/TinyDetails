@@ -46,14 +46,14 @@ final class EndGameVC: UIViewController {
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         
         titleLabel = UILabel()
-        titleLabel.font = .systemFont(ofSize: 45, weight: .bold)
+        titleLabel.font = .systemFont(ofSize: EndGameConstants.titleLabelFontSize, weight: .bold)
         titleLabel.textAlignment = .center
         titleLabel.textColor = .white
         titleLabel.text = dataItem.title
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         additionalLabel = UILabel()
-        additionalLabel.font = .systemFont(ofSize: 18, weight: .thin)
+        additionalLabel.font = .systemFont(ofSize: EndGameConstants.subtitleLabelFontSize, weight: .thin)
         additionalLabel.numberOfLines = 0
         additionalLabel.textAlignment = .center
         additionalLabel.textColor = .white
@@ -105,28 +105,28 @@ final class EndGameVC: UIViewController {
             spacer.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
             spacer.topAnchor.constraint(equalTo: backgroundView.topAnchor),
             spacer.widthAnchor.constraint(equalTo: backgroundView.widthAnchor),
-            spacer.heightAnchor.constraint(equalTo: backgroundView.heightAnchor, multiplier: 0.17),
+            spacer.heightAnchor.constraint(equalTo: backgroundView.heightAnchor, multiplier: EndGameConstants.spacerHeightMult),
             
             titleLabel.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
             titleLabel.topAnchor.constraint(equalTo: spacer.bottomAnchor),
             
             additionalLabel.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
-            additionalLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15),
+            additionalLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: EndGameConstants.textTopMargin),
             
-            restartButton.topAnchor.constraint(equalTo: additionalLabel.bottomAnchor, constant: 30),
+            restartButton.topAnchor.constraint(equalTo: additionalLabel.bottomAnchor, constant: EndGameConstants.restartTopMargin),
             restartButton.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
-            restartButton.widthAnchor.constraint(equalToConstant: 50),
-            restartButton.heightAnchor.constraint(equalToConstant: 50),
+            restartButton.widthAnchor.constraint(equalToConstant: EndGameConstants.restartButtWidth),
+            restartButton.heightAnchor.constraint(equalToConstant: EndGameConstants.restartButtHeight),
             
             imageViewContainer.topAnchor.constraint(equalTo: view.topAnchor),
             imageViewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             imageViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             imageViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            imageView.centerXAnchor.constraint(equalTo: imageViewContainer.centerXAnchor, constant: 0),
-            imageView.centerYAnchor.constraint(equalTo: imageViewContainer.centerYAnchor, constant: 200),
-            imageView.widthAnchor.constraint(equalTo: imageViewContainer.widthAnchor, multiplier: 1.2),
-            imageView.heightAnchor.constraint(equalTo: imageViewContainer.widthAnchor, multiplier: 1.2),
+            imageView.centerXAnchor.constraint(equalTo: imageViewContainer.centerXAnchor, constant: EndGameConstants.imageHorOffset),
+            imageView.centerYAnchor.constraint(equalTo: imageViewContainer.centerYAnchor, constant: EndGameConstants.imageVerOffset),
+            imageView.widthAnchor.constraint(equalTo: imageViewContainer.widthAnchor, multiplier: EndGameConstants.imageWidthMult),
+            imageView.heightAnchor.constraint(equalTo: imageViewContainer.widthAnchor, multiplier: EndGameConstants.imageHeightMult),
         ])
     }
     

@@ -38,8 +38,6 @@ class LevelVC: UIViewController {
     var skipStartAnimation: Bool = true
     var smallScreen: Bool = false
     
-    let sideMargin: CGFloat = 16
-    
     var widthConstraintImagePH: NSLayoutConstraint!
     var heightConstraintImagePH: NSLayoutConstraint!
     var questionLabelViewbottomConstraint: NSLayoutConstraint!
@@ -108,10 +106,10 @@ class LevelVC: UIViewController {
         } else {
             questionLabelView.alpha = 0.0
             questionLabelView.updateItemText(itemText: currentArea.hintText)
-            questionLabelViewbottomConstraint.constant = -50
+            questionLabelViewbottomConstraint.constant = -LevelConstants.questionGoAwayDist
             view.layoutIfNeeded()
             
-            UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: {
+            UIView.animate(withDuration: LevelConstants.questionGoAwayLen, delay: 0, options: [.curveEaseOut], animations: {
                 self.questionLabelView.alpha = 1.0
                 self.questionLabelViewbottomConstraint.constant = 0
                 self.view.layoutIfNeeded()
@@ -148,7 +146,7 @@ class LevelVC: UIViewController {
     
     private func setupNormalLayout() {
         let screenSize = UIScreen.main.bounds
-        smallScreen = screenSize.width <= 375 && screenSize.height < 812
+        smallScreen = screenSize.width <= LevelConstants.smallScreenBotMarg && screenSize.height < LevelConstants.smallScreenTopMarg
         
         bgSolid = UIView()
         bgSolid.backgroundColor = .black
@@ -156,8 +154,8 @@ class LevelVC: UIViewController {
         
         scrollView = UIScrollView()
         scrollView.delegate = self
-        scrollView.minimumZoomScale = 1.0
-        scrollView.maximumZoomScale = 4.0
+        scrollView.minimumZoomScale = LevelConstants.scrollViewMin
+        scrollView.maximumZoomScale = LevelConstants.scrollViewMax
         scrollView.bouncesZoom = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
@@ -213,7 +211,7 @@ class LevelVC: UIViewController {
             bgSolid.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.91),
+            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: LevelConstants.scrollViewHeightMult),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
@@ -223,8 +221,8 @@ class LevelVC: UIViewController {
             questionLabelContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             questionLabelViewbottomConstraint,
-            questionLabelView.leadingAnchor.constraint(equalTo: questionLabelContainer.leadingAnchor, constant: 16),
-            questionLabelView.trailingAnchor.constraint(equalTo: questionLabelContainer.trailingAnchor, constant: -16),
+            questionLabelView.leadingAnchor.constraint(equalTo: questionLabelContainer.leadingAnchor, constant: LevelConstants.questionViewSidePadding),
+            questionLabelView.trailingAnchor.constraint(equalTo: questionLabelContainer.trailingAnchor, constant: -LevelConstants.questionViewSidePadding),
             
             confirmationOverlayView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             confirmationOverlayView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -233,7 +231,7 @@ class LevelVC: UIViewController {
             
             gradientView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             gradientView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            gradientView.heightAnchor.constraint(equalTo: questionLabelContainer.heightAnchor, multiplier: 0.14),
+            gradientView.heightAnchor.constraint(equalTo: questionLabelContainer.heightAnchor, multiplier: LevelConstants.gradientViewHeightMult),
             gradientView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
             widthConstraintImagePH,
@@ -313,9 +311,9 @@ extension LevelVC: ClickableAreaDelegate {
         skipStartAnimation = false
         confirmationOverlayView.updateConfirmationOverlay(areaData: currentArea)
         confirmationOverlayView.isHidden = false
-        UIView.animate(withDuration: 0.3, animations: {
+        UIView.animate(withDuration: LevelConstants.questionGoAwayLen, animations: {
             self.questionLabelView.alpha = 0
-            self.questionLabelViewbottomConstraint.constant = 50
+            self.questionLabelViewbottomConstraint.constant = LevelConstants.questionGoAwayDist
             self.questionLabelContainer.layoutIfNeeded()
         })
         confirmationOverlayView.revealOverlay(completion: {

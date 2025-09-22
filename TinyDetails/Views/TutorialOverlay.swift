@@ -42,7 +42,7 @@ final class TutorialOverlay: UIView {
         dispatchItem = DispatchWorkItem { [weak self] in
             self?.leaveTutorial()
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: dispatchItem!)
+        DispatchQueue.main.asyncAfter(deadline: .now() + TutorialConstants.tutorialTime, execute: dispatchItem!)
     }
     
     private func setupView() {
@@ -53,7 +53,7 @@ final class TutorialOverlay: UIView {
         
         backgroundView = UIView()
         backgroundView.backgroundColor = .black
-        backgroundView.alpha = 0.9
+        backgroundView.alpha = TutorialConstants.bgAlphaValue
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         
         let touchView = UIView()
@@ -70,7 +70,7 @@ final class TutorialOverlay: UIView {
         iconImageView.image = UIImage(systemName: iconName, withConfiguration: config)
         
         titleLabel = UILabel()
-        titleLabel.font = .systemFont(ofSize: 20, weight: .bold)
+        titleLabel.font = .systemFont(ofSize: TutorialConstants.titleLabelFontSize, weight: .bold)
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -81,7 +81,7 @@ final class TutorialOverlay: UIView {
         titleLabel.text = title
         
         hintLabel = UILabel()
-        hintLabel.font = .systemFont(ofSize: 25, weight: .regular)
+        hintLabel.font = .systemFont(ofSize: TutorialConstants.hintLabelFontSize, weight: .regular)
         hintLabel.textColor = .white
         hintLabel.textAlignment = .center
         hintLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -99,7 +99,7 @@ final class TutorialOverlay: UIView {
         centralStackView.axis = .vertical
         centralStackView.distribution = .fill
         centralStackView.alignment = .center
-        centralStackView.spacing = 5
+        centralStackView.spacing = TutorialConstants.stackSpacerHeight
         centralStackView.translatesAutoresizingMaskIntoConstraints = false
         centralStackView.backgroundColor = .clear
         
@@ -124,15 +124,15 @@ final class TutorialOverlay: UIView {
             touchView.topAnchor.constraint(equalTo: commonContainer.topAnchor),
             touchView.bottomAnchor.constraint(equalTo: commonContainer.bottomAnchor),
             
-            centralStackView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: 16),
-            centralStackView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -16),
+            centralStackView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: TutorialConstants.sideMargin),
+            centralStackView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -TutorialConstants.sideMargin),
             centralStackView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor),
             
-            spacer.heightAnchor.constraint(equalToConstant: 30),
+            spacer.heightAnchor.constraint(equalToConstant: TutorialConstants.spacerHeight),
             spacer.widthAnchor.constraint(equalTo: centralStackView.widthAnchor),
             
-            iconImageView.heightAnchor.constraint(equalToConstant: 100),
-            iconImageView.widthAnchor.constraint(equalToConstant: 100),
+            iconImageView.heightAnchor.constraint(equalToConstant: TutorialConstants.iconHeight),
+            iconImageView.widthAnchor.constraint(equalToConstant: TutorialConstants.iconWidth),
         ])
     }
     
@@ -142,7 +142,7 @@ final class TutorialOverlay: UIView {
     
     private func leaveTutorial() {
         dispatchItem?.cancel()
-        UIView.animate(withDuration: 0.3, animations: {
+        UIView.animate(withDuration: TutorialConstants.tutorialFadeTime, animations: {
             self.commonContainer.alpha = 0
         }, completion: { [weak self] _ in
             self?.delegate?.leavingTutorial()
