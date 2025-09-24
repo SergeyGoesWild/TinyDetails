@@ -101,7 +101,6 @@ final class ConfirmationOverlay: UIView {
         ])
     }
     
-    // TODO: make the animation more impactful
     func revealOverlay(completion: @escaping () -> Void) {
         emojiLabel.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
         emojiLabel.alpha = 0

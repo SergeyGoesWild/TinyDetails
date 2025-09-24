@@ -47,6 +47,7 @@ final class EndLevelVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
+        setupImageView()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -145,11 +146,6 @@ final class EndLevelVC: UIViewController {
             subtitleView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: EndLevelConstants.subtitleViewTopMargin),
             subtitleView.widthAnchor.constraint(equalTo: endScrollView.widthAnchor, constant: -EndLevelConstants.endLevelSideMargin * 2),
             
-            imageView.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
-            imageView.topAnchor.constraint(equalTo: subtitleView.bottomAnchor, constant: EndLevelConstants.imageViewTopMargin),
-            imageWidthConstraint,
-            imageHeightConstraint,
-            
             descriptionView.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
             descriptionView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: EndLevelConstants.descriptionTopMargin),
             descriptionView.widthAnchor.constraint(equalTo: endScrollView.widthAnchor, constant: -EndLevelConstants.endLevelSideMargin * 2),
@@ -162,49 +158,49 @@ final class EndLevelVC: UIViewController {
         ])
     }
     
-    // TODO: use an autolayout approach and this method will not be necessary
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if buttonGradient.frame != nextLevelButton.bounds {
                 buttonGradient.frame = nextLevelButton.bounds
             }
-        
-         if isFirstLaunch {
-             isFirstLaunch = false
-             
-             guard let path = Bundle.main.path(forResource: paintingObject.paintingFile, ofType: "jpg") else {
-                 print("Item Image not found in EndLevelScreen: ", paintingObject.paintingFile)
-                 return
-             }
-             guard let currentImage = UIImage(contentsOfFile: path) else {
-                 print("Image not found in EndLevelScreen (UIImage): ", paintingObject.paintingFile)
-                 return
-             }
-             imageView.image = currentImage
-             let imageSize = getImageSize(image: currentImage, view: self.view)
-             imageWidthConstraint.constant = imageSize.width
-             imageHeightConstraint.constant = imageSize.height
-        }
     }
     
     @objc private func nextLevelButtonPushed() {
         endLevelPresenter.onButtonPress()
     }
     
-    private func getImageSize(image: UIImage, view: UIView) -> CGSize {
-        let usableWidth = view.frame.width - EndLevelConstants.endLevelSideMargin * 2
-        let multiplier01 = image.size.width / usableWidth
-        let height01 = image.size.height / multiplier01
-        let width01 = usableWidth
-        
-        if height01 > view.frame.height / 2 {
-            let usableHeight = view.frame.height / 2
-            let multiplier02 = height01 / usableHeight
-            let width02 = width01 / multiplier02
-            let height02 = usableHeight
-            return CGSize(width: width02, height: height02)
+    private func setupImageView() {
+        guard let path = Bundle.main.path(forResource: paintingObject.paintingFile, ofType: "jpg") else {
+            print("Item Image not found in EndLevelScreen: ", paintingObject.paintingFile)
+            return
+        }
+        guard let currentImage = UIImage(contentsOfFile: path) else {
+            print("Image not found in EndLevelScreen (UIImage): ", paintingObject.paintingFile)
+            return
+        }
+        imageView.image = currentImage
+        setupImageConstraints(image: currentImage)
+    }
+    
+    private func setupImageConstraints(image: UIImage) {
+        if image.size.width > image.size.height {
+            let ratio = image.size.height / image.size.width
+            NSLayoutConstraint.activate([
+                imageView.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
+                imageView.topAnchor.constraint(equalTo: subtitleView.bottomAnchor, constant: EndLevelConstants.imageViewTopMargin),
+                imageView.leadingAnchor.constraint(equalTo: endScrollView.leadingAnchor, constant: EndLevelConstants.endLevelSideMargin),
+                imageView.trailingAnchor.constraint(equalTo: endScrollView.trailingAnchor, constant: -EndLevelConstants.endLevelSideMargin),
+                imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: ratio),
+            ])
         } else {
-            return CGSize(width: width01, height: height01)
+            let ratio = image.size.width / image.size.height
+            NSLayoutConstraint.activate([
+                imageView.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
+                imageView.topAnchor.constraint(equalTo: subtitleView.bottomAnchor, constant: EndLevelConstants.imageViewTopMargin),
+                imageView.heightAnchor.constraint(lessThanOrEqualToConstant: 300),
+                imageView.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, constant: -(EndLevelConstants.endLevelSideMargin * 2)),
+                imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: ratio),
+            ])
         }
     }
     

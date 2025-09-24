@@ -8,7 +8,6 @@
 import UIKit
 
 class MainVC: UIViewController {
-    // TODO: save load (loading from some screen other than the main one)
     
 //    private let gameVC = GameVC()
 //    private var navController: UINavigationController!
