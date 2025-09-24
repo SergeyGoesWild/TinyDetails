@@ -332,6 +332,7 @@ extension LevelVC: UIScrollViewDelegate {
 extension LevelVC: TutorialDelegate {
     func leavingTutorial() {
         print("about to leave tutorial")
+        // TODO: remove question text behind tut
         tutorialOverlay?.removeFromSuperview()
         tutorialOverlay = nil
     }

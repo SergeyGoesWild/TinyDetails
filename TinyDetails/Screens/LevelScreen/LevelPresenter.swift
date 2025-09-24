@@ -36,19 +36,9 @@ final class LevelPresenter {
         if levelModel.checkIfLevelOver() {
             if levelModel.checkIfGameOver(){
                 router.switchAfterLevelScreen(isGameOver: true)
-                // TODO: think of a way to change it
-                DispatchQueue.main.asyncAfter(deadline: .now() + LevelConstants.switchDelay) {
-                    self.levelModel.gameReset()
-                    self.onNextLevel?()
-                }
             } else {
                 router.switchAfterLevelScreen(isGameOver: false)
-                DispatchQueue.main.asyncAfter(deadline: .now() + LevelConstants.switchDelay) {
-                    self.levelModel.incrementLevelIndex()
-                    self.onNextLevel?()
-                }
             }
-            
         } else {
             levelModel.incrementAreaIndex()
             onNextArea?(provideArea())
@@ -57,6 +47,15 @@ final class LevelPresenter {
     
     func onAppear() {
         levelModel.changeScreenState()
+    }
+    
+    func giveRefreshSignal() {
+        if levelModel.checkIfGameOver(){
+            levelModel.gameReset()
+        } else {
+            levelModel.incrementLevelIndex()
+        }
+        onNextLevel?()
     }
     
     deinit {

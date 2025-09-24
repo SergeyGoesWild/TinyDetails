@@ -11,11 +11,14 @@ protocol RouterProtocol {
     func switchAfterLevelScreen(isGameOver: Bool)
     func switchAfterEndLevelScreen()
     func switchAfterEndGameScreen()
+    func refreshRoot()
 }
 
 final class Router: RouterProtocol {
     
     private weak var nav: UINavigationController?
+    private weak var rootPresenter: LevelPresenter?
+    
     private var dataProvider: DataProvider
     private var gameStateProvider: GameStateProvider
     
@@ -43,6 +46,14 @@ final class Router: RouterProtocol {
     
     func switchAfterEndGameScreen() {
         goNextLevel()
+    }
+    
+    func refreshRoot() {
+        rootPresenter?.giveRefreshSignal()
+    }
+    
+    func setRootPresenter(rootPresenter: LevelPresenter? = nil) {
+        self.rootPresenter = rootPresenter
     }
     
     private func goEndLevel() {

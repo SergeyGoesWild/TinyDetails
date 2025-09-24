@@ -52,6 +52,7 @@ final class EndLevelVC: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        print("---------------------")
         endLevelPresenter.onAppear()
     }
     
@@ -197,7 +198,7 @@ final class EndLevelVC: UIViewController {
             NSLayoutConstraint.activate([
                 imageView.centerXAnchor.constraint(equalTo: endScrollView.centerXAnchor),
                 imageView.topAnchor.constraint(equalTo: subtitleView.bottomAnchor, constant: EndLevelConstants.imageViewTopMargin),
-                imageView.heightAnchor.constraint(lessThanOrEqualToConstant: 300),
+                imageView.heightAnchor.constraint(lessThanOrEqualToConstant: 400),
                 imageView.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, constant: -(EndLevelConstants.endLevelSideMargin * 2)),
                 imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: ratio),
             ])

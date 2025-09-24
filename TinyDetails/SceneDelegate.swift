@@ -30,6 +30,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let router = Router(navigationController: nav, dataProvider: dataProvider, gameStateProvider: gameStateProvider)
         
         let root = LevelAssembly.makeLevelScreen(router: router, dataProvider: dataProvider, gameStateProvider: gameStateProvider)
+        router.setRootPresenter(rootPresenter: root.levelPresenter)
+        
         nav.setViewControllers([root], animated: false)
         
         window.rootViewController = nav

@@ -25,6 +25,7 @@ final class EndLevelPresenter {
     
     func onAppear() {
         model.changeScreenState()
+        router.refreshRoot()
     }
     
     deinit {
