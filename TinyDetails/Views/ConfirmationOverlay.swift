@@ -102,13 +102,13 @@ final class ConfirmationOverlay: UIView {
     }
     
     func revealOverlay(completion: @escaping () -> Void) {
-        emojiLabel.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+        emojiLabel.transform = CGAffineTransform(scaleX: 2.0, y: 2.0)
         emojiLabel.alpha = 0
         emojiLabel.isHidden = false
         backgroundView.alpha = 0
         
         UIView.animateKeyframes(
-            withDuration: 2.0,
+            withDuration: 1.8,
             delay: 0,
             options: [.calculationModeLinear],
             animations: { [weak self] in
@@ -125,8 +125,8 @@ final class ConfirmationOverlay: UIView {
                                 UIView.animate(
                                     withDuration: 0.4,
                                     delay: 0,
-                                    usingSpringWithDamping: 0.4,
-                                    initialSpringVelocity: 15,
+                                    usingSpringWithDamping: 0.6,
+                                    initialSpringVelocity: 40,
                                     animations: { [weak self] in
                                         self?.emojiLabel.transform = .identity
                                     },
