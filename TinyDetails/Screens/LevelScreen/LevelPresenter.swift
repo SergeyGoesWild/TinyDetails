@@ -14,6 +14,7 @@ final class LevelPresenter {
     
     var onNextArea: ((ClickableArea) -> Void)?
     var onNextLevel: (() -> Void)?
+    var onTextAnimation: ((_ animated: Bool) -> Void)?
     
     init(model: LevelModel, router: RouterProtocol) {
         self.levelModel = model
@@ -56,6 +57,18 @@ final class LevelPresenter {
             levelModel.incrementLevelIndex()
         }
         onNextLevel?()
+    }
+    
+    func pickRightAnimation() {
+        let currentLevel = levelModel.shareCurrentLevel()
+        let currentItemIndex = levelModel.shareItemIndex()
+        if currentItemIndex == 0 && currentLevel.tutorialData == nil {
+            onTextAnimation?(false)
+        } else if currentItemIndex == 0 && currentLevel.tutorialData != nil {
+            print("Waiting for TUTORIAL to finish")
+        } else {
+            onTextAnimation?(true)
+        }
     }
     
     deinit {

@@ -29,11 +29,6 @@ class LevelVC: UIViewController {
         return levelPresenter.provideArea()
     }
     
-    // TODO: remove it, temp mesure
-    var currentItemIndex: Int {
-        return levelPresenter.provideItemIndex()
-    }
-    
     var imageViewSize: CGSize!
     var smallScreen: Bool = false
     
@@ -66,12 +61,14 @@ class LevelVC: UIViewController {
         super.viewDidLoad()
         setupNormalLayout()
         
-        // TODO: check this, maybe optimise
         levelPresenter.onNextArea = { [weak self] currentArea in
             self?.launchNextArea(clickableAreaData: currentArea)
         }
         levelPresenter.onNextLevel = { [weak self] in
             self?.launchNewLevel()
+        }
+        levelPresenter.onTextAnimation = { [weak self] animated in
+            self?.showQuestion(withAnimation: animated)
         }
     }
     
@@ -121,13 +118,7 @@ class LevelVC: UIViewController {
     }
     
     private func launchQuestion() {
-        if currentItemIndex == 0 && currentLevel.tutorialData == nil {
-            showQuestion(withAnimation: false)
-        } else if currentItemIndex == 0 && currentLevel.tutorialData != nil {
-            print("Waiting for TUT to finish")
-        } else {
-            showQuestion(withAnimation: true)
-        }
+        levelPresenter.pickRightAnimation()
     }
     
     private func showQuestion(withAnimation animated: Bool) {
