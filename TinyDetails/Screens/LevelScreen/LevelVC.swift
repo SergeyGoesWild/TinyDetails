@@ -35,7 +35,6 @@ class LevelVC: UIViewController {
     }
     
     var imageViewSize: CGSize!
-    var skipStartAnimation: Bool = true
     var smallScreen: Bool = false
     
     var widthConstraintImagePH: NSLayoutConstraint!
@@ -76,12 +75,10 @@ class LevelVC: UIViewController {
         }
     }
     
-    // TODO: remove that, switch to autolayout
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if isFirstLaunch {
-            setupPictureLayout(currentLevel: currentLevel)
-            launchNextArea(clickableAreaData: currentArea)
+            launchNewLevel()
             isFirstLaunch = false
         }
     }
@@ -94,38 +91,19 @@ class LevelVC: UIViewController {
     
     // MARK: - Flow
     
-    private func launchNextArea(clickableAreaData: ClickableArea) {
-        
-        // TODO: are you actually removing the previous clickable area?
-        clickableArea.updateClickableArea(with: clickableAreaData)
-        
-        if currentItemIndex == 0 || skipStartAnimation {
-            questionLabelView.alpha = 1.0
-            questionLabelViewbottomConstraint.constant = 0
-            questionLabelView.updateItemText(itemText: currentArea.hintText)
-        } else {
-            questionLabelView.alpha = 0.0
-            questionLabelView.updateItemText(itemText: currentArea.hintText)
-            questionLabelViewbottomConstraint.constant = -LevelConstants.questionGoAwayDist
-            view.layoutIfNeeded()
-            
-            UIView.animate(withDuration: LevelConstants.questionGoAwayLen, delay: 0, options: [.curveEaseOut], animations: {
-                self.questionLabelView.alpha = 1.0
-                self.questionLabelViewbottomConstraint.constant = 0
-                self.view.layoutIfNeeded()
-            }, completion: nil)
-        }
-    }
-    
     private func launchNewLevel() {
-        removeClickableAreas()
-        setupPictureLayout(currentLevel: self.currentLevel)
+        setupBgPicture(currentLevel: self.currentLevel)
         if let tutorialData = self.currentLevel.tutorialData {
             setupTutorial(data: tutorialData)
         }
-        launchNextArea(clickableAreaData: self.currentArea)
-        skipStartAnimation = true
+        launchNextArea(clickableAreaData: currentArea)
         scrollView.zoomScale = 1
+    }
+    
+    private func launchNextArea(clickableAreaData: ClickableArea) {
+        setupClickableArea()
+        clickableArea.updateClickableArea(with: clickableAreaData)
+        launchQuestion()
     }
     
     private func setupTutorial(data: TutorialData) {
@@ -140,6 +118,35 @@ class LevelVC: UIViewController {
             tutorialOverlay.topAnchor.constraint(equalTo: view.topAnchor),
             tutorialOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
         ])
+    }
+    
+    private func launchQuestion() {
+        if currentItemIndex == 0 && currentLevel.tutorialData == nil {
+            showQuestion(withAnimation: false)
+        } else if currentItemIndex == 0 && currentLevel.tutorialData != nil {
+            print("Waiting for TUT to finish")
+        } else {
+            showQuestion(withAnimation: true)
+        }
+    }
+    
+    private func showQuestion(withAnimation animated: Bool) {
+        if animated {
+            questionLabelView.alpha = 0.0
+            questionLabelView.updateItemText(itemText: currentArea.hintText)
+            questionLabelViewbottomConstraint.constant = -LevelConstants.questionGoAwayDist
+            view.layoutIfNeeded()
+            
+            UIView.animate(withDuration: LevelConstants.questionGoAwayLen, delay: 0, options: [.curveEaseOut], animations: {
+                self.questionLabelView.alpha = 1.0
+                self.questionLabelViewbottomConstraint.constant = 0
+                self.view.layoutIfNeeded()
+            }, completion: nil)
+        } else {
+            questionLabelView.alpha = 1.0
+            questionLabelViewbottomConstraint.constant = 0
+            questionLabelView.updateItemText(itemText: currentArea.hintText)
+        }
     }
     
     // MARK: - Layout
@@ -242,7 +249,7 @@ class LevelVC: UIViewController {
         ])
     }
     
-    private func setupPictureLayout(currentLevel: PaintingObject) {
+    private func setupBgPicture(currentLevel: PaintingObject) {
         guard let path = Bundle.main.path(forResource: currentLevel.paintingFile, ofType: "jpg") else {
             print("Level Image path not found: ", currentLevel.paintingTitle)
             return
@@ -268,8 +275,6 @@ class LevelVC: UIViewController {
         let centerX = (scrollView.contentSize.width - scrollView.bounds.width) / 2
         let centerY = (scrollView.contentSize.height - scrollView.bounds.height) / 2
         scrollView.setContentOffset(CGPoint(x: centerX + scrollView.contentSize.width * currentLevel.paintingOffset, y: centerY), animated: false)
-        
-        setupClickableArea()
     }
     
     // MARK: - Service
@@ -284,6 +289,9 @@ class LevelVC: UIViewController {
     }
     
     private func setupClickableArea() {
+        clickableArea?.removeFromSuperview()
+        clickableArea = nil
+        
         clickableArea = ClickableAreaView()
         clickableArea.delegate = self
         clickableArea.translatesAutoresizingMaskIntoConstraints = false
@@ -296,19 +304,12 @@ class LevelVC: UIViewController {
         ])
         imagePH.bringSubviewToFront(clickableArea)
     }
-    
-    private func removeClickableAreas() {
-        for area in imagePH.subviews.compactMap({ $0 as? ClickableAreaView }) {
-            area.removeFromSuperview()
-        }
-    }
 }
 
 // MARK: - Extensions
 
 extension LevelVC: ClickableAreaDelegate {
     func didReceiveClick(area: ClickableAreaView) {
-        skipStartAnimation = false
         confirmationOverlayView.updateConfirmationOverlay(areaData: currentArea)
         confirmationOverlayView.isHidden = false
         UIView.animate(withDuration: LevelConstants.questionGoAwayLen, animations: {
@@ -332,7 +333,7 @@ extension LevelVC: UIScrollViewDelegate {
 extension LevelVC: TutorialDelegate {
     func leavingTutorial() {
         print("about to leave tutorial")
-        // TODO: remove question text behind tut
+        showQuestion(withAnimation: true)
         tutorialOverlay?.removeFromSuperview()
         tutorialOverlay = nil
     }
