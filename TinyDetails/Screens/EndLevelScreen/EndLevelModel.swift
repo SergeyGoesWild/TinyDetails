@@ -26,12 +26,12 @@ final class EndLevelModel {
         return currentItem
     }
     
-    func changeScreenState() {
+    func saveAtNewStage() {
         gameStateProvider.onEndLevel = true
         gameStateProvider.onEndGame = false
     }
     
     deinit {
-        print("DEALOCATED EndLevelModel")
+        print("DEALOCATED: EndLevelModel")
     }
 }

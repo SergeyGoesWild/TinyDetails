@@ -51,7 +51,7 @@ final class Router: RouterProtocol {
     
     private func goEndLevel() {
         guard let nav else { return }
-        let vc = EndLevelAssembly.makeEndLevelScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider, onAppear: refreshLevelClosure!)
+        let vc = EndLevelAssembly.makeEndLevelScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider, refreshLevel: refreshLevelClosure ?? { })
         nav.pushViewController(vc, animated: true)
     }
     

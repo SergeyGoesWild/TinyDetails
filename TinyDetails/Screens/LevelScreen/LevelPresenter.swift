@@ -52,7 +52,7 @@ final class LevelPresenter {
     }
     
     func onAppear() {
-        levelModel.changeScreenState()
+        levelModel.saveAtNewStage()
     }
     
     func giveRefreshSignal() {
@@ -77,6 +77,6 @@ final class LevelPresenter {
     }
     
     deinit {
-        print("DEALOCATED EndLevelPresenter")
+        print("DEALOCATED: LevelPresenter")
     }
 }

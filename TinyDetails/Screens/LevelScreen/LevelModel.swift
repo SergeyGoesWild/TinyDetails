@@ -74,8 +74,12 @@ final class LevelModel {
         gameStateProvider.resetState()
     }
     
-    func changeScreenState() {
+    func saveAtNewStage() {
         gameStateProvider.onEndLevel = false
         gameStateProvider.onEndGame = false
+    }
+    
+    deinit {
+        print("DEALOCATED: LevelModel")
     }
 }

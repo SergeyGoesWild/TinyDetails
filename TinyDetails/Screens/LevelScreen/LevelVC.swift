@@ -295,6 +295,10 @@ class LevelVC: UIViewController {
         ])
         imagePH.bringSubviewToFront(clickableArea)
     }
+    
+    deinit {
+        print("DEALOCATED: LevelVC")
+    }
 }
 
 // MARK: - Extensions

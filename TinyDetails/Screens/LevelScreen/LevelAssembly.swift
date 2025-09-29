@@ -15,4 +15,8 @@ final class LevelAssembly {
         let levelVC = LevelVC(levelPresenter: levelPresenter)
         return levelVC
     }
+    
+    deinit {
+        print("DEALOCATED: LevelAssembly")
+    }
 }

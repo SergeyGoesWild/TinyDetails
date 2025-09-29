@@ -135,6 +135,6 @@ final class EndGameVC: UIViewController {
     }
     
     deinit {
-        print("DEALOCATED end-GAME-screen!")
+        print("DEALOCATED: EndGameVC")
     }
 }

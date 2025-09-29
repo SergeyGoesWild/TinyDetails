@@ -24,10 +24,10 @@ final class EndGamePresenter {
     }
     
     func onAppear() {
-        model.changeScreenState()
+        model.saveAtNewStage()
     }
     
     deinit {
-        print("DEALOCATED EndLevelPresenter")
+        print("DEALOCATED: EndGamePresenter")
     }
 }

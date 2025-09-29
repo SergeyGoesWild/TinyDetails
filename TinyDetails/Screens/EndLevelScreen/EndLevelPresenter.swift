@@ -9,12 +9,12 @@ final class EndLevelPresenter {
     
     private var model: EndLevelModel
     private var router: RouterProtocol
-    private let onAppearClosure: (() -> Void)?
+    private let refreshLevel: (() -> Void)
     
-    init(model: EndLevelModel, router: RouterProtocol, onAppear: (() -> Void)? = nil) {
+    init(model: EndLevelModel, router: RouterProtocol, refreshLevel: @escaping (() -> Void)) {
         self.model = model
         self.router = router
-        self.onAppearClosure = onAppear
+        self.refreshLevel = refreshLevel
     }
     
     func provideItem() -> PaintingObject {
@@ -26,11 +26,11 @@ final class EndLevelPresenter {
     }
     
     func onAppear() {
-        model.changeScreenState()
-        onAppearClosure?()
+        model.saveAtNewStage()
+        refreshLevel()
     }
     
     deinit {
-        print("DEALOCATED EndLevelPresenter")
+        print("DEALOCATED: EndLevelPresenter")
     }
 }

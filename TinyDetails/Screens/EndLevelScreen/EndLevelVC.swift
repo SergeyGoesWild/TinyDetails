@@ -206,6 +206,6 @@ final class EndLevelVC: UIViewController {
     }
     
     deinit {
-        print("DEALOCATED EndLevelVC")
+        print("DEALOCATED: EndLevelVC")
     }
 }

@@ -10,10 +10,14 @@ final class EndLevelAssembly {
     static func makeEndLevelScreen(router: RouterProtocol,
                                 dataProvider: DataProvider,
                                 gameStateProvider: GameStateProvider,
-                                onAppear: @escaping () -> Void) -> EndLevelVC {
+                                refreshLevel: @escaping () -> Void) -> EndLevelVC {
         let endLevelModel = EndLevelModel(dataProvider: dataProvider, gameStateProvider: gameStateProvider)
-        let endLevelPresenter = EndLevelPresenter(model: endLevelModel, router: router, onAppear: onAppear)
+        let endLevelPresenter = EndLevelPresenter(model: endLevelModel, router: router, refreshLevel: refreshLevel)
         let endLevelVC = EndLevelVC(endLevelPresenter: endLevelPresenter)
         return endLevelVC
+    }
+    
+    deinit {
+        print("DEALOCATED: EndLevelAssembly")
     }
 }

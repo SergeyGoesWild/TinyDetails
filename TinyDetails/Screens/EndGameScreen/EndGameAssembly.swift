@@ -15,4 +15,8 @@ final class EndGameAssembly {
         let endGameVC = EndGameVC(endGamePresenter: endGamePresenter)
         return endGameVC
     }
+    
+    deinit {
+        print("DEALOCATED: EndGameAssembly")
+    }
 }
