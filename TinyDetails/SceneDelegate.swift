@@ -26,11 +26,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         nav.navigationBar.isHidden = true
         
         let dataProvider = DataProvider()
-        let gameStateProvider = GameStateProvider()
+        let gameStateProvider = GameStateProvider.shared
         let router = Router(navigationController: nav, dataProvider: dataProvider, gameStateProvider: gameStateProvider)
         
         let root = LevelAssembly.makeLevelScreen(router: router, dataProvider: dataProvider, gameStateProvider: gameStateProvider)
-        router.setRootPresenter(rootPresenter: root.levelPresenter)
         
         nav.setViewControllers([root], animated: false)
         

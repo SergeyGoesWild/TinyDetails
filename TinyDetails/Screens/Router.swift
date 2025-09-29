@@ -8,10 +8,9 @@
 import UIKit
 
 protocol RouterProtocol {
-    func switchAfterLevelScreen(isGameOver: Bool)
+    func switchAfterLevelScreen(isGameOver: Bool, refreshLevel: @escaping () -> Void)
     func switchAfterEndLevelScreen()
     func switchAfterEndGameScreen()
-    func refreshRoot()
 }
 
 final class Router: RouterProtocol {
@@ -23,6 +22,7 @@ final class Router: RouterProtocol {
     private var gameStateProvider: GameStateProvider
     
     var gameOver: Bool = false
+    var refreshLevelClosure: (() -> Void)?
     
     init(navigationController: UINavigationController, dataProvider: DataProvider, gameStateProvider: GameStateProvider) {
         self.nav = navigationController
@@ -30,8 +30,9 @@ final class Router: RouterProtocol {
         self.gameStateProvider = gameStateProvider
     }
     
-    func switchAfterLevelScreen(isGameOver: Bool) {
+    func switchAfterLevelScreen(isGameOver: Bool, refreshLevel: @escaping () -> Void) {
         gameOver = isGameOver
+        refreshLevelClosure = refreshLevel
         goEndLevel()
     }
     
@@ -48,17 +49,9 @@ final class Router: RouterProtocol {
         goNextLevel()
     }
     
-    func refreshRoot() {
-        rootPresenter?.giveRefreshSignal()
-    }
-    
-    func setRootPresenter(rootPresenter: LevelPresenter? = nil) {
-        self.rootPresenter = rootPresenter
-    }
-    
     private func goEndLevel() {
         guard let nav else { return }
-        let vc = EndLevelAssembly.makeEndLevelScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider)
+        let vc = EndLevelAssembly.makeEndLevelScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider, onAppear: refreshLevelClosure!)
         nav.pushViewController(vc, animated: true)
     }
     

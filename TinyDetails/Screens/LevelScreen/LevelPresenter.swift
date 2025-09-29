@@ -9,9 +9,10 @@ import UIKit
 
 final class LevelPresenter {
     
-    var levelModel: LevelModel
-    var router: RouterProtocol
+    private var levelModel: LevelModel
+    private var router: RouterProtocol
     
+    // TODO: turn those into DI (view in init)
     var onNextArea: ((ClickableArea) -> Void)?
     var onNextLevel: (() -> Void)?
     var onTextAnimation: ((_ animated: Bool) -> Void)?
@@ -36,9 +37,13 @@ final class LevelPresenter {
     func onAreaPress() {
         if levelModel.checkIfLevelOver() {
             if levelModel.checkIfGameOver(){
-                router.switchAfterLevelScreen(isGameOver: true)
+                router.switchAfterLevelScreen(isGameOver: true, refreshLevel: { [weak self] in
+                    self?.giveRefreshSignal()
+                })
             } else {
-                router.switchAfterLevelScreen(isGameOver: false)
+                router.switchAfterLevelScreen(isGameOver: false, refreshLevel:  { [weak self] in
+                    self?.giveRefreshSignal()
+                })
             }
         } else {
             levelModel.incrementAreaIndex()

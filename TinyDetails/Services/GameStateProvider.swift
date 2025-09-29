@@ -16,6 +16,10 @@ final class GameStateProvider {
         var onEndScreen: Bool = false
     }
     // TODO: save load (loading from some screen other than the main one)
+    
+    static let shared = GameStateProvider()
+    private init() {}
+    
     private var currentStateData = GameStateData() {
         didSet {
             saveData()
