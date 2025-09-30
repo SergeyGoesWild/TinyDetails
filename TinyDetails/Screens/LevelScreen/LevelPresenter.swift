@@ -12,11 +12,10 @@ protocol LevelPresenterProtocol: AnyObject {
     
     func provideLevel() -> PaintingObject
     func provideArea() -> ClickableArea
-    func provideItemIndex() -> Int
     func onAreaPress()
     func onAppear()
-    func giveRefreshSignal()
     func pickRightAnimation()
+    func launchGame()
 }
 
 final class LevelPresenter: LevelPresenterProtocol {
@@ -24,8 +23,6 @@ final class LevelPresenter: LevelPresenterProtocol {
     private var levelModel: LevelModelProtocol
     private var router: RouterProtocol
     private weak var view: LevelViewProtocol?
-    
-    // TODO: cleanup in the protocol
     
     var refreshLevel: () -> Void = { }
     
@@ -41,16 +38,16 @@ final class LevelPresenter: LevelPresenterProtocol {
         self.view = view
     }
     
+    func launchGame() {
+        view?.launchNewLevel()
+    }
+    
     func provideLevel() -> PaintingObject {
         return levelModel.shareCurrentLevel()
     }
     
     func provideArea() -> ClickableArea {
         return levelModel.shareCurrentArea()
-    }
-    
-    func provideItemIndex() -> Int {
-        return levelModel.shareItemIndex()
     }
     
     func onAreaPress() {

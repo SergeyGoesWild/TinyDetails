@@ -6,7 +6,6 @@
 //
 
 protocol LevelModelProtocol: AnyObject {
-    // TODO: Maybe some cleanup here?
     func checkIfLevelOver() -> Bool
     func checkIfGameOver() -> Bool
     func shareCurrentLevel() -> PaintingObject

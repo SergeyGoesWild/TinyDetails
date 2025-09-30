@@ -73,8 +73,7 @@ class LevelVC: UIViewController, LevelViewProtocol {
         super.viewDidLayoutSubviews()
         if isFirstLaunch {
             isFirstLaunch = false
-            // TODO: Maybe move launching this logic to the presenter
-            launchNewLevel()
+            levelPresenter.launchGame()
             setupResponsive()
         }
     }
