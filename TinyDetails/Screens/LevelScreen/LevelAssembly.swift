@@ -13,6 +13,7 @@ final class LevelAssembly {
         let levelModel = LevelModel(dataProvider: dataProvider, gameStateProvider: gameStateProvider)
         let levelPresenter = LevelPresenter(model: levelModel, router: router)
         let levelVC = LevelVC(levelPresenter: levelPresenter)
+        levelPresenter.attachView(view: levelVC)
         return levelVC
     }
     

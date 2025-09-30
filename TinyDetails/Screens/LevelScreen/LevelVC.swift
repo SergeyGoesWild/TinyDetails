@@ -7,6 +7,12 @@
 
 import UIKit
 
+protocol LevelViewProtocol: AnyObject {
+    func launchNextArea(clickableAreaData: ClickableArea)
+    func launchNewLevel()
+    func showQuestion(withAnimation: Bool)
+}
+
 protocol ClickableAreaDelegate: AnyObject {
     func didReceiveClick(area: ClickableAreaView)
 }
@@ -15,7 +21,7 @@ protocol TutorialDelegate: AnyObject {
     func leavingTutorial()
 }
 
-class LevelVC: UIViewController {
+class LevelVC: UIViewController, LevelViewProtocol {
     
     var levelPresenter: LevelPresenterProtocol
     
@@ -61,22 +67,13 @@ class LevelVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNormalLayout()
-        
-        levelPresenter.onNextArea = { [weak self] currentArea in
-            self?.launchNextArea(clickableAreaData: currentArea)
-        }
-        levelPresenter.onNextLevel = { [weak self] in
-            self?.launchNewLevel()
-        }
-        levelPresenter.onTextAnimation = { [weak self] animated in
-            self?.showQuestion(withAnimation: animated)
-        }
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if isFirstLaunch {
             isFirstLaunch = false
+            // TODO: Maybe move launching this logic to the presenter
             launchNewLevel()
             setupResponsive()
         }
@@ -95,7 +92,7 @@ class LevelVC: UIViewController {
     
     // MARK: - Flow
     
-    private func launchNewLevel() {
+    func launchNewLevel() {
         setupBgPicture(currentLevel: self.currentLevel)
         if let tutorialData = self.currentLevel.tutorialData {
             setupTutorial(data: tutorialData)
@@ -104,7 +101,7 @@ class LevelVC: UIViewController {
         scrollView.zoomScale = 1
     }
     
-    private func launchNextArea(clickableAreaData: ClickableArea) {
+    func launchNextArea(clickableAreaData: ClickableArea) {
         setupClickableArea()
         clickableArea.updateClickableArea(with: clickableAreaData)
         launchQuestion()
@@ -128,7 +125,7 @@ class LevelVC: UIViewController {
         levelPresenter.pickRightAnimation()
     }
     
-    private func showQuestion(withAnimation animated: Bool) {
+    func showQuestion(withAnimation animated: Bool) {
         if animated {
             questionLabelView.alpha = 0.0
             questionLabelView.updateItemText(itemText: currentArea.hintText)

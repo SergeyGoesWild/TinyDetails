@@ -8,9 +8,6 @@
 import UIKit
 
 protocol LevelPresenterProtocol: AnyObject {
-    var onNextArea: ((ClickableArea) -> Void)? { get set }
-    var onNextLevel: (() -> Void)? { get set }
-    var onTextAnimation: ((_ animated: Bool) -> Void)? { get set }
     var refreshLevel: () -> Void { get set }
     
     func provideLevel() -> PaintingObject
@@ -26,14 +23,10 @@ final class LevelPresenter: LevelPresenterProtocol {
     
     private var levelModel: LevelModelProtocol
     private var router: RouterProtocol
+    private weak var view: LevelViewProtocol?
     
-    // TODO: turn those into DI (view in init)
-    // TODO: finish with protocols (View remains)
     // TODO: cleanup in the protocol
     
-    var onNextArea: ((ClickableArea) -> Void)?
-    var onNextLevel: (() -> Void)?
-    var onTextAnimation: ((_ animated: Bool) -> Void)?
     var refreshLevel: () -> Void = { }
     
     init(model: LevelModelProtocol, router: RouterProtocol) {
@@ -42,6 +35,10 @@ final class LevelPresenter: LevelPresenterProtocol {
         self.refreshLevel = { [weak self] in
             self?.giveRefreshSignal()
         }
+    }
+    
+    func attachView(view: LevelViewProtocol) {
+        self.view = view
     }
     
     func provideLevel() -> PaintingObject {
@@ -65,7 +62,7 @@ final class LevelPresenter: LevelPresenterProtocol {
             }
         } else {
             levelModel.incrementAreaIndex()
-            onNextArea?(provideArea())
+            view?.launchNextArea(clickableAreaData: provideArea())
         }
     }
     
@@ -79,18 +76,18 @@ final class LevelPresenter: LevelPresenterProtocol {
         } else {
             levelModel.incrementLevelIndex()
         }
-        onNextLevel?()
+        view?.launchNewLevel()
     }
     
     func pickRightAnimation() {
         let currentLevel = levelModel.shareCurrentLevel()
         let currentItemIndex = levelModel.shareItemIndex()
         if currentItemIndex == 0 && currentLevel.tutorialData == nil {
-            onTextAnimation?(false)
+            view?.showQuestion(withAnimation: false)
         } else if currentItemIndex == 0 && currentLevel.tutorialData != nil {
             print("Waiting for TUTORIAL to finish")
         } else {
-            onTextAnimation?(true)
+            view?.showQuestion(withAnimation: true)
         }
     }
     
