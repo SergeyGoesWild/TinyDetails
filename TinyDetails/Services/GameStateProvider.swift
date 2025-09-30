@@ -15,6 +15,9 @@ final class GameStateProvider {
         var onModal: Bool = false
         var onEndScreen: Bool = false
     }
+    
+    // TODO: optimise + protocol for GameStateProvider
+    // TODO: router optimise (related to GameStateProvider)
     // TODO: save load (loading from some screen other than the main one)
     
     static let shared = GameStateProvider()

@@ -11,13 +11,19 @@ enum AppColors {
     
 }
 
+enum AppThreshold {
+    static let smallScreenWidthMarg: CGFloat = 375
+    static let smallScreenHeightMarg: CGFloat = 812
+    static let safeAreaInset: CGFloat = 24
+}
+
 enum LevelConstants {
-    static let smallScreenBotMarg: CGFloat = 375
-    static let smallScreenTopMarg: CGFloat = 812
+    
+    static let additionalVertPadding: CGFloat = 20
     
     static let scrollViewMin: CGFloat = 1.0
     static let scrollViewMax: CGFloat = 4.0
-    static let scrollViewHeightMult: CGFloat = 0.91
+    static let scrollViewHeightMult: CGFloat = 0.84
     
     static let gradientViewHeightMult: CGFloat = 0.14
     

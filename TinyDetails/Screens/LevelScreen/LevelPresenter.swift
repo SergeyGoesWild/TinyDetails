@@ -8,7 +8,6 @@
 import UIKit
 
 protocol LevelPresenterProtocol: AnyObject {
-    // TODO: Maybe cleanup here too?
     var onNextArea: ((ClickableArea) -> Void)? { get set }
     var onNextLevel: (() -> Void)? { get set }
     var onTextAnimation: ((_ animated: Bool) -> Void)? { get set }
@@ -29,8 +28,9 @@ final class LevelPresenter: LevelPresenterProtocol {
     private var router: RouterProtocol
     
     // TODO: turn those into DI (view in init)
-    // TODO: router
-    // TODO: finish with protocols
+    // TODO: finish with protocols (View remains)
+    // TODO: cleanup in the protocol
+    
     var onNextArea: ((ClickableArea) -> Void)?
     var onNextLevel: (() -> Void)?
     var onTextAnimation: ((_ animated: Bool) -> Void)?

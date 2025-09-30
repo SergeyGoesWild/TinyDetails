@@ -150,7 +150,7 @@ final class TutorialOverlay: UIView {
     }
     
     deinit {
-        print("Tutorial deallocated")
+        print("DEALOCATED: Tutorial View")
         dispatchItem?.cancel()
     }
 }

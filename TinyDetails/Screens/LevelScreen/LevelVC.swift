@@ -34,7 +34,8 @@ class LevelVC: UIViewController {
     
     var widthConstraintImagePH: NSLayoutConstraint!
     var heightConstraintImagePH: NSLayoutConstraint!
-    var questionLabelViewbottomConstraint: NSLayoutConstraint!
+    var questionLabelViewBottomConstraint: NSLayoutConstraint!
+    var questionPaddingConstraintBottom: NSLayoutConstraint!
     
     var bgSolid: UIView!
     var imagePH: UIImageView!
@@ -75,8 +76,9 @@ class LevelVC: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if isFirstLaunch {
-            launchNewLevel()
             isFirstLaunch = false
+            launchNewLevel()
+            setupResponsive()
         }
     }
     
@@ -84,6 +86,11 @@ class LevelVC: UIViewController {
         super.viewDidAppear(animated)
         levelPresenter.onAppear()
         tutorialOverlay?.startTutorialCountdown()
+    }
+    
+    private func setupResponsive() {
+        questionPaddingConstraintBottom.constant = view.safeAreaInsets.bottom < AppThreshold.safeAreaInset ? -LevelConstants.additionalVertPadding : 0
+        view.layoutIfNeeded()
     }
     
     // MARK: - Flow
@@ -125,17 +132,17 @@ class LevelVC: UIViewController {
         if animated {
             questionLabelView.alpha = 0.0
             questionLabelView.updateItemText(itemText: currentArea.hintText)
-            questionLabelViewbottomConstraint.constant = -LevelConstants.questionGoAwayDist
+            questionLabelViewBottomConstraint.constant = -LevelConstants.questionGoAwayDist
             view.layoutIfNeeded()
             
             UIView.animate(withDuration: LevelConstants.questionGoAwayLen, delay: 0, options: [.curveEaseOut], animations: {
                 self.questionLabelView.alpha = 1.0
-                self.questionLabelViewbottomConstraint.constant = 0
+                self.questionLabelViewBottomConstraint.constant = 0
                 self.view.layoutIfNeeded()
             }, completion: nil)
         } else {
             questionLabelView.alpha = 1.0
-            questionLabelViewbottomConstraint.constant = 0
+            questionLabelViewBottomConstraint.constant = 0
             questionLabelView.updateItemText(itemText: currentArea.hintText)
         }
     }
@@ -144,7 +151,7 @@ class LevelVC: UIViewController {
     
     private func setupNormalLayout() {
         let screenSize = UIScreen.main.bounds
-        smallScreen = screenSize.width <= LevelConstants.smallScreenBotMarg && screenSize.height < LevelConstants.smallScreenTopMarg
+        smallScreen = screenSize.width <= AppThreshold.smallScreenWidthMarg && screenSize.height < AppThreshold.smallScreenHeightMarg
         
         bgSolid = UIView()
         bgSolid.backgroundColor = .black
@@ -163,11 +170,12 @@ class LevelVC: UIViewController {
         questionLabelContainer.backgroundColor = .clear
         questionLabelContainer.translatesAutoresizingMaskIntoConstraints = false
         questionLabelContainer.isUserInteractionEnabled = false
+        questionPaddingConstraintBottom = questionLabelContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0)
         
         questionLabelView = QuestionLabelView(questionText: "Can you find:", itemText: currentArea.hintText, smallScreen: smallScreen)
         questionLabelView.translatesAutoresizingMaskIntoConstraints = false
         questionLabelView.isUserInteractionEnabled = false
-        questionLabelViewbottomConstraint = questionLabelView.bottomAnchor.constraint(equalTo: questionLabelContainer.bottomAnchor, constant: 0)
+        questionLabelViewBottomConstraint = questionLabelView.bottomAnchor.constraint(equalTo: questionLabelContainer.bottomAnchor, constant: 0)
         questionLabelView.isHidden = false
         
         centerCommon = UIView()
@@ -216,9 +224,9 @@ class LevelVC: UIViewController {
             questionLabelContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             questionLabelContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             questionLabelContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            questionLabelContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            questionPaddingConstraintBottom,
             
-            questionLabelViewbottomConstraint,
+            questionLabelViewBottomConstraint,
             questionLabelView.leadingAnchor.constraint(equalTo: questionLabelContainer.leadingAnchor, constant: LevelConstants.questionViewSidePadding),
             questionLabelView.trailingAnchor.constraint(equalTo: questionLabelContainer.trailingAnchor, constant: -LevelConstants.questionViewSidePadding),
             
@@ -309,7 +317,7 @@ extension LevelVC: ClickableAreaDelegate {
         confirmationOverlayView.isHidden = false
         UIView.animate(withDuration: LevelConstants.questionGoAwayLen, animations: {
             self.questionLabelView.alpha = 0
-            self.questionLabelViewbottomConstraint.constant = LevelConstants.questionGoAwayDist
+            self.questionLabelViewBottomConstraint.constant = LevelConstants.questionGoAwayDist
             self.questionLabelContainer.layoutIfNeeded()
         })
         confirmationOverlayView.revealOverlay(completion: {

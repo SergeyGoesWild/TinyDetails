@@ -39,7 +39,6 @@ final class LevelModel: LevelModelProtocol {
         }
     }
     
-    // TODO: protocol for GameStateProvider
     private let gameStateProvider: GameStateProvider
     private let dataProvider: DataProvider
     
