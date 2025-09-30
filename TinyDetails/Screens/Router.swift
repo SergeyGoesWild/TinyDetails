@@ -7,10 +7,16 @@
 
 import UIKit
 
+enum Route {
+    case level
+    case endLevel
+    case endGame
+}
+
 protocol RouterProtocol {
-    func switchAfterLevelScreen(isGameOver: Bool, refreshLevel: @escaping () -> Void)
-    func switchAfterEndLevelScreen()
-    func switchAfterEndGameScreen()
+    func afterLevel(isGameOver: Bool, refreshLevel: @escaping () -> Void)
+    func afterEndLevel()
+    func afterEndGame()
 }
 
 final class Router: RouterProtocol {
@@ -30,38 +36,36 @@ final class Router: RouterProtocol {
         self.gameStateProvider = gameStateProvider
     }
     
-    func switchAfterLevelScreen(isGameOver: Bool, refreshLevel: @escaping () -> Void) {
+    func afterLevel(isGameOver: Bool, refreshLevel: @escaping () -> Void) {
         gameOver = isGameOver
         refreshLevelClosure = refreshLevel
-        goEndLevel()
+        route(to: .endLevel)
     }
     
-    func switchAfterEndLevelScreen() {
+    func afterEndLevel() {
         if gameOver {
             gameOver = false
-            goEndGame()
+            route(to: .endGame)
         } else {
-            goNextLevel()
+            route(to: .level)
         }
     }
     
-    func switchAfterEndGameScreen() {
-        goNextLevel()
+    func afterEndGame() {
+        route(to: .level)
     }
     
-    private func goEndLevel() {
+    private func route(to destination: Route) {
         guard let nav else { return }
-        let vc = EndLevelAssembly.makeEndLevelScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider, refreshLevel: refreshLevelClosure ?? { })
-        nav.pushViewController(vc, animated: true)
-    }
-    
-    private func goEndGame() {
-        guard let nav else { return }
-        let vc = EndGameAssembly.makeEndGameScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider)
-        nav.pushViewController(vc, animated: true)
-    }
-    
-    private func goNextLevel(animated: Bool = true) {
-        nav?.popToRootViewController(animated: animated)
+        switch destination {
+        case .level:
+            nav.popToRootViewController(animated: true)
+        case .endLevel:
+            let vc = EndLevelAssembly.makeEndLevelScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider, refreshLevel: refreshLevelClosure ?? { } )
+            nav.pushViewController(vc, animated: true)
+        case .endGame:
+            let vc = EndGameAssembly.makeEndGameScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider)
+            nav.pushViewController(vc, animated: true)
+        }
     }
 }

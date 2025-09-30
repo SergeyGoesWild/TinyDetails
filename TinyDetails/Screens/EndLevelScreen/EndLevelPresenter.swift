@@ -22,7 +22,7 @@ final class EndLevelPresenter {
     }
     
     func onButtonPress() {
-        router.switchAfterEndLevelScreen()
+        router.afterEndLevel()
     }
     
     func onAppear() {

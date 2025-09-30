@@ -20,7 +20,7 @@ final class EndGamePresenter {
     }
     
     func onButtonPress() {
-        router.switchAfterEndGameScreen()
+        router.afterEndGame()
     }
     
     func onAppear() {

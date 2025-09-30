@@ -13,13 +13,20 @@ final class LevelPresenter {
     private var router: RouterProtocol
     
     // TODO: turn those into DI (view in init)
+    // TODO: visual
+    // TODO: router
+    // TODO: protocols
     var onNextArea: ((ClickableArea) -> Void)?
     var onNextLevel: (() -> Void)?
     var onTextAnimation: ((_ animated: Bool) -> Void)?
+    var refreshLevel: () -> Void = { }
     
     init(model: LevelModel, router: RouterProtocol) {
         self.levelModel = model
         self.router = router
+        self.refreshLevel = { [weak self] in
+            self?.giveRefreshSignal()
+        }
     }
     
     func provideLevel() -> PaintingObject {
@@ -37,13 +44,9 @@ final class LevelPresenter {
     func onAreaPress() {
         if levelModel.checkIfLevelOver() {
             if levelModel.checkIfGameOver(){
-                router.switchAfterLevelScreen(isGameOver: true, refreshLevel: { [weak self] in
-                    self?.giveRefreshSignal()
-                })
+                router.afterLevel(isGameOver: true, refreshLevel: refreshLevel)
             } else {
-                router.switchAfterLevelScreen(isGameOver: false, refreshLevel:  { [weak self] in
-                    self?.giveRefreshSignal()
-                })
+                router.afterLevel(isGameOver: false, refreshLevel: refreshLevel)
             }
         } else {
             levelModel.incrementAreaIndex()
