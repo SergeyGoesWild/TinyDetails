@@ -5,12 +5,18 @@
 //  Created by Sergey Telnov on 10/09/2025.
 //
 
-final class EndGamePresenter {
+protocol EndGamePresenterProtocol: AnyObject {    
+    func provideItem() -> EndGameData
+    func onButtonPress()
+    func onAppear()
+}
+
+final class EndGamePresenter: EndGamePresenterProtocol {
     
-    var model: EndGameModel
-    var router: RouterProtocol
+    private var model: EndGameModelProtocol
+    private var router: RouterProtocol
     
-    init(model: EndGameModel, router: RouterProtocol) {
+    init(model: EndGameModelProtocol, router: RouterProtocol) {
         self.model = model
         self.router = router
     }

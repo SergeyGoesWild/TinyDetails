@@ -7,21 +7,36 @@
 
 import UIKit
 
-final class LevelPresenter {
+protocol LevelPresenterProtocol: AnyObject {
+    // TODO: Maybe cleanup here too?
+    var onNextArea: ((ClickableArea) -> Void)? { get set }
+    var onNextLevel: (() -> Void)? { get set }
+    var onTextAnimation: ((_ animated: Bool) -> Void)? { get set }
+    var refreshLevel: () -> Void { get set }
     
-    private var levelModel: LevelModel
+    func provideLevel() -> PaintingObject
+    func provideArea() -> ClickableArea
+    func provideItemIndex() -> Int
+    func onAreaPress()
+    func onAppear()
+    func giveRefreshSignal()
+    func pickRightAnimation()
+}
+
+final class LevelPresenter: LevelPresenterProtocol {
+    
+    private var levelModel: LevelModelProtocol
     private var router: RouterProtocol
     
     // TODO: turn those into DI (view in init)
-    // TODO: visual
     // TODO: router
-    // TODO: protocols
+    // TODO: finish with protocols
     var onNextArea: ((ClickableArea) -> Void)?
     var onNextLevel: (() -> Void)?
     var onTextAnimation: ((_ animated: Bool) -> Void)?
     var refreshLevel: () -> Void = { }
     
-    init(model: LevelModel, router: RouterProtocol) {
+    init(model: LevelModelProtocol, router: RouterProtocol) {
         self.levelModel = model
         self.router = router
         self.refreshLevel = { [weak self] in

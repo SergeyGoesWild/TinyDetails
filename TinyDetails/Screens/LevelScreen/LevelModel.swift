@@ -5,7 +5,20 @@
 //  Created by Sergey Telnov on 10/09/2025.
 //
 
-final class LevelModel {
+protocol LevelModelProtocol: AnyObject {
+    // TODO: Maybe some cleanup here?
+    func checkIfLevelOver() -> Bool
+    func checkIfGameOver() -> Bool
+    func shareCurrentLevel() -> PaintingObject
+    func shareCurrentArea() -> ClickableArea
+    func shareItemIndex() -> Int
+    func incrementAreaIndex()
+    func incrementLevelIndex()
+    func gameReset()
+    func saveAtNewStage()
+}
+
+final class LevelModel: LevelModelProtocol {
     
     private var currentItem: PaintingObject {
         get {
@@ -26,8 +39,9 @@ final class LevelModel {
         }
     }
     
-    let gameStateProvider: GameStateProvider
-    let dataProvider: DataProvider
+    // TODO: protocol for GameStateProvider
+    private let gameStateProvider: GameStateProvider
+    private let dataProvider: DataProvider
     
     init(dataProvider: DataProvider, gameStateProvider: GameStateProvider) {
         self.dataProvider = dataProvider

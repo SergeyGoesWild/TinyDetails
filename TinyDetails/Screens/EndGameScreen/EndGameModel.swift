@@ -12,7 +12,12 @@ struct EndGameData {
     let imageType: String
 }
 
-final class EndGameModel {
+protocol EndGameModelProtocol: AnyObject {
+    func shareItem() -> EndGameData
+    func saveAtNewStage()
+}
+
+final class EndGameModel: EndGameModelProtocol {
     
     private var endGameData: EndGameData = EndGameData(
         title: "Bravo!",
@@ -26,7 +31,7 @@ final class EndGameModel {
         imageName: "finalScreenOsteria",
         imageType: "png")
     
-    let gameStateProvider: GameStateProvider
+    private let gameStateProvider: GameStateProvider
     
     init(gameStateProvider: GameStateProvider) {
         self.gameStateProvider = gameStateProvider

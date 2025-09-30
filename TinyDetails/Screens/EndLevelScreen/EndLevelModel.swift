@@ -5,7 +5,12 @@
 //  Created by Sergey Telnov on 11/09/2025.
 //
 
-final class EndLevelModel {
+protocol EndLevelModelProtocol: AnyObject {
+    func shareItem() -> PaintingObject
+    func saveAtNewStage()
+}
+
+final class EndLevelModel: EndLevelModelProtocol {
     
     private var currentItem: PaintingObject {
         get {
@@ -14,8 +19,8 @@ final class EndLevelModel {
         }
     }
     
-    let gameStateProvider: GameStateProvider
-    let dataProvider: DataProvider
+    private let gameStateProvider: GameStateProvider
+    private let dataProvider: DataProvider
     
     init(dataProvider: DataProvider, gameStateProvider: GameStateProvider) {
         self.dataProvider = dataProvider

@@ -10,7 +10,7 @@ import UIKit
 
 final class EndLevelVC: UIViewController {
     
-    var endLevelPresenter: EndLevelPresenter
+    var endLevelPresenter: EndLevelPresenterProtocol
     
     var isFirstLaunch: Bool = true
     
@@ -35,7 +35,7 @@ final class EndLevelVC: UIViewController {
     var imageWidthConstraint: NSLayoutConstraint!
     var imageHeightConstraint: NSLayoutConstraint!
     
-    init(endLevelPresenter: EndLevelPresenter) {
+    init(endLevelPresenter: EndLevelPresenterProtocol) {
         self.endLevelPresenter = endLevelPresenter
         super.init(nibName: nil, bundle: nil)
     }

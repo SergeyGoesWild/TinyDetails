@@ -5,13 +5,19 @@
 //  Created by Sergey Telnov on 10/09/2025.
 //
 
-final class EndLevelPresenter {
+protocol EndLevelPresenterProtocol: AnyObject {
+    func provideItem() -> PaintingObject
+    func onButtonPress()
+    func onAppear()
+}
+
+final class EndLevelPresenter: EndLevelPresenterProtocol {
     
-    private var model: EndLevelModel
-    private var router: RouterProtocol
+    private let model: EndLevelModelProtocol
+    private let router: RouterProtocol
     private let refreshLevel: (() -> Void)
     
-    init(model: EndLevelModel, router: RouterProtocol, refreshLevel: @escaping (() -> Void)) {
+    init(model: EndLevelModelProtocol, router: RouterProtocol, refreshLevel: @escaping (() -> Void)) {
         self.model = model
         self.router = router
         self.refreshLevel = refreshLevel

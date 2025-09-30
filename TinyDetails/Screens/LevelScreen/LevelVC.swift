@@ -17,7 +17,7 @@ protocol TutorialDelegate: AnyObject {
 
 class LevelVC: UIViewController {
     
-    var levelPresenter: LevelPresenter
+    var levelPresenter: LevelPresenterProtocol
     
     var isFirstLaunch: Bool = true
     
@@ -48,7 +48,7 @@ class LevelVC: UIViewController {
     var confirmationOverlayView: ConfirmationOverlay!
     private var tutorialOverlay: TutorialOverlay?
     
-    init(levelPresenter: LevelPresenter) {
+    init(levelPresenter: LevelPresenterProtocol) {
         self.levelPresenter = levelPresenter
         super.init(nibName: nil, bundle: nil)
     }

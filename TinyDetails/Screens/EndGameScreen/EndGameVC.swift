@@ -13,7 +13,7 @@ final class EndGameVC: UIViewController {
         }
     }
     
-    var endGamePresenter: EndGamePresenter
+    var endGamePresenter: EndGamePresenterProtocol
     
     private var titleLabel: UILabel!
     private var additionalLabel: UILabel!
@@ -21,7 +21,7 @@ final class EndGameVC: UIViewController {
     private var imageView: UIImageView!
     private var restartButton: UIButton!
     
-    init(endGamePresenter: EndGamePresenter) {
+    init(endGamePresenter: EndGamePresenterProtocol) {
         self.endGamePresenter = endGamePresenter
         super.init(nibName: nil, bundle: nil)
     }
