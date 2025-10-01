@@ -171,8 +171,9 @@ class LevelVC: UIViewController, LevelViewProtocol {
         questionLabelView = QuestionLabelView(questionText: "Can you find:", itemText: currentArea.hintText, smallScreen: smallScreen)
         questionLabelView.translatesAutoresizingMaskIntoConstraints = false
         questionLabelView.isUserInteractionEnabled = false
-        questionLabelViewBottomConstraint = questionLabelView.bottomAnchor.constraint(equalTo: questionLabelContainer.bottomAnchor, constant: 0)
         questionLabelView.isHidden = false
+        questionLabelView.alpha = 0.0
+        questionLabelViewBottomConstraint = questionLabelView.bottomAnchor.constraint(equalTo: questionLabelContainer.bottomAnchor, constant: -LevelConstants.questionGoAwayDist)
         
         centerCommon = UIView()
         centerCommon.backgroundColor = .black

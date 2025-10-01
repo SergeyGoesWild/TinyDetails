@@ -79,10 +79,8 @@ final class LevelPresenter: LevelPresenterProtocol {
     func pickRightAnimation() {
         let currentLevel = levelModel.shareCurrentLevel()
         let currentItemIndex = levelModel.shareItemIndex()
-        if currentItemIndex == 0 && currentLevel.tutorialData == nil {
-            view?.showQuestion(withAnimation: false)
-        } else if currentItemIndex == 0 && currentLevel.tutorialData != nil {
-            print("Waiting for TUTORIAL to finish")
+        if currentItemIndex == 0 && currentLevel.tutorialData != nil {
+            print("Wait for tutorial to end")
         } else {
             view?.showQuestion(withAnimation: true)
         }

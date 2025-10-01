@@ -87,8 +87,7 @@ final class LevelModel: LevelModelProtocol {
     }
     
     func saveAtNewStage() {
-        gameStateProvider.onEndLevel = false
-        gameStateProvider.onEndGame = false
+        gameStateProvider.phase = .onLevel
     }
     
     deinit {

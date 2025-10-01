@@ -32,8 +32,7 @@ final class EndLevelModel: EndLevelModelProtocol {
     }
     
     func saveAtNewStage() {
-        gameStateProvider.onEndLevel = true
-        gameStateProvider.onEndGame = false
+        gameStateProvider.phase = .onEndLevel
     }
     
     deinit {

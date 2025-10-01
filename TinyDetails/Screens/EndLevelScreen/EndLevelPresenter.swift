@@ -28,12 +28,15 @@ final class EndLevelPresenter: EndLevelPresenterProtocol {
     }
     
     func onButtonPress() {
+        if refreshLevel == nil {
+            print("NIIIIL")
+        }
+        refreshLevel()
         router.afterEndLevel()
     }
     
     func onAppear() {
         model.saveAtNewStage()
-        refreshLevel()
     }
     
     deinit {

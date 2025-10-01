@@ -33,6 +33,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         nav.setViewControllers([root], animated: false)
         
+        router.loadSaveData()
+        
         window.rootViewController = nav
         window.makeKeyAndVisible()
         

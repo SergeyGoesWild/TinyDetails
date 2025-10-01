@@ -7,13 +7,18 @@
 
 import Foundation
 
+enum AppPhase: Encodable, Decodable {
+    case onLevel
+    case onEndLevel
+    case onEndGame
+}
+
 final class GameStateProvider {
     
-    struct GameStateData: Codable {
+    struct GameStateData: Encodable, Decodable {
         var levelIndex: Int = 0
         var areaIndex: Int = 0
-        var onModal: Bool = false
-        var onEndScreen: Bool = false
+        var phase: AppPhase = .onLevel
     }
     
     // TODO: optimise + protocol for GameStateProvider
@@ -21,11 +26,19 @@ final class GameStateProvider {
     // TODO: save load (loading from some screen other than the main one)
     
     static let shared = GameStateProvider()
-    private init() {}
+    private init() {
+        self.loadData()
+//        gameStateProvider.resetState()
+    }
     
     private var currentStateData = GameStateData() {
         didSet {
             saveData()
+            print("--")
+            print("-------")
+            print(currentStateData)
+            print("-------")
+            print("--")
         }
     }
     
@@ -39,14 +52,9 @@ final class GameStateProvider {
         set { currentStateData.areaIndex = newValue }
     }
     
-    var onEndLevel: Bool {
-        get { currentStateData.onModal }
-        set { currentStateData.onModal = newValue }
-    }
-    
-    var onEndGame: Bool {
-        get { currentStateData.onEndScreen }
-        set { currentStateData.onEndScreen = newValue }
+    var phase: AppPhase {
+        get { currentStateData.phase }
+        set { currentStateData.phase = newValue }
     }
     
     private let saveFileName = "TinyDetails_SaveFile_v1.json"
@@ -66,6 +74,7 @@ final class GameStateProvider {
     
     private func saveData() {
         do {
+            print("Saving...")
             let data = try JSONEncoder().encode(currentStateData)
             try data.write(to: saveFileURL, options: [.atomic, .completeFileProtection])
         } catch {
@@ -73,21 +82,17 @@ final class GameStateProvider {
         }
     }
     
-    private func loadData() {
+    func loadData() {
         guard FileManager.default.fileExists(atPath: saveFileURL.path) else { return }
         
         do {
+            print("Loading...")
             let data = try Data(contentsOf: saveFileURL)
             currentStateData = try JSONDecoder().decode(GameStateData.self, from: data)
         } catch {
             print("Failed to load save data: \(error)")
             currentStateData = GameStateData()
         }
-    }
-    
-    func provideGameState() -> GameStateData {
-        loadData()
-        return currentStateData
     }
     
     func incrementLevel() {
@@ -102,7 +107,6 @@ final class GameStateProvider {
     func resetState() {
         levelIndex = 0
         areaIndex = 0
-        onEndLevel = false
-        onEndGame = false
+        phase = .onLevel
     }
 }

@@ -22,7 +22,6 @@ protocol RouterProtocol {
 final class Router: RouterProtocol {
     
     private weak var nav: UINavigationController?
-    private weak var rootPresenter: LevelPresenter?
     
     private var dataProvider: DataProvider
     private var gameStateProvider: GameStateProvider
@@ -64,6 +63,21 @@ final class Router: RouterProtocol {
             let vc = EndLevelAssembly.makeEndLevelScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider, refreshLevel: refreshLevelClosure ?? { } )
             nav.pushViewController(vc, animated: true)
         case .endGame:
+            let vc = EndGameAssembly.makeEndGameScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider)
+            nav.pushViewController(vc, animated: true)
+        }
+    }
+    
+    func loadSaveData() {
+        guard let nav else { return }
+        
+        switch gameStateProvider.phase {
+        case .onLevel:
+            print("Loading level")
+        case .onEndLevel:
+            let vc = EndLevelAssembly.makeEndLevelScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider, refreshLevel: refreshLevelClosure ?? { } )
+            nav.pushViewController(vc, animated: true)
+        case .onEndGame:
             let vc = EndGameAssembly.makeEndGameScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider)
             nav.pushViewController(vc, animated: true)
         }
