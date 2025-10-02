@@ -22,6 +22,8 @@ final class LevelPresenter: LevelPresenterProtocol {
     private var router: RouterProtocol
     private weak var view: LevelViewProtocol?
     
+    private var textAnimationFlag: Bool = true
+    
     private var updateObserver: NSObjectProtocol?
     
     init(model: LevelModelProtocol, router: RouterProtocol) {
@@ -32,6 +34,7 @@ final class LevelPresenter: LevelPresenterProtocol {
                                                                 object: nil,
                                                                 queue: .main
         ) { [weak self] _ in
+            self?.textAnimationFlag = true
             self?.launchGame()
         }
     }
@@ -68,11 +71,16 @@ final class LevelPresenter: LevelPresenterProtocol {
     func pickRightAnimation() {
         let currentLevel = levelModel.shareCurrentLevel()
         let currentItemIndex = levelModel.shareItemIndex()
-        if currentItemIndex == 0 && currentLevel.tutorialData != nil {
+        if currentLevel.tutorialData != nil && currentItemIndex == 0 {
             print("Wait for tutorial to end")
-        } else {
+        } else if currentLevel.tutorialData != nil && currentItemIndex != 0 {
+            view?.showQuestion(withAnimation: true)
+        } else if currentLevel.tutorialData == nil && textAnimationFlag {
+            view?.showQuestion(withAnimation: false)
+        } else if currentLevel.tutorialData == nil && !textAnimationFlag {
             view?.showQuestion(withAnimation: true)
         }
+        textAnimationFlag = false
     }
     
     deinit {
