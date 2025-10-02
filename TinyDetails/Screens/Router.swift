@@ -62,7 +62,7 @@ final class Router: RouterProtocol {
         }
     }
     
-    func loadSaveData() {
+    func loadSavedScreen() {
         guard let nav else { return }
         
         switch gameStateProvider.phase {

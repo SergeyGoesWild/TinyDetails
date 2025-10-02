@@ -33,7 +33,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         root.loadViewIfNeeded()
         
         nav.setViewControllers([root], animated: false)
-        router.loadSaveData()
+        
+        router.loadSavedScreen()
         
         window.rootViewController = nav
         window.makeKeyAndVisible()
@@ -72,11 +73,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 }
-
-//        guard let windowScene = (scene as? UIWindowScene) else { return }
-//        let window = UIWindow(windowScene: windowScene)
-//        self.window = window
-//
-//        let mainVC = MainVC()
-//        window.rootViewController = mainVC
-//        window.makeKeyAndVisible()

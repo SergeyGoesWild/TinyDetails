@@ -37,8 +37,6 @@ final class QuestionLabelView: UIView {
     }
     
     private func setupUI() {
-        print("Small screen: \(smallScreen)")
-        
         questionLabel = UILabel()
         questionLabel.text = questionText
         questionLabel.textColor = .white

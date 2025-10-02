@@ -41,11 +41,6 @@ final class GameStateProvider: GameStateProviderProtocol {
     private var currentStateData = GameStateData() {
         didSet {
             saveData()
-            print("--")
-            print("-------")
-            print(currentStateData)
-            print("-------")
-            print("--")
         }
     }
     

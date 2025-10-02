@@ -66,14 +66,12 @@ class LevelVC: UIViewController, LevelViewProtocol {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("******* in viewDidLoad ********")
         setupNormalLayout()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if isFirstLaunch {
-            print("******* in viewDidLayoutSubviews ********")
             isFirstLaunch = false
             levelPresenter.launchGame()
             setupResponsive()
@@ -82,7 +80,6 @@ class LevelVC: UIViewController, LevelViewProtocol {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("******* in viewDidAppear ********")
         levelPresenter.onAppear()
         tutorialOverlay?.startTutorialCountdown()
     }
@@ -110,7 +107,6 @@ class LevelVC: UIViewController, LevelViewProtocol {
     }
     
     private func setupTutorial(data: TutorialData) {
-        print("******* in setupTutorial ********")
         tutorialOverlay = TutorialOverlay(delegate: self, title: data.title, hintText: data.explainerText, iconName: data.iconName)
         guard let tutorialOverlay else { return }
         tutorialOverlay.translatesAutoresizingMaskIntoConstraints = false
@@ -150,7 +146,6 @@ class LevelVC: UIViewController, LevelViewProtocol {
     // MARK: - Layout
     
     private func setupNormalLayout() {
-        print("******* in setupNormalLayout ********")
         let screenSize = UIScreen.main.bounds
         smallScreen = screenSize.width <= AppThreshold.smallScreenWidthMarg && screenSize.height < AppThreshold.smallScreenHeightMarg
         
