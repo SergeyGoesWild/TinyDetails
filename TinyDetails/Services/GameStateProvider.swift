@@ -7,13 +7,23 @@
 
 import Foundation
 
+protocol GameStateProviderProtocol: AnyObject {
+    var levelIndex: Int { get set }
+    var areaIndex: Int { get set }
+    var phase: AppPhase { get set }
+    
+    func incrementLevel()
+    func incrementArea()
+    func resetState()
+}
+
 enum AppPhase: Encodable, Decodable {
     case onLevel
     case onEndLevel
     case onEndGame
 }
 
-final class GameStateProvider {
+final class GameStateProvider: GameStateProviderProtocol {
     
     struct GameStateData: Encodable, Decodable {
         var levelIndex: Int = 0
@@ -21,14 +31,11 @@ final class GameStateProvider {
         var phase: AppPhase = .onLevel
     }
     
-    // TODO: optimise + protocol for GameStateProvider
-    // TODO: router optimise (related to GameStateProvider)
-    // TODO: save load (loading from some screen other than the main one)
+    let savingActive: Bool = true
     
     static let shared = GameStateProvider()
     private init() {
-        self.loadData()
-//        gameStateProvider.resetState()
+        if savingActive { self.loadData() }
     }
     
     private var currentStateData = GameStateData() {
@@ -74,7 +81,6 @@ final class GameStateProvider {
     
     private func saveData() {
         do {
-            print("Saving...")
             let data = try JSONEncoder().encode(currentStateData)
             try data.write(to: saveFileURL, options: [.atomic, .completeFileProtection])
         } catch {
@@ -86,7 +92,6 @@ final class GameStateProvider {
         guard FileManager.default.fileExists(atPath: saveFileURL.path) else { return }
         
         do {
-            print("Loading...")
             let data = try Data(contentsOf: saveFileURL)
             currentStateData = try JSONDecoder().decode(GameStateData.self, from: data)
         } catch {

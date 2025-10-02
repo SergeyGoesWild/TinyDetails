@@ -52,7 +52,7 @@ final class EndLevelVC: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("---------------------")
+//        print("---------------------")
         endLevelPresenter.onAppear()
     }
     

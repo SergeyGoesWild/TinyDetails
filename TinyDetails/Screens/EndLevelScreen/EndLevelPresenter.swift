@@ -5,6 +5,8 @@
 //  Created by Sergey Telnov on 10/09/2025.
 //
 
+import Foundation
+
 protocol EndLevelPresenterProtocol: AnyObject {
     func provideItem() -> PaintingObject
     func onButtonPress()
@@ -15,12 +17,12 @@ final class EndLevelPresenter: EndLevelPresenterProtocol {
     
     private let model: EndLevelModelProtocol
     private let router: RouterProtocol
-    private let refreshLevel: (() -> Void)
+    private var fromSave: Bool = false
     
-    init(model: EndLevelModelProtocol, router: RouterProtocol, refreshLevel: @escaping (() -> Void)) {
+    init(model: EndLevelModelProtocol, router: RouterProtocol, fromSave: Bool) {
         self.model = model
         self.router = router
-        self.refreshLevel = refreshLevel
+        self.fromSave = fromSave
     }
     
     func provideItem() -> PaintingObject {
@@ -28,11 +30,19 @@ final class EndLevelPresenter: EndLevelPresenterProtocol {
     }
     
     func onButtonPress() {
-        if refreshLevel == nil {
-            print("NIIIIL")
+        var gameOver: Bool = false
+        
+        if model.checkIfGameOver(){
+            model.gameReset()
+            gameOver = true
+        } else {
+            model.incrementLevelIndex()
         }
-        refreshLevel()
-        router.afterEndLevel()
+        if !fromSave {
+            NotificationCenter.default.post(name: Notification.Name("UpdateLevel"), object: self)
+        }
+        fromSave = false
+        router.afterEndLevel(with: gameOver)
     }
     
     func onAppear() {

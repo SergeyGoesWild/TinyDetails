@@ -31,9 +31,9 @@ final class EndGameModel: EndGameModelProtocol {
         imageName: "finalScreenOsteria",
         imageType: "png")
     
-    private let gameStateProvider: GameStateProvider
+    private let gameStateProvider: GameStateProviderProtocol
     
-    init(gameStateProvider: GameStateProvider) {
+    init(gameStateProvider: GameStateProviderProtocol) {
         self.gameStateProvider = gameStateProvider
     }
     

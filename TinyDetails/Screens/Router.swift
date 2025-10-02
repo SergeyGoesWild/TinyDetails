@@ -14,8 +14,8 @@ enum Route {
 }
 
 protocol RouterProtocol {
-    func afterLevel(isGameOver: Bool, refreshLevel: @escaping () -> Void)
-    func afterEndLevel()
+    func afterLevel()
+    func afterEndLevel(with gameOver: Bool)
     func afterEndGame()
 }
 
@@ -24,26 +24,20 @@ final class Router: RouterProtocol {
     private weak var nav: UINavigationController?
     
     private var dataProvider: DataProvider
-    private var gameStateProvider: GameStateProvider
+    private var gameStateProvider: GameStateProviderProtocol
     
-    var gameOver: Bool = false
-    var refreshLevelClosure: (() -> Void)?
-    
-    init(navigationController: UINavigationController, dataProvider: DataProvider, gameStateProvider: GameStateProvider) {
+    init(navigationController: UINavigationController, dataProvider: DataProvider, gameStateProvider: GameStateProviderProtocol) {
         self.nav = navigationController
         self.dataProvider = dataProvider
         self.gameStateProvider = gameStateProvider
     }
     
-    func afterLevel(isGameOver: Bool, refreshLevel: @escaping () -> Void) {
-        gameOver = isGameOver
-        refreshLevelClosure = refreshLevel
+    func afterLevel() {
         route(to: .endLevel)
     }
     
-    func afterEndLevel() {
+    func afterEndLevel(with gameOver: Bool) {
         if gameOver {
-            gameOver = false
             route(to: .endGame)
         } else {
             route(to: .level)
@@ -60,7 +54,7 @@ final class Router: RouterProtocol {
         case .level:
             nav.popToRootViewController(animated: true)
         case .endLevel:
-            let vc = EndLevelAssembly.makeEndLevelScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider, refreshLevel: refreshLevelClosure ?? { } )
+            let vc = EndLevelAssembly.makeEndLevelScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider, fromSave: false)
             nav.pushViewController(vc, animated: true)
         case .endGame:
             let vc = EndGameAssembly.makeEndGameScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider)
@@ -75,7 +69,7 @@ final class Router: RouterProtocol {
         case .onLevel:
             print("Loading level")
         case .onEndLevel:
-            let vc = EndLevelAssembly.makeEndLevelScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider, refreshLevel: refreshLevelClosure ?? { } )
+            let vc = EndLevelAssembly.makeEndLevelScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider, fromSave: true)
             nav.pushViewController(vc, animated: true)
         case .onEndGame:
             let vc = EndGameAssembly.makeEndGameScreen(router: self, dataProvider: dataProvider, gameStateProvider: gameStateProvider)

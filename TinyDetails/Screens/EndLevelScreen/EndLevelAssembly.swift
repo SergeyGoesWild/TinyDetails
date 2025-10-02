@@ -8,11 +8,11 @@
 final class EndLevelAssembly {
     
     static func makeEndLevelScreen(router: RouterProtocol,
-                                dataProvider: DataProvider,
-                                gameStateProvider: GameStateProvider,
-                                refreshLevel: @escaping () -> Void) -> EndLevelVC {
+                                   dataProvider: DataProvider,
+                                   gameStateProvider: GameStateProviderProtocol,
+                                   fromSave: Bool) -> EndLevelVC {
         let endLevelModel = EndLevelModel(dataProvider: dataProvider, gameStateProvider: gameStateProvider)
-        let endLevelPresenter = EndLevelPresenter(model: endLevelModel, router: router, refreshLevel: refreshLevel)
+        let endLevelPresenter = EndLevelPresenter(model: endLevelModel, router: router, fromSave: fromSave)
         let endLevelVC = EndLevelVC(endLevelPresenter: endLevelPresenter)
         return endLevelVC
     }

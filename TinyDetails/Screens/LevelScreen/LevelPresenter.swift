@@ -8,8 +8,6 @@
 import UIKit
 
 protocol LevelPresenterProtocol: AnyObject {
-    var refreshLevel: () -> Void { get set }
-    
     func provideLevel() -> PaintingObject
     func provideArea() -> ClickableArea
     func onAreaPress()
@@ -24,13 +22,17 @@ final class LevelPresenter: LevelPresenterProtocol {
     private var router: RouterProtocol
     private weak var view: LevelViewProtocol?
     
-    var refreshLevel: () -> Void = { }
+    private var updateObserver: NSObjectProtocol?
     
     init(model: LevelModelProtocol, router: RouterProtocol) {
         self.levelModel = model
         self.router = router
-        self.refreshLevel = { [weak self] in
-            self?.giveRefreshSignal()
+        
+        updateObserver = NotificationCenter.default.addObserver(forName: Notification.Name("UpdateLevel"),
+                                                                object: nil,
+                                                                queue: .main
+        ) { [weak self] _ in
+            self?.launchGame()
         }
     }
     
@@ -38,7 +40,7 @@ final class LevelPresenter: LevelPresenterProtocol {
         self.view = view
     }
     
-    func launchGame() {
+    @objc func launchGame() {
         view?.launchNewLevel()
     }
     
@@ -52,11 +54,7 @@ final class LevelPresenter: LevelPresenterProtocol {
     
     func onAreaPress() {
         if levelModel.checkIfLevelOver() {
-            if levelModel.checkIfGameOver(){
-                router.afterLevel(isGameOver: true, refreshLevel: refreshLevel)
-            } else {
-                router.afterLevel(isGameOver: false, refreshLevel: refreshLevel)
-            }
+            router.afterLevel()
         } else {
             levelModel.incrementAreaIndex()
             view?.launchNextArea(clickableAreaData: provideArea())
@@ -65,15 +63,6 @@ final class LevelPresenter: LevelPresenterProtocol {
     
     func onAppear() {
         levelModel.saveAtNewStage()
-    }
-    
-    func giveRefreshSignal() {
-        if levelModel.checkIfGameOver(){
-            levelModel.gameReset()
-        } else {
-            levelModel.incrementLevelIndex()
-        }
-        view?.launchNewLevel()
     }
     
     func pickRightAnimation() {
@@ -88,5 +77,8 @@ final class LevelPresenter: LevelPresenterProtocol {
     
     deinit {
         print("DEALOCATED: LevelPresenter")
+        if let updateObserver {
+            NotificationCenter.default.removeObserver(updateObserver)
+        }
     }
 }

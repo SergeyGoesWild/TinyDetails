@@ -7,13 +7,10 @@
 
 protocol LevelModelProtocol: AnyObject {
     func checkIfLevelOver() -> Bool
-    func checkIfGameOver() -> Bool
     func shareCurrentLevel() -> PaintingObject
     func shareCurrentArea() -> ClickableArea
     func shareItemIndex() -> Int
     func incrementAreaIndex()
-    func incrementLevelIndex()
-    func gameReset()
     func saveAtNewStage()
 }
 
@@ -38,24 +35,16 @@ final class LevelModel: LevelModelProtocol {
         }
     }
     
-    private let gameStateProvider: GameStateProvider
+    private let gameStateProvider: GameStateProviderProtocol
     private let dataProvider: DataProvider
     
-    init(dataProvider: DataProvider, gameStateProvider: GameStateProvider) {
+    init(dataProvider: DataProvider, gameStateProvider: GameStateProviderProtocol) {
         self.dataProvider = dataProvider
         self.gameStateProvider = gameStateProvider
     }
     
     func checkIfLevelOver() -> Bool {
         if areaIndex == currentItem.areas.count - 1 {
-            return true
-        } else {
-            return false
-        }
-    }
-    
-    func checkIfGameOver() -> Bool {
-        if levelIndex == dataProvider.paintingList.count - 1 {
             return true
         } else {
             return false
@@ -76,14 +65,6 @@ final class LevelModel: LevelModelProtocol {
     
     func incrementAreaIndex() {
         gameStateProvider.incrementArea()
-    }
-    
-    func incrementLevelIndex() {
-        gameStateProvider.incrementLevel()
-    }
-    
-    func gameReset() {
-        gameStateProvider.resetState()
     }
     
     func saveAtNewStage() {

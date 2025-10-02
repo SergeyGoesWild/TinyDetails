@@ -9,7 +9,7 @@ final class LevelAssembly {
     
     static func makeLevelScreen(router: RouterProtocol,
                                 dataProvider: DataProvider,
-                                gameStateProvider: GameStateProvider) -> LevelVC {
+                                gameStateProvider: GameStateProviderProtocol) -> LevelVC {
         let levelModel = LevelModel(dataProvider: dataProvider, gameStateProvider: gameStateProvider)
         let levelPresenter = LevelPresenter(model: levelModel, router: router)
         let levelVC = LevelVC(levelPresenter: levelPresenter)

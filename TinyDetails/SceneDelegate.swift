@@ -12,7 +12,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     var router: RouterProtocol!
     var dataProvider: DataProvider!
-    var gameStateProvider: GameStateProvider!
+    var gameStateProvider: GameStateProviderProtocol!
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -30,9 +30,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let router = Router(navigationController: nav, dataProvider: dataProvider, gameStateProvider: gameStateProvider)
         
         let root = LevelAssembly.makeLevelScreen(router: router, dataProvider: dataProvider, gameStateProvider: gameStateProvider)
+        root.loadViewIfNeeded()
         
         nav.setViewControllers([root], animated: false)
-        
         router.loadSaveData()
         
         window.rootViewController = nav
