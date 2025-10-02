@@ -218,7 +218,7 @@ final class DataProvider {
                                              pictureName: "EchoAndNarcissus_narcissus",
                                              avatarName: "EchoAndNarcissus_narcissus_av"),
                                ClickableArea(idArea: UUID(),
-                                             hintText: "second Narcissus",
+                                             hintText: "the reflection",
                                              pictureName: "EchoAndNarcissus_narcissusReflection",
                                              avatarName: "EchoAndNarcissus_narcissusReflection_av"),
                                ClickableArea(idArea: UUID(),

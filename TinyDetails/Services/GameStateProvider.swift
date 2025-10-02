@@ -31,7 +31,7 @@ final class GameStateProvider: GameStateProviderProtocol {
         var phase: AppPhase = .onLevel
     }
     
-    let savingActive: Bool = false
+    let savingActive: Bool = true
     
     static let shared = GameStateProvider()
     private init() {
