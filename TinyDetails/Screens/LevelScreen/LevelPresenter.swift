@@ -22,7 +22,7 @@ final class LevelPresenter: LevelPresenterProtocol {
     private var router: RouterProtocol
     private weak var view: LevelViewProtocol?
     
-    private var textAnimationFlag: Bool = true
+    private var textFlag: Bool = true
     
     private var updateObserver: NSObjectProtocol?
     
@@ -34,7 +34,7 @@ final class LevelPresenter: LevelPresenterProtocol {
                                                                 object: nil,
                                                                 queue: .main
         ) { [weak self] _ in
-            self?.textAnimationFlag = true
+            self?.textFlag = true
             self?.launchGame()
         }
     }
@@ -57,8 +57,10 @@ final class LevelPresenter: LevelPresenterProtocol {
     
     func onAreaPress() {
         if levelModel.checkIfLevelOver() {
+            textFlag = true
             router.afterLevel()
         } else {
+            textFlag = false
             levelModel.incrementAreaIndex()
             view?.launchNextArea(clickableAreaData: provideArea())
         }
@@ -69,18 +71,15 @@ final class LevelPresenter: LevelPresenterProtocol {
     }
     
     func pickRightAnimation() {
-        let currentLevel = levelModel.shareCurrentLevel()
-        let currentItemIndex = levelModel.shareItemIndex()
-        if currentLevel.tutorialData != nil && currentItemIndex == 0 {
-            print("Wait for tutorial to end")
-        } else if currentLevel.tutorialData != nil && currentItemIndex != 0 {
-            view?.showQuestion(withAnimation: true)
-        } else if currentLevel.tutorialData == nil && textAnimationFlag {
+        let currentLevel = provideLevel()
+        
+        if textFlag && currentLevel.tutorialData != nil {
+            print("XXX")
+        } else if textFlag && currentLevel.tutorialData == nil {
             view?.showQuestion(withAnimation: false)
-        } else if currentLevel.tutorialData == nil && !textAnimationFlag {
+        } else {
             view?.showQuestion(withAnimation: true)
         }
-        textAnimationFlag = false
     }
     
     deinit {

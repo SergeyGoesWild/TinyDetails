@@ -103,7 +103,7 @@ class LevelVC: UIViewController, LevelViewProtocol {
     func launchNextArea(clickableAreaData: ClickableArea) {
         setupClickableArea()
         clickableArea.updateClickableArea(with: clickableAreaData)
-        launchQuestion()
+        levelPresenter.pickRightAnimation()
     }
     
     private func setupTutorial(data: TutorialData) {
@@ -118,10 +118,6 @@ class LevelVC: UIViewController, LevelViewProtocol {
             tutorialOverlay.topAnchor.constraint(equalTo: view.topAnchor),
             tutorialOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
         ])
-    }
-    
-    private func launchQuestion() {
-        levelPresenter.pickRightAnimation()
     }
     
     func showQuestion(withAnimation animated: Bool) {
