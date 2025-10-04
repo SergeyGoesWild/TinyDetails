@@ -74,7 +74,7 @@ final class LevelPresenter: LevelPresenterProtocol {
         let currentLevel = provideLevel()
         
         if textFlag && currentLevel.tutorialData != nil {
-            print("XXX")
+            print("Skiping this part, animation comes from elsewhere")
         } else if textFlag && currentLevel.tutorialData == nil {
             view?.showQuestion(withAnimation: false)
         } else {
